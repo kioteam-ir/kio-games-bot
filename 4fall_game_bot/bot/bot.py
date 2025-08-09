@@ -1,13 +1,10 @@
-from hydrogram import Client, types, enums, errors
-from config import Api,TOKEN
-
-bot = Client('fallgame',Api.ID,Api.HASH,bot_token=TOKEN)
+from hydrogram import Client
+from .config import config
 
 
-
-@bot.on_inline_query()
-async def show_games(bot:Client,cb:types.InlineQuery) : 
-    ...
-
-
-bot.run()
+bot = Client(
+    name=config.SESSION_NAME,
+    bot_token=config.TOKEN,
+    api_hash=config.API_HASH,
+    api_id=config.API_ID
+)
