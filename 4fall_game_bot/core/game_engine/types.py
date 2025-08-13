@@ -9,6 +9,11 @@ class Event(StrEnum):
     MOVE      = auto()
     GAME_OVER = auto()
 
+class Color(StrEnum):
+    GREEN  = '🟢'
+    RED    = '🔴'
+    BLUE   = '🔵'
+    YELLOW = '🟡'
 
 class Player(IntEnum):
     ONE = 1
@@ -17,6 +22,11 @@ class Player(IntEnum):
     @property
     def as_cell(self) -> 'Cell':
         return Cell(self.value)
+    
+    @property
+    def as_color(self) -> Color:
+        color_mapping = (Color.GREEN, Color.BLUE)
+        return color_mapping[self.value - 1]
 
     @property
     def opponent(self) -> 'Player':
