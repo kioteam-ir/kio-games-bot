@@ -168,14 +168,14 @@ class GameEngine(ABC):
     # ---------------------------
     # Pretty print
     # ---------------------------
-    def pretty(self, symbols: Tuple[str, str] = ("X", "O")) -> str:
+    def pretty(self, symbols: Tuple[str, str] = ("🟢", "🔵")) -> str:
         rows_repr = []
         for r in range(self.rows):
             row_repr = []
             for c in range(self.cols):
                 v = self.board[r][c]
                 if v.is_empty:
-                    row_repr.append(".")
+                    row_repr.append("⭕")
                 else:
                     row_repr.append(symbols[0] if v == Cell.ONE else symbols[1])
             rows_repr.append(" ".join(row_repr))
