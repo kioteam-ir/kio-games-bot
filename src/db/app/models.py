@@ -14,8 +14,9 @@ class Admin(AbstractUser):
 
 class User(models.Model):
     id = models.BigIntegerField(primary_key=True)
-    join_time = models.DateTimeField(auto_now_add=True)
+    joined_time = models.DateTimeField(auto_now_add=True)
     is_admin = models.BooleanField(default=False)
+    is_banned = models.BooleanField(default=False)
 
 
     @classmethod
