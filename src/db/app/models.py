@@ -33,10 +33,20 @@ class User(models.Model):
         )
         return True
         
+        
     @classmethod
     def is_user(cls, id):
         try:
             cls.objects.get(id=id)
+            return True
+        except:
+            return False
+        
+
+    @classmethod
+    def is_admin(cls, id):
+        try:
+            cls.objects.get(id=id, is_admin=True)
             return True
         except:
             return False
