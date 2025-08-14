@@ -18,6 +18,23 @@ class User(models.Model):
     is_admin = models.BooleanField(default=False)
 
 
+    @classmethod
+    def create_user(cls, id, join_time, is_admin):
+        if is_admin:
+            cls.objects.create(
+                id=id,
+                is_admin=True
+            )
+            return True
+        
+        cls.objects.create(
+            id=id,
+            is_admin=False
+        )
+        return True
+        
+
+
 class Game(models.Model):
     WINNER_CHOICES = [
         ('player_1', 'player_1'),
