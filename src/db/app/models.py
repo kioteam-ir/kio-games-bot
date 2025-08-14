@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User
 from django.db import models
 
 from django.contrib.auth.models import AbstractUser
@@ -15,33 +14,20 @@ class Admin(AbstractUser):
 class User(models.Model):
     id = models.BigIntegerField(primary_key=True)
     joined_time = models.DateTimeField(auto_now_add=True)
-    is_admin = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
     is_banned = models.BooleanField(default=False)
 
 
-    @classmethod
-    def create_user(cls, id, is_admin):
-        if is_admin:
-            cls.objects.create(
-                id=id,
-                is_admin=True
-            )
-            return True
-        
-        cls.objects.create(
-            id=id,
-            is_admin=False
-        )
-        return True
-        
-
-    @classmethod
-    def is_user(cls, id):
+    @staticmethod
+    def get_or_create_user(id):
         try:
-            cls.objects.get(id=id)
-            return True
+            ins = User.objects.create(
+                id=id,
+            )
+            return ins
         except:
-            return False
+            ins = User.objects.get(id=id)
+            return ins
         
 
     @classmethod
