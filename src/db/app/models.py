@@ -19,7 +19,7 @@ class User(models.Model):
 
 
     @classmethod
-    def create_user(cls, id, join_time, is_admin):
+    def create_user(cls, id, is_admin):
         if is_admin:
             cls.objects.create(
                 id=id,
@@ -33,6 +33,13 @@ class User(models.Model):
         )
         return True
         
+    @classmethod
+    def is_user(cls, id):
+        try:
+            cls.objects.get(id=id)
+            return True
+        except:
+            return False
 
 
 class Game(models.Model):
