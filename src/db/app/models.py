@@ -33,7 +33,7 @@ class User(models.Model):
         )
         return True
         
-        
+
     @classmethod
     def is_user(cls, id):
         try:
@@ -75,3 +75,27 @@ class Score(models.Model):
 class Command(models.Model):
     command = models.CharField(max_length=256, primary_key=True)
     value = models.CharField(max_length=580)
+
+
+    @classmethod
+    def crate_command(cls, command, value):
+        try:
+            ins = cls.objects.get(command=command)
+            raise Exception("commnad is existing")
+        except:
+            cls.objects.create(
+                command=command,
+                value=value
+            )
+            return True
+
+
+    @classmethod
+    def change_command_value(cls, command, value):
+        try:
+            cmd = cls.objects.get(command=command)
+        except:
+            raise Exception("commad in not exist")
+        
+        cmd.value = value
+        cmd.save()
