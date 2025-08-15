@@ -14,40 +14,32 @@ class UserStats:
     def get_or_create(id: int, is_superuser: bool = False, is_banned: bool = False) -> dict:
         try:
             ins = User.objects.get(id=id)
-            return {
-                "id": ins.id,
-                "is_banned": ins.is_banned,
-                "is_superuser": ins.is_superuser,
-                "joined_time": ins.joined_time, 
-            }
         except:
-            ins = User.objects.create(
+            ins = User.create(
                 id=id,
                 is_superuser=is_superuser,
                 is_banned=is_banned,
             )
-            return {
-                "id": ins.id,
-                "is_banned": ins.is_banned,
-                "is_superuser": ins.is_superuser,
-                "joined_time": ins.joined_time, 
-            }
-            
-        
+        return {
+            "id": ins.id,
+            "is_banned": ins.is_banned,
+            "is_superuser": ins.is_superuser,
+            "joined_time": ins.joined_time, 
+        }
+
 
     @staticmethod
     def get_all(id: int) -> dict:
-        user = User.objects.get(id=id)
-        score = Score.objects.get(user=user)
+        context = User.all_data(id=id)
         return {
-            "id": user.id,
-            "is_banned": user.is_banned,
-            "is_superuser": user.is_superuser,
-            "joined_time": user.joined_time,
-            "user_stats": {
-                    "wins": score.wins,
-                    "losses": score.losses,
-                    "games": score.games,
-                }
+        "id": context["user"].id,
+        "is_banned": context["user"].is_banned,
+        "is_superuser": context["user"].is_superuser,
+        "joined_time": context["user"].joined_time,
+        "user_stats": {
+                "wins": context["score"].wins,
+                "losses": context["score"].losses,
+                "games": context["score"].games,
             }
+        }
         

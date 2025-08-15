@@ -22,7 +22,30 @@ class User(models.Model):
     # def is_admin(self):
     #     return True if User.objects.get(id=self.id).is_superuser == True else False
         
+    @staticmethod
+    def create(id, is_superuser=False, is_banned=False):
+        instance = User.objects.create(
+            id=id,
+            is_superuser=is_superuser,
+            is_banned=is_banned,            
+        )
+        score = Score.objects.create(
+            user=instance
+        )
+        return instance
     
+
+    @staticmethod
+    def all_data(id):
+        
+        user = User.objects.get(id=id)
+        score = Score.objects.get(user=user)
+        context = {
+            "user": user,
+            "score": score
+        }
+        return context
+
     def __str__(self):
         return f"{self.id}"
 
@@ -43,9 +66,9 @@ class Game(models.Model):
 
 class Score(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="score")
-    games = models.IntegerField()
-    wins = models.IntegerField()
-    losses = models.IntegerField()
+    games = models.IntegerField(default=0)
+    wins = models.IntegerField(default=0)
+    losses = models.IntegerField(default=0)
 
 
 class Command(models.Model):
