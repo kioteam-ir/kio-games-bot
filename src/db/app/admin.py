@@ -8,6 +8,7 @@ from app.models import User, Command, Game, Score, Admin
 class AdminAdmin(admin.ModelAdmin):
     list_display = ("username", "password")
 
+
 @register(User)
 class UserAdmin(admin.ModelAdmin):
     list_display = ("id", "is_superuser", "is_banned", "joined_time")

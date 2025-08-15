@@ -9,8 +9,8 @@ from app.models import User
 
 
 def create_user():
-    id = 14949
+    id = int(input("id: "))
     is_superuser = True
-    User.create_user(id=id)
+    return User.get_all_user_data(id=id)
 
-create_user()
+print(create_user())

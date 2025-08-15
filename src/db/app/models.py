@@ -24,10 +24,33 @@ class User(models.Model):
             ins = User.objects.create(
                 id=id,
             )
-            return ins
         except:
             ins = User.objects.get(id=id)
-            return ins
+        finally:
+            return {
+                "id": ins.id,
+                "is_banned": ins.is_banned,
+                "is_superuser": ins.is_superuser,
+                "joined_time": ins.joined_time,
+                
+            }
+        
+
+    @staticmethod
+    def get_all_user_data(id):
+        user = User.objects.get(id=id)
+        score = Score.objects.get(user=user)
+        return {
+            "id": user.id,
+            "is_banned": user.is_banned,
+            "is_superuser": user.is_superuser,
+            "joined_time": user.joined_time,
+            "user_stats": {
+                    "wins": score.wins,
+                    "losses": score.losses,
+                    "games": score.games,
+                }
+            }
         
 
     @classmethod
@@ -57,6 +80,7 @@ class Score(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="score")
     games = models.IntegerField()
     wins = models.IntegerField()
+    losses = models.IntegerField()
 
 
 class Command(models.Model):
