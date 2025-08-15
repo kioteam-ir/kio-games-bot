@@ -18,9 +18,9 @@ class User(models.Model):
     is_banned = models.BooleanField(default=False)
     
 
-    @property
-    def is_admin(self):
-        return True if User.objects.get(id=self.id).is_superuser == True else False
+    # @property
+    # def is_admin(self):
+    #     return True if User.objects.get(id=self.id).is_superuser == True else False
         
     
     def __str__(self):

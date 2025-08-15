@@ -11,22 +11,28 @@ from app.models import User, Score
 class UserStats:
 
     @staticmethod
-    def get_or_create(id: int, is_admin: bool = False, is_banned: bool = False) -> dict:
+    def get_or_create(id: int, is_superuser: bool = False, is_banned: bool = False) -> dict:
         try:
-            ins = User.objects.create(
-                id=id,
-                is_admin=is_admin,
-                is_banned=is_banned,
-            )
-        except:
             ins = User.objects.get(id=id)
-        finally:
             return {
                 "id": ins.id,
                 "is_banned": ins.is_banned,
                 "is_superuser": ins.is_superuser,
                 "joined_time": ins.joined_time, 
             }
+        except:
+            ins = User.objects.create(
+                id=id,
+                is_superuser=is_superuser,
+                is_banned=is_banned,
+            )
+            return {
+                "id": ins.id,
+                "is_banned": ins.is_banned,
+                "is_superuser": ins.is_superuser,
+                "joined_time": ins.joined_time, 
+            }
+            
         
 
     @staticmethod
