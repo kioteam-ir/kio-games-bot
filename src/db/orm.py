@@ -4,13 +4,42 @@ import os
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 django.setup()
 
-from app.models import User
+from app.models import User, Score
 
 
 
-def create_user():
-    id = int(input("id: "))
-    is_superuser = True
-    return User.get_all_user_data(id=id)
+class UserStats:
 
-print(create_user())
+    @staticmethod
+    def get_or_create_user(id: int) -> dict:
+        try:
+            ins = User.objects.create(
+                id=id,
+            )
+        except:
+            ins = User.objects.get(id=id)
+        finally:
+            return {
+                "id": ins.id,
+                "is_banned": ins.is_banned,
+                "is_superuser": ins.is_superuser,
+                "joined_time": ins.joined_time, 
+            }
+        
+
+    @staticmethod
+    def get_all_user_data(id: int) -> dict:
+        user = User.objects.get(id=id)
+        score = Score.objects.get(user=user)
+        return {
+            "id": user.id,
+            "is_banned": user.is_banned,
+            "is_superuser": user.is_superuser,
+            "joined_time": user.joined_time,
+            "user_stats": {
+                    "wins": score.wins,
+                    "losses": score.losses,
+                    "games": score.games,
+                }
+            }
+        
