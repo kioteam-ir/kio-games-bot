@@ -1,7 +1,7 @@
 from django.contrib.admin import register
 from django.contrib import admin
 
-from app.models import User, Command, Game, Score, Admin
+from app.models import User, Game, Score, Admin
 
 
 @register(Admin)
@@ -12,11 +12,6 @@ class AdminAdmin(admin.ModelAdmin):
 @register(User)
 class UserAdmin(admin.ModelAdmin):
     list_display = ("id", "is_superuser", "is_banned", "joined_time")
-
-
-@register(Command)
-class CommandAdmin(admin.ModelAdmin):
-    list_display = ("command", "value")
 
 
 @register(Game)

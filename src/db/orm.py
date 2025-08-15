@@ -4,8 +4,7 @@ import os
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 django.setup()
 
-from app.models import User, Score
-
+from app.models import User, Game
 
 
 class UserStats:
@@ -16,9 +15,9 @@ class UserStats:
             ins = User.objects.get(id=id)
         except:
             ins = User.create(
-                id=id,
-                is_superuser=is_superuser,
-                is_banned=is_banned,
+                id,
+                is_superuser,
+                is_banned,
             )
         return {
             "id": ins.id,
@@ -30,7 +29,7 @@ class UserStats:
 
     @staticmethod
     def get_all(id: int) -> dict:
-        context = User.all_data(id=id)
+        context = User.all_data(id)
         return {
         "id": context["user"].id,
         "is_banned": context["user"].is_banned,
@@ -42,4 +41,11 @@ class UserStats:
                 "games": context["score"].games,
             }
         }
+    
+
+class GameModel:
+
+    @staticmethod
+    def create(player_1: int, player_2: int, result: str, type: int) -> None:
+        Game.geme_add(player_1, player_2, type, result)
         

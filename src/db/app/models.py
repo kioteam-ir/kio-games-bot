@@ -17,11 +17,7 @@ class User(models.Model):
     is_superuser = models.BooleanField(default=False)
     is_banned = models.BooleanField(default=False)
     
-
-    # @property
-    # def is_admin(self):
-    #     return True if User.objects.get(id=self.id).is_superuser == True else False
-        
+    
     @staticmethod
     def create(id, is_superuser=False, is_banned=False):
         instance = User.objects.create(
@@ -29,7 +25,7 @@ class User(models.Model):
             is_superuser=is_superuser,
             is_banned=is_banned,            
         )
-        score = Score.objects.create(
+        Score.objects.create(
             user=instance
         )
         return instance
@@ -37,7 +33,6 @@ class User(models.Model):
 
     @staticmethod
     def all_data(id):
-        
         user = User.objects.get(id=id)
         score = Score.objects.get(user=user)
         context = {
@@ -45,6 +40,7 @@ class User(models.Model):
             "score": score
         }
         return context
+
 
     def __str__(self):
         return f"{self.id}"
@@ -60,8 +56,34 @@ class Game(models.Model):
     player_1 = models.ForeignKey(User, related_name="player_1", on_delete=models.CASCADE, null=True)
     player_2 = models.ForeignKey(User, related_name="player_2", on_delete=models.CASCADE, null=True)
     type = models.IntegerField()
-    
     result = models.CharField(max_length=10, choices=WINNER_CHOICES)
+
+
+    @staticmethod
+    def geme_add(player_1, player_2, type, result):
+        instance = Game.objects.create(
+            player_1=User.objects.get(id=player_1),
+            player_2=User.objects.get(id=player_2),
+            type=type,
+            result=result
+        )
+        return Game.score_handler(player_1, player_2, result)
+    
+
+    classmethod
+    def score_handler(player_1, player_2, result):
+        if result == "player_2":
+            Score.loser(player_1)
+            Score.winner(player_2)
+            return True
+        elif result == "player_1":
+            Score.winner(player_1)
+            Score.loser(player_2)
+            return True
+        else:
+            Score.draw(player_1)
+            Score.draw(player_2)
+            return True
 
 
 class Score(models.Model):
@@ -71,30 +93,30 @@ class Score(models.Model):
     losses = models.IntegerField(default=0)
 
 
-class Command(models.Model):
-    command = models.CharField(max_length=256, primary_key=True)
-    value = models.CharField(max_length=580)
+    @staticmethod
+    def winner(user_id):
+        instance = Score.objects.get(user=user_id)
+        instance.games += 1
+        instance.wins += 1
+        instance.save()
 
 
-    @classmethod
-    def crate_command(cls, command, value):
-        try:
-            ins = cls.objects.get(command=command)
-            raise Exception("commnad is existing")
-        except:
-            cls.objects.create(
-                command=command,
-                value=value
-            )
-            return True
+    @staticmethod
+    def loser(user_id):
+        instance = Score.objects.get(user=user_id)
+        instance.games += 1
+        instance.losses += 1
+        instance.save()
+
+    
+    @staticmethod
+    def draw(user_id):
+        instance = Score.objects.get(user=user_id)
+        instance.games += 1
+        instance.save()
 
 
-    @classmethod
-    def change_command_value(cls, command, value):
-        try:
-            cmd = cls.objects.get(command=command)
-        except:
-            raise Exception("commad in not exist")
-        
-        cmd.value = value
-        cmd.save()
+class LocalizedText(models.Model):
+    key = models.IntegerField(primary_key=True)
+    value = models.TextField(max_length=256)
+    lang_code = models.CharField(max_length=2)
