@@ -26,5 +26,3 @@ class Config:
     
 
 config = Config.from_env()
-
-__all__ = ("config",)       # Only can import 'config' name-space from this file
