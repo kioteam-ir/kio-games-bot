@@ -52,7 +52,7 @@ class Game(models.Model):
         ('player_2', 'player_2'),
         ('draw', 'Draw'),
     ]
-
+    mid = models.CharField(max_length=48)
     player_1 = models.ForeignKey(User, related_name="player_1", on_delete=models.CASCADE, null=True)
     player_2 = models.ForeignKey(User, related_name="player_2", on_delete=models.CASCADE, null=True)
     type = models.IntegerField()
