@@ -1,6 +1,6 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
-from typing import List, Optional, Tuple, Dict, TypeVar
+from typing import List, Optional, Tuple, Dict, TypeVar, Set
 import copy
 
 from .types import (
@@ -73,15 +73,16 @@ class GameEngine(ABC):
         self._notify(Event.RESET)
 
     def clone(self: T) -> T:
-        new_engine = copy.copy(self)
-        new_engine.board = [row[:] for row in self.board]
+        new_engine                = copy.copy(self)
+        new_engine.board          = [row[:] for row in self.board]
         new_engine.column_heights = self.column_heights[:]
-        new_engine._listeners = {}
+        new_engine._listeners     = {}
         return new_engine
 
     def switch_player(self) -> None:
         """Switch turn to the other player."""
-        self.current_player = self.current_player.opponent
+        current             = self.current_player
+        self.current_player = current.opponent
 
     # ---------------------------
     # Queries
@@ -89,8 +90,8 @@ class GameEngine(ABC):
     def is_column_playable(self, col: int) -> bool:
         return 0 <= col < self.cols and self.column_heights[col] < self.rows and not self.ended
 
-    def legal_moves(self) -> List[int]:
-        return [c for c in range(self.cols) if self.is_column_playable(c)]
+    def legal_moves(self) -> Set[int]:      # Using hash-table for O(1) optimization
+        return {c for c in range(self.cols) if self.is_column_playable(c)}
 
     def get_board_snapshot(self) -> BoardMatrix:
         return [row[:] for row in self.board]
@@ -111,16 +112,16 @@ class GameEngine(ABC):
         return self.rows - 1 - h
 
     def _place_piece_at(self, row: int, col: int, player: Player) -> None:
-        self.board[row][col] = player.as_cell
+        self.board[row][col]     = player.as_cell
         self.column_heights[col] += 1
-        self.move_count += 1
-        self.last_move = (row, col, player.as_cell)
+        self.move_count          += 1
+        self.last_move           = (row, col, player.as_cell)
 
     def _undo_piece_at(self, row: int, col: int) -> None:
-        self.board[row][col] = Cell.EMPTY
+        self.board[row][col]     = Cell.EMPTY
         self.column_heights[col] -= 1
-        self.move_count -= 1
-        self.last_move = None
+        self.move_count          -= 1
+        self.last_move           = None
 
     # ---------------------------
     # Win detection
@@ -133,14 +134,14 @@ class GameEngine(ABC):
             r, c = row + dr, col + dc
             while 0 <= r < self.rows and 0 <= c < self.cols and self.board[r][c] == player.as_cell:
                 count += 1
-                r += dr
-                c += dc
+                r     += dr
+                c     += dc
             # backward
-            r, c = row - dr, col - dc
+            r, c = (row - dr, col - dc)
             while 0 <= r < self.rows and 0 <= c < self.cols and self.board[r][c] == player.as_cell:
                 count += 1
-                r -= dr
-                c -= dc
+                r     -= dr
+                c     -= dc
             if count >= self.connect:
                 return True
         return False
@@ -155,7 +156,7 @@ class GameEngine(ABC):
     def _finalize_move_after_placement(self, row: int, col: int, player: Player) -> None:
         if self._is_winning_from(row, col, player):
             self.winner = player
-            self.ended = True
+            self.ended  = True
             self._notify(Event.MOVE, row=row, col=col, player=player)
             self._notify(Event.GAME_OVER, winner=player)
         elif self.is_draw():
@@ -168,7 +169,7 @@ class GameEngine(ABC):
     # ---------------------------
     # Pretty print
     # ---------------------------
-    def pretty(self, symbols: Tuple[str, str] = ("🟢", "🔵")) -> str:
+    def pretty(self) -> str:
         rows_repr = []
         for r in range(self.rows):
             row_repr = []
@@ -176,8 +177,9 @@ class GameEngine(ABC):
                 v = self.board[r][c]
                 if v.is_empty:
                     row_repr.append("⭕")
-                else:
-                    row_repr.append(symbols[0] if v == Cell.ONE else symbols[1])
+                else:   # v is a Player
+                    player = v.as_player
+                    row_repr.append(player.as_color) # pyright: ignore[reportOptionalMemberAccess]
             rows_repr.append(" ".join(row_repr))
         return "\n".join(rows_repr)
 
