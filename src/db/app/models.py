@@ -50,7 +50,7 @@ class Game(models.Model):
     WINNER_CHOICES = [
         ('player_1', 'player_1'),
         ('player_2', 'player_2'),
-        ('draw', 'Draw'),
+        ('draw', 'draw'),
     ]
     mid = models.CharField(max_length=48)
     player_1 = models.ForeignKey(User, related_name="player_1", on_delete=models.CASCADE, null=True)
