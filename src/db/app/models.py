@@ -60,7 +60,7 @@ class Game(models.Model):
 
 
     @staticmethod
-    def geme_add(player_1, player_2, type, result):
+    def geme_add(player_1, player_2, type, result, mid):
         instance = Game.objects.create(
             player_1=User.objects.get(id=player_1),
             player_2=User.objects.get(id=player_2),

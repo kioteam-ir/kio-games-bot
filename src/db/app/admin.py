@@ -16,7 +16,7 @@ class UserAdmin(admin.ModelAdmin):
 
 @register(Game)
 class GameAdmin(admin.ModelAdmin):
-    list_display = ("result", "player_1", "player_2", "type")
+    list_display = ("result", "player_1", "player_2", "type", "mid")
 
 
 @register(Score)
