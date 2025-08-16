@@ -46,6 +46,6 @@ class UserStats:
 class GameModel:
 
     @staticmethod
-    def create(player_1: int, player_2: int, result: str, type: int) -> None:
-        Game.geme_add(player_1, player_2, type, result)
+    def create(player_1: int, player_2: int, result: str, type: int, mid: str) -> None:
+        Game.geme_add(player_1, player_2, type, result, mid)
         

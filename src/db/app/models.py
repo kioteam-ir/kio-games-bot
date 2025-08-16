@@ -65,7 +65,8 @@ class Game(models.Model):
             player_1=User.objects.get(id=player_1),
             player_2=User.objects.get(id=player_2),
             type=type,
-            result=result
+            result=result,
+            mid=mid
         )
         return Game.score_handler(player_1, player_2, result)
     
