@@ -12,6 +12,11 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 
+<<<<<<< HEAD
+from .local_settings import *
+
+=======
+>>>>>>> main
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -27,6 +32,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+<<<<<<< HEAD
+
+    "app"
+=======
+>>>>>>> main
 ]
 
 MIDDLEWARE = [
@@ -41,6 +51,12 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'config.urls'
 
+<<<<<<< HEAD
+AUTH_USER_MODEL = 'app.Admin'
+
+
+=======
+>>>>>>> main
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
