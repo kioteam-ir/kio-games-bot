@@ -1,6 +1,6 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
-from typing import List, Optional, Tuple, Dict, TypeVar, Set
+from typing import List, Optional, Tuple, Dict, TypeVar, Set, Union, overload
 import copy
 
 from .types import (
@@ -149,8 +149,17 @@ class GameEngine(ABC):
     # ---------------------------
     # Public move interface
     # ---------------------------
+    @overload
     @abstractmethod
-    def make_move(self, col: int) -> bool:
+    def make_move(self, move: int) -> bool: ...
+    
+    @overload
+    @abstractmethod
+    def make_move(self, move: Tuple[int, int]) -> bool: ...
+
+    @abstractmethod
+    def make_move(self, move: Union[int, Tuple[int, int]]) -> bool:
+        """Only implementation placeholder"""
         raise NotImplementedError
 
     def _finalize_move_after_placement(self, row: int, col: int, player: Player) -> None:
