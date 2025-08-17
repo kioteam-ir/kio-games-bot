@@ -43,6 +43,11 @@ class UserStats:
         }
     
 
+    @staticmethod
+    def toggle_ban(user_id: int, is_banned: bool) -> None:
+        return User.status(user_id, is_banned)
+    
+
 class GameModel:
 
     @staticmethod

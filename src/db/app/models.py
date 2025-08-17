@@ -44,6 +44,13 @@ class User(models.Model):
 
     def __str__(self):
         return f"{self.id}"
+    
+
+    @classmethod
+    def status(cls, user_id, is_banned):
+        user = cls.objects.get(id=user_id)
+        user.is_banned = is_banned
+        user.save()
 
 
 class Game(models.Model):
