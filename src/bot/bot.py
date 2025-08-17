@@ -50,7 +50,6 @@ class Bot:
         await self._client.start()
         # await idle()
         # await game_manager.start()
-        
         # await anti_spamm.start()
         pass
 
