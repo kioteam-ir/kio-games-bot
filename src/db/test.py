@@ -4,7 +4,8 @@ import os
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 django.setup()
 
-from orm import GameModel
+from app.models import LocalizedText
+from orm import GameModel, UserStats
 
 
 def create_user():
@@ -12,4 +13,11 @@ def create_user():
     user = GameModel.create(1, 2, "draw", 1,"test")
     return user
 
-print(create_user())
+
+def get_text(lang_code: str = "en"): return LocalizedText.get_text(lang_code)
+
+
+def status():
+    return UserStats.toggle_ban(1, False)
+
+print(status())

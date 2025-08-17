@@ -31,13 +31,15 @@ class Bot:
         
     def register_message_handler(self, func: Awaitable, /, *, 
                                  filters: Optional[filters.Filter] = None, 
-                                 group: int = 0) -> None:
+                                 group: int = 0
+                            ) -> None:
         message_handler = MessageHandler(func, filters)                 # pyright: ignore[reportArgumentType]
         self._add_handler(message_handler, group)
         
     def register_callbackquery_handler(self, func: Awaitable, /, *, 
                                        filters: Optional[filters.Filter] = None, 
-                                       group: int = 0) -> None:
+                                       group: int = 0
+                            ) -> None:
         callbackquery_handler = CallbackQueryHandler(func, filters)     # pyright: ignore[reportArgumentType]
         self._add_handler(callbackquery_handler, group)
         
