@@ -14,6 +14,7 @@ class Color(StrEnum):
     RED    = '🔴'
     BLUE   = '🔵'
     YELLOW = '🟡'
+    white  = '⬜️'
 
 class Player(IntEnum):
     ONE = 1
@@ -49,7 +50,14 @@ class Cell(IntEnum):
     @property
     def as_player(self) -> Optional[Player]:
         return None if self.is_empty else Player(self.value)
-
+    
+    @property
+    def as_color(self) -> Color:
+        if self.is_empty:
+            return Color.white
+        player = self.as_player
+        return player.as_color
+        
 
 BoardMatrix = List[List[Cell]]
 
