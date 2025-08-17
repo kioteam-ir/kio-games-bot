@@ -16,14 +16,35 @@ class User(models.Model):
     joined_time = models.DateTimeField(auto_now_add=True)
     is_superuser = models.BooleanField(default=False)
     is_banned = models.BooleanField(default=False)
+    lang_code = models.CharField(max_length=2)
     
+
+    @staticmethod
+    def get_or_create(id: int, is_superuser: bool = False, is_banned: bool = False, lang_code: str = "fa"):
+        try:
+            ins = User.objects.get(id=id)
+        except:
+            ins = User.create(
+                id,
+                is_superuser,
+                is_banned,
+                lang_code
+            )
+        return {
+            "id": ins.id,
+            "is_banned": ins.is_banned,
+            "is_superuser": ins.is_superuser,
+            "joined_time": ins.joined_time,
+            "lang_code": lang_code
+        }
     
     @staticmethod
-    def create(id, is_superuser=False, is_banned=False):
+    def create(id, is_superuser=False, is_banned=False, lang_code="fa"):
         instance = User.objects.create(
             id=id,
             is_superuser=is_superuser,
-            is_banned=is_banned,            
+            is_banned=is_banned,
+            lang_code=lang_code,
         )
         Score.objects.create(
             user=instance
@@ -35,11 +56,18 @@ class User(models.Model):
     def all_data(id):
         user = User.objects.get(id=id)
         score = Score.objects.get(user=user)
-        context = {
-            "user": user,
-            "score": score
+        return  {
+            "id": user.id,
+            "is_banned": user.is_banned,
+            "is_superuser": user.is_superuser,
+            "joined_time": user.joined_time,
+            "lang_code": user.lang_code,
+            "games_stats": {
+                "games": score.games,
+                "wins": score.wins,
+                "losses": score.losses,
+            }
         }
-        return context
 
 
     def __str__(self):
@@ -64,6 +92,7 @@ class Game(models.Model):
     player_2 = models.ForeignKey(User, related_name="player_2", on_delete=models.CASCADE, null=True)
     type = models.IntegerField()
     result = models.CharField(max_length=10, choices=WINNER_CHOICES)
+    played_time =  models.DateTimeField(auto_now_add=True)
 
 
     @staticmethod
