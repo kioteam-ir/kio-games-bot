@@ -21,7 +21,7 @@ class BaseStorage(ABC):
     
 class InMemoryStorage(BaseStorage):
     def __init__(self):
-        self.games: Dict[GameId, GameUI]
+        self.games: Dict[GameId, GameUI] = {}
         
     def get(self, game_id: GameId) -> Optional[GameUI]:
         return self.games.get(game_id)
