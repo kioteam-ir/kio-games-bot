@@ -2,7 +2,12 @@ from hydrogram import Client, filters
 from .config import Config
 from typing import Any, Optional, Awaitable
 from hydrogram.handlers.handler import Handler
-from hydrogram.handlers import MessageHandler, CallbackQueryHandler
+from hydrogram.handlers import MessageHandler, CallbackQueryHandler, ChosenInlineResultHandler, InlineQueryHandler
+
+from bot.handlers.inline_replies import *
+from bot.handlers.text_replies import *
+
+
 
 class Bot:
     def __init__(self, config: Config) -> None:
@@ -40,7 +45,8 @@ class Bot:
         self._client.add_handler(handler, group)
         
     async def run(self) -> None:
-        # await self._client.start()
+        await self._client.start()
+        # await idle()
         # await game_manager.start()
         
         # await anti_spamm.start()
@@ -48,5 +54,13 @@ class Bot:
 
 
 bot = Bot(config=Config.from_env())
+
+
+bot.register_message_handler(welcome_handler)
+bot._add_handler(InlineQueryHandler(show_games))
+bot._add_handler(ChosenInlineResultHandler(send_game))
+bot.register_callbackquery_handler(play_game)
+
+
 
 __all__ = ("bot",)      # Only can import 'bot' name-space from this file
