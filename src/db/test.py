@@ -4,6 +4,7 @@ import os
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 django.setup()
 
+from app.models import LocalizedText
 from orm import GameModel
 
 
@@ -12,4 +13,7 @@ def create_user():
     user = GameModel.create(1, 2, "draw", 1,"test")
     return user
 
-print(create_user())
+
+def get_text(lang_code: str = "en"): return LocalizedText.get_text(lang_code)
+
+print(get_text())

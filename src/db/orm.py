@@ -4,7 +4,7 @@ import os
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 django.setup()
 
-from app.models import User, Game
+from app.models import User, Game, LocalizedText
 
 
 class UserStats:
@@ -49,3 +49,9 @@ class GameModel:
     def create(player_1: int, player_2: int, result: str, type: int, mid: str) -> None:
         Game.geme_add(player_1, player_2, type, result, mid)
         
+
+class TextModel:
+
+    @staticmethod
+    def get_text(lang_code: str = "fa") -> list:
+        return LocalizedText.get_text(lang_code)

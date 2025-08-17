@@ -118,6 +118,15 @@ class Score(models.Model):
 
 
 class LocalizedText(models.Model):
-    key = models.IntegerField(primary_key=True)
+    key = models.IntegerField()
     value = models.TextField(max_length=256)
-    lang_code = models.CharField(max_length=2)
+    lang_code = models.CharField(max_length=2, default="fa")
+
+    
+    @staticmethod
+    def get_text(lang_code):
+        text_list = []
+        instance = LocalizedText.objects.filter(lang_code=lang_code).values("key", "value")
+        for row in instance:
+            text_list.append(row)
+        return text_list
