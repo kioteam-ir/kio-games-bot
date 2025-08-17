@@ -27,6 +27,10 @@ class Player(IntEnum):
     def as_color(self) -> Color:
         color_mapping = (Color.GREEN, Color.BLUE)
         return color_mapping[self.value - 1]
+    @property
+    def as_symbol(self) -> str:
+        symbol_mapping = ('X', 'O')
+        return symbol_mapping[self.value - 1]
 
     @property
     def opponent(self) -> 'Player':
