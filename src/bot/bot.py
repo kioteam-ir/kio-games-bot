@@ -1,4 +1,4 @@
-from hydrogram import Client, filters
+from hydrogram import Client, filters, idle
 from .config import Config
 from typing import Any, Optional, Awaitable
 from hydrogram.handlers.handler import Handler
@@ -6,6 +6,8 @@ from hydrogram.handlers import MessageHandler, CallbackQueryHandler, ChosenInlin
 
 from bot.handlers.inline_replies import *
 from bot.handlers.text_replies import *
+
+from services.game_session.session import session_manager
 
 
 
@@ -48,8 +50,7 @@ class Bot:
         
     async def run(self) -> None:
         await self._client.start()
-        # await idle()
-        # await game_manager.start()
+        await session_manager.start_cleanup_loop()
         # await anti_spamm.start()
         pass
 

@@ -11,12 +11,12 @@ class AdminAdmin(admin.ModelAdmin):
 
 @register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ("id", "is_superuser", "is_banned", "joined_time")
+    list_display = ("id", "is_superuser", "is_banned", "joined_time", "lang_code")
 
 
 @register(Game)
 class GameAdmin(admin.ModelAdmin):
-    list_display = ("result", "player_1", "player_2", "type", "mid")
+    list_display = ("result", "player_1", "player_2", "type", "mid", "played_time")
 
 
 @register(Score)

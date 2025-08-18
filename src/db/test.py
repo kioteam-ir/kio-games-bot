@@ -1,23 +1,5 @@
-import django
-import os
+from orm import UserStats
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
-django.setup()
+_= UserStats.get_or_create(33244421)
 
-from app.models import LocalizedText
-from orm import GameModel, UserStats
-
-
-def create_user():
-    id = int(input("id: "))
-    user = GameModel.create(1, 2, "draw", 1,"test")
-    return user
-
-
-def get_text(lang_code: str = "en"): return LocalizedText.get_text(lang_code)
-
-
-def status():
-    return UserStats.toggle_ban(1, False)
-
-print(status())
+print(_)

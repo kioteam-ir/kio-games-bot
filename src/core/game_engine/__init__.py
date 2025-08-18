@@ -1,2 +1,3 @@
 from .base import GameEngine, Cell, BoardMatrix
-from .with_friend import VsFriendEngine
+from .connect.with_friend import VsFriendEngine
+from .XO.with_friend import VsFriendXO

@@ -14,7 +14,12 @@ class Color(StrEnum):
     RED    = '🔴'
     BLUE   = '🔵'
     YELLOW = '🟡'
-    white  = '⬜️'
+    WHITE  = '⬜️'
+    
+class Symbol(StrEnum):
+    X     = "❌"
+    O     = "⭕️"
+    EMPTY = '⬜️'
 
 class Player(IntEnum):
     ONE = 1
@@ -26,11 +31,11 @@ class Player(IntEnum):
     
     @property
     def as_color(self) -> Color:
-        color_mapping = (Color.GREEN, Color.BLUE)
+        color_mapping = (Color.RED, Color.BLUE)
         return color_mapping[self.value - 1]
     @property
-    def as_symbol(self) -> str:
-        symbol_mapping = ('X', 'O')
+    def as_symbol(self) -> Symbol:
+        symbol_mapping = (Symbol.X, Symbol.O)
         return symbol_mapping[self.value - 1]
 
     @property
@@ -54,9 +59,16 @@ class Cell(IntEnum):
     @property
     def as_color(self) -> Color:
         if self.is_empty:
-            return Color.white
+            return Color.WHITE
         player = self.as_player
         return player.as_color
+    
+    @property
+    def as_symbol(self) -> Symbol:
+        if self.is_empty:
+            return Symbol.EMPTY
+        player = self.as_player
+        return player.as_symbol
         
 
 BoardMatrix = List[List[Cell]]

@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 
 from django.contrib.auth.models import AbstractUser
 
@@ -16,14 +17,35 @@ class User(models.Model):
     joined_time = models.DateTimeField(auto_now_add=True)
     is_superuser = models.BooleanField(default=False)
     is_banned = models.BooleanField(default=False)
+    lang_code = models.CharField(max_length=2)
     
+
+    @staticmethod
+    def get_or_create(id: int, is_superuser: bool = False, is_banned: bool = False, lang_code: str = "fa"):
+        try:
+            ins = User.objects.get(id=id)
+        except:
+            ins = User.create(
+                id,
+                is_superuser,
+                is_banned,
+                lang_code
+            )
+        return {
+            "id": ins.id,
+            "is_banned": ins.is_banned,
+            "is_superuser": ins.is_superuser,
+            "joined_time": ins.joined_time,
+            "lang_code": lang_code
+        }
     
     @staticmethod
-    def create(id, is_superuser=False, is_banned=False):
+    def create(id, is_superuser=False, is_banned=False, lang_code="fa"):
         instance = User.objects.create(
             id=id,
             is_superuser=is_superuser,
-            is_banned=is_banned,            
+            is_banned=is_banned,
+            lang_code=lang_code,
         )
         Score.objects.create(
             user=instance
@@ -35,11 +57,18 @@ class User(models.Model):
     def all_data(id):
         user = User.objects.get(id=id)
         score = Score.objects.get(user=user)
-        context = {
-            "user": user,
-            "score": score
+        return  {
+            "id": user.id,
+            "is_banned": user.is_banned,
+            "is_superuser": user.is_superuser,
+            "joined_time": user.joined_time,
+            "lang_code": user.lang_code,
+            "games_stats": {
+                "games": score.games,
+                "wins": score.wins,
+                "losses": score.losses,
+            }
         }
-        return context
 
 
     def __str__(self):
@@ -64,33 +93,50 @@ class Game(models.Model):
     player_2 = models.ForeignKey(User, related_name="player_2", on_delete=models.CASCADE, null=True)
     type = models.IntegerField()
     result = models.CharField(max_length=10, choices=WINNER_CHOICES)
+    played_time =  models.DateTimeField(auto_now_add=True)
 
 
-    @staticmethod
-    def geme_add(player_1, player_2, type, result, mid):
-        instance = Game.objects.create(
+    @classmethod
+    def geme_add(cls, player_1, player_2, type, result, mid):
+        instance = cls.objects.create(
             player_1=User.objects.get(id=player_1),
             player_2=User.objects.get(id=player_2),
             type=type,
             result=result,
             mid=mid
         )
-        return Game.score_handler(player_1, player_2, result)
+        cls.score_handler(instance)
+        return cls.shared_game(instance)
     
 
-    classmethod
-    def score_handler(player_1, player_2, result):
-        if result == "player_2":
-            Score.loser(player_1)
-            Score.winner(player_2)
+    @staticmethod
+    def shared_game(instance):
+        games = Game.objects.filter(
+            Q(player_1=instance.player_1) | Q(player_1=instance.player_2)
+            ).filter(
+            Q(player_2=instance.player_2) | Q(player_2=instance.player_1)
+            )
+        return {
+            "total": games.count(),
+            "p1_wins": games.filter(result="player_1").count(),
+            "p2_wins": games.filter(result="player_2").count(),
+            "draws": games.filter(result="draw").count(),
+        }
+    
+
+    @staticmethod
+    def score_handler(instance):
+        if instance.result == "player_2":
+            Score.loser(instance.player_1)
+            Score.winner(instance.player_2)
             return True
-        elif result == "player_1":
-            Score.winner(player_1)
-            Score.loser(player_2)
+        elif instance.result == "player_1":
+            Score.winner(instance.player_1)
+            Score.loser(instance.player_2)
             return True
         else:
-            Score.draw(player_1)
-            Score.draw(player_2)
+            Score.draw(instance.player_1)
+            Score.draw(instance.player_2)
             return True
 
 
@@ -137,3 +183,4 @@ class LocalizedText(models.Model):
         for row in instance:
             text_list.append(row)
         return text_list
+    

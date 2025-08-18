@@ -1,68 +1,55 @@
-from hydrogram import Client,types,filters
-from typing import Union
-from .game_utils import game_lists,EachGame,GameTypes
+from hydrogram import Client,types
+from .game_utils import game_lists,GameTypes
+
+from ..gameUI import GameUI
+from services.game_session.session import session_manager
+from core.game_engine.connect.with_friend import VsFriendEngine
+from core.game_engine.XO.with_friend import VsFriendXO
+
+from db.orm import UserStats, GameModel
+from .utils import get_tg_keyboard
+
+
+# -------------------------
+# games list as inline keys
+# -------------------------
+_gl = [
+    types.InlineQueryResultArticle(
+            game_lists[g].title,
+            types.InputTextMessageContent(game_lists[g].message_text),
+            game_lists[g]._id,
+            thumb_url=game_lists[g].thumb_url,
+            description=game_lists[g].description,
+            reply_markup=types.InlineKeyboardMarkup([[types.InlineKeyboardButton("⏳ loading ... ⏳",'bluh')]])
+        ) 
+    for g in game_lists
+]
+
 
 # --------------------
 # choose result (game)
 # --------------------
-async def show_games(bot:Client,ir:types.InlineQuery) : 
-    _ = []
-    for g in game_lists : 
-        g : EachGame = game_lists[g]
-        _.append(
-            types.InlineQueryResultArticle(
-                g.title,
-                types.InputTextMessageContent(g.message_text),
-                g._id,
-                thumb_url=g.thumb_url,
-                description=g.description,
-                reply_markup=types.InlineKeyboardMarkup([[types.InlineKeyboardButton("loading ...",'bluh')]])
-            )
-        )
 
-    await ir.answer(_)
+async def show_games(bot:Client,ir:types.InlineQuery) : 
+    _user = UserStats.get_or_create(ir.from_user.id)
+    if _user['is_banned'] : 
+        await ir.answer(
+            [
+               types.InlineQueryResultArticle(
+                "you are banned",
+                types.InputTextMessageContent(""),
+                '-1',
+                description="you have been banned from using this robot"
+            ) 
+            ]
+        )
+        return
+    
+
+
+    await ir.answer(_gl)
     return
 
-
-
-# ---------------------------
-# temp game-manager
-# ---------------------------
-from core.game_engine.with_friend import VsFriendEngine
-dic = {
-    # "inline mid" : {
-    #     "mid" : "mid",
-    #     "game" : VsFriendEngine
-    # } 
-
-}
-
-
-
-def get_tg_keyboard(board,players) -> types.InlineKeyboardMarkup : 
-    _ = []
-    n = 1
-    for row in board :
-        __ = []
-        m=1
-        for col in row :
-            __.append(
-                types.InlineKeyboardButton(
-                    "⬜️" if col.is_empty else ("🔵" if col == 1 else '🔴'),
-                    f"cell[{n},{m}]"
-                )
-            )
-            m+=1
-        _.append(__)
-        n+=1
-    _ps = []
-    for player in players : 
-        _ps.append(types.InlineKeyboardButton(
-                    f"p : {player}",
-                    f"player_info={player}"
-                )) 
-    _.append(_ps)
-    return types.InlineKeyboardMarkup(_)
 
 
 # ---------------------------
@@ -71,42 +58,33 @@ def get_tg_keyboard(board,players) -> types.InlineKeyboardMarkup :
 
 async def send_game(bot:Client,cir:types.ChosenInlineResult) : 
     mid = cir.inline_message_id
-    game_id = int(cir.result_id)
 
-    chosen_game = game_lists[game_id]
+    if mid is None : return
 
+    game_type = int(cir.result_id)
+
+    game_type_info = game_lists[game_type]
     
     #connect 4
     rows = 6
     cols = 7
     connect = 4
-    
-    if game_id == GameTypes.XO : 
-        rows = 3 
-        cols = 3
-        connect = 3
-    if game_id == GameTypes.C3 : 
-        connect = 3
-    
-    # if game_id == GameTypes.C4 : pass 
-    if game_id == GameTypes.C5 : 
-        rows = 7
-        cols = 8
-        connect = 5
 
-    game = VsFriendEngine(rows,cols,connect)
+    _cond = (game_type == GameTypes.XO)
     
-    dic[mid] = {
-        "mid" : mid,
-        "game" : game,
-        "players" : [cir.from_user.id],
-        "current_player" :cir.from_user.id
-    }
 
+    game = VsFriendXO(game_type_info.rows,game_type_info.connect) if _cond else VsFriendEngine(game_type_info.rows,game_type_info.cols,game_type_info.connect) 
+
+    game_id = session_manager.push(
+        GameUI(
+            game,mid,cir.from_user,[cir.from_user],_cond, game_type
+        )
+    )
+    
     await bot.edit_inline_text(
         mid,
-        f"در انتظار بازیکن...",
-        reply_markup=types.InlineKeyboardMarkup([[types.InlineKeyboardButton('بازی میکنم',"iplay")]])
+        f"⏳ در انتظار بازیکن... ⏳\n{game_type_info.description}",
+        reply_markup=types.InlineKeyboardMarkup([[types.InlineKeyboardButton('بازی میکنم 🙋',f"iplay_{game_id}")]])
     )
     return
 
@@ -115,61 +93,88 @@ async def send_game(bot:Client,cir:types.ChosenInlineResult) :
 # cb handler
 # ---------------------------
 async def play_game(bot:Client,cb:types.CallbackQuery) : 
+
     clicked = cb.from_user.id
     mid = cb.inline_message_id
+                            # works for both iplay and cell
+    gid = int(cb.data.split("_")[-1])
+                                    
+    game_info = session_manager.get(gid)
 
-    game:VsFriendEngine = dic[mid]['game']
-    players = dic[mid]['players']
+    game = game_info.game_engine
+    players = game_info.players
+    current_player = game_info.current_player
 
-    if cb.data == 'iplay' : 
-        if clicked in players : 
+    if cb.data.startswith('iplay') : 
+        if clicked in [player.id for player in players] : 
             await cb.answer("وایسا بچه سال")
             return
         
-        dic[mid]['players'].append(clicked)
-        await bot.edit_inline_text(mid,
-                               
-        f"نوبت : {dic[mid]['current_player']}                          ‌\nبازی کنید",
-                               
-                               reply_markup=get_tg_keyboard(game.board,dic[mid]['players']))
+        players.append(cb.from_user)
+        await bot.edit_inline_text(
+            mid,
+            f"🕹 نوبت : {current_player.first_name} [{game_info.game_engine.current_player.as_color}]\t\t\t ‌\n🕹 بازی کنید 🕹",                               
+            reply_markup=get_tg_keyboard(game.board,game_info,gid,False)
+        )
 
 
         return
 
+    _c_r = cb.data.split("_")
+    row = int(_c_r[1]) - 1 
+    col = int(_c_r[2]) - 1
 
-    col = int(cb.data.replace("cell","").replace("[","").replace("]","").split(",")[-1]) - 1
-    
-
-    current_player = dic[mid]['current_player']
-
-    if clicked not in players : 
+    if clicked not in [player.id for player in players] : 
         await cb.answer("شما در این بازی نیستید")
         return
 
-    if current_player != clicked : 
+    if current_player.id != clicked : 
         await cb.answer("نوبت شما نیست")
         return
     
-    if game.ended : 
-        await cb.answer("بازی تمام شده است.")
-        return
-    
-    if game.is_draw() : 
-        await cb.answer("بازی مساوی شد")
+    if not game.is_column_playable(col) : 
+        await cb.answer("ستون پر شده است")
         return
 
 
 
-    game.make_move(col)
+    game.make_move((row,col)) if game_info.is_xo else game.make_move(col)
 
-    player = dic[mid]['players']
-    new_player = player[0] if current_player != player[0] else player[1]
-    dic[mid]['current_player'] =  new_player
+    new_player = players[0] if current_player.id != players[0].id else players[1]
+    game_info.current_player =  new_player
 
-    await bot.edit_inline_text(mid,
-                               
-        f"نوبت : {new_player}                          ‌\nبازی کنید",
-                               
-                               reply_markup=get_tg_keyboard(game.board,player))
+
+    _c = (game.ended or game.is_draw())
+
+    text = ''
+        # game ended 
+    if _c : 
+
+        _c_is_draw = (game.is_draw())
+
+        # insert game to database
+        players_info : dict = GameModel.create(
+            game_info.players[0],
+            game_info.players[1],
+            'draw' if _c_is_draw else f"player_{game_info.game_engine.winner.value}",
+            game_info.game_type,
+            mid
+        )
+
+        text = f"""🏆برنده بازی : {'بدون برنده 💢' if _c_is_draw else game_info.players[game.winner.value - 1].first_name } 
+⚔نتایج کل مسابقات بین شما دونفر:  [{players_info['total']} بازی]
+1️⃣ {game_info.players[0].first_name} : {players_info['p1_wins']}
+2️⃣ {game_info.players[1].first_name} : {players_info['p2_wins']}
+🟰 تساوی ها : {players_info['draw']}
+"""
+    else : 
+        text = f"🕹 نوبت : {new_player.first_name} [{game_info.game_engine.current_player.as_color}]\t\t\t ‌\n🕹 بازی کنید 🕹" 
+
+
+    await bot.edit_inline_text(
+        mid,                      
+        text,
+        reply_markup=get_tg_keyboard(game.board,game_info,gid,_c)
+        )
 
     return

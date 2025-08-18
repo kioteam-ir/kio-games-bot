@@ -1,5 +1,5 @@
 from ..async_task_manager.strategies.base import BaseStrategy
-from .storage import InMemoryStorage, GameId, GameUI, BaseStorage
+from .storage import InMemoryStorage, GameUI, BaseStorage
 from typing import Dict, Optional, Callable, Awaitable, List, Union
 from time import monotonic
 from uuid import uuid4
@@ -7,7 +7,7 @@ import asyncio
 from collections import defaultdict
 
 
-def generate_game_id() -> GameId:
+def generate_game_id() -> int:
     return uuid4().int
 
 
@@ -30,30 +30,30 @@ class EventBus:
 
 class GameSessionManager:
     def __init__(self, storage: BaseStorage, timeout: float, event_bus: Optional[EventBus] = None):
-        self._last_accessed: Dict[GameId, float] = {}
+        self._last_accessed: Dict[int, float] = {}
         self._storage = storage
         self._timeout = timeout
         self._event_bus = event_bus or EventBus()
         self._lock = asyncio.Lock()
 
-    def get(self, game_id: GameId) -> Optional[GameUI]:
+    def get(self, game_id: int) -> Optional[GameUI]:
         game_ui = self._storage.get(game_id)
         if game_ui:
             self._update_last_accessed(game_id)
         return game_ui
 
-    def push(self, game_ui: GameUI) -> GameId:
+    def push(self, game_ui: GameUI) -> int:
         game_id = generate_game_id()
         self._storage.push(game_id, game_ui)
         self._update_last_accessed(game_id)
         return game_id
 
-    async def delete(self, game_id: GameId) -> None:
+    async def delete(self, game_id: int) -> None:
         await self._event_bus.notify("session_deleted", game_id=game_id, game_ui=self._storage.get(game_id))
         self._storage.delete(game_id)
         self._last_accessed.pop(game_id, None)
 
-    def _update_last_accessed(self, game_id: GameId) -> None:
+    def _update_last_accessed(self, game_id: int) -> None:
         self._last_accessed[game_id] = monotonic()
 
     async def start_cleanup_loop(self) -> None:
@@ -73,5 +73,5 @@ class GameSessionManager:
 
 session_manager = GameSessionManager(
     storage=InMemoryStorage(),
-    timeout=5 * 60,  # 5 minutes
+    timeout=0.1 * 60,  # 5 minutes
 )

@@ -1,7 +1,7 @@
 from hydrogram import Client,types,filters
 from typing import Union
 
-
+from db.orm import UserStats
 
 
 
@@ -52,10 +52,13 @@ _dk = _d.keys()
 
 async def welcome_handler(bot:Client,mes:types.Message) : 
     text = mes.text 
-
     user_lang = mes.from_user.language_code
 
+    _user = UserStats.get_or_create(mes.from_user.id)
 
+    if _user['is_banned'] : 
+        await mes.reply("you have been banned from using this robot.",True)
+        return
 
     if text in _dk : 
         await _d[text](mes)
