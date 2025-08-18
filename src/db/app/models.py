@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 
 from django.contrib.auth.models import AbstractUser
 
@@ -95,31 +96,47 @@ class Game(models.Model):
     played_time =  models.DateTimeField(auto_now_add=True)
 
 
-    @staticmethod
-    def geme_add(player_1, player_2, type, result, mid):
-        instance = Game.objects.create(
+    @classmethod
+    def geme_add(cls, player_1, player_2, type, result, mid):
+        instance = cls.objects.create(
             player_1=User.objects.get(id=player_1),
             player_2=User.objects.get(id=player_2),
             type=type,
             result=result,
             mid=mid
         )
-        return Game.score_handler(player_1, player_2, result)
+        cls.score_handler(instance)
+        return cls.shared_game(instance)
     
 
-    classmethod
-    def score_handler(player_1, player_2, result):
-        if result == "player_2":
-            Score.loser(player_1)
-            Score.winner(player_2)
+    @staticmethod
+    def shared_game(instance):
+        games = Game.objects.filter(
+            Q(player_1=instance.player_1) | Q(player_1=instance.player_2)
+            ).filter(
+            Q(player_2=instance.player_2) | Q(player_2=instance.player_1)
+            )
+        return {
+            "total": games.count(),
+            "p1_wins": games.filter(result="player_1").count(),
+            "p2_wins": games.filter(result="player_2").count(),
+            "draws": games.filter(result="draw").count(),
+        }
+    
+
+    @staticmethod
+    def score_handler(instance):
+        if instance.result == "player_2":
+            Score.loser(instance.player_1)
+            Score.winner(instance.player_2)
             return True
-        elif result == "player_1":
-            Score.winner(player_1)
-            Score.loser(player_2)
+        elif instance.result == "player_1":
+            Score.winner(instance.player_1)
+            Score.loser(instance.player_2)
             return True
         else:
-            Score.draw(player_1)
-            Score.draw(player_2)
+            Score.draw(instance.player_1)
+            Score.draw(instance.player_2)
             return True
 
 
