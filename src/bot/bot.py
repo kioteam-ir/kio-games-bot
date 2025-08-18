@@ -44,7 +44,6 @@ class Bot:
     async def run(self) -> None:
         # await self._client.start()
         # await game_manager.start()
-        
         # await anti_spamm.start()
         pass
 
