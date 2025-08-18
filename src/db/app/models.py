@@ -183,3 +183,4 @@ class LocalizedText(models.Model):
         for row in instance:
             text_list.append(row)
         return text_list
+    
