@@ -1,3 +1,4 @@
-hydrogram
-tgcrypto
-django
+asgiref==3.9.1
+Django==4.2
+sqlparse==0.5.3
+tzdata==2025.2
