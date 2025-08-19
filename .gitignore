@@ -60,9 +60,9 @@ cover/
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
-/src/db/test.py
+/src/test.py
 run.bat
-/src/db/.env.dev
+/src/.env.dev
 
 # Flask stuff:
 instance/
