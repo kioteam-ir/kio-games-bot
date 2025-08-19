@@ -6,8 +6,8 @@ from services.game_session.session import session_manager
 from core.game_engine.connect.with_friend import VsFriendEngine
 from core.game_engine.XO.with_friend import VsFriendXO
 
-from db.orm import UserStats, GameModel
 from .utils import get_tg_keyboard
+from .async_db import AsyncUserStats
 
 
 # -------------------------
@@ -31,7 +31,8 @@ _gl = [
 # --------------------
 
 async def show_games(bot:Client,ir:types.InlineQuery) : 
-    _user = UserStats.get_or_create(ir.from_user.id)
+
+    _user = await AsyncUserStats.get_or_create(ir.from_user.id)
     if _user['is_banned'] : 
         await ir.answer(
             [
@@ -65,11 +66,6 @@ async def send_game(bot:Client,cir:types.ChosenInlineResult) :
 
     game_type_info = game_lists[game_type]
     
-    #connect 4
-    rows = 6
-    cols = 7
-    connect = 4
-
     _cond = (game_type == GameTypes.XO)
     
 

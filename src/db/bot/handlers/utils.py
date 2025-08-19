@@ -2,6 +2,7 @@ from ..gameUI import GameUI
 from hydrogram import types
 from core.game_engine.connect.with_friend import VsFriendEngine
 
+
 def get_tg_keyboard(board,game:GameUI,game_id:int,game_over:bool) -> types.InlineKeyboardMarkup : 
     _ = []
     n = 1

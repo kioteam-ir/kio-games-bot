@@ -4,8 +4,8 @@ from typing import Any, Optional, Awaitable
 from hydrogram.handlers.handler import Handler
 from hydrogram.handlers import MessageHandler, CallbackQueryHandler, ChosenInlineResultHandler, InlineQueryHandler
 
-from bot.handlers.inline_replies import *
-from bot.handlers.text_replies import *
+from .handlers.inline_replies import *
+from .handlers.text_replies import *
 
 from services.game_session.session import session_manager
 

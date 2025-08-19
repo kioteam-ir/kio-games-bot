@@ -3,7 +3,6 @@ from typing import TypeVar, Dict, Optional
 from bot.gameUI import GameUI
 
 
-
 class BaseStorage(ABC):
     @abstractmethod
     def get(self, game_id: int) -> Optional[GameUI]:
