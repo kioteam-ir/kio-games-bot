@@ -81,7 +81,7 @@ class User(models.Model):
     
     @staticmethod
     def retrieve_game(id, type):
-        context = Score.objects.filter(user=id).filter(type=type)
+        context = Score.objects.get(user=id, game_type=type)
         return {
             "total": context.games,
             "wins": context.wins,
@@ -92,13 +92,11 @@ class User(models.Model):
 
     @staticmethod
     def all_games(id):
-        context = Score.objects.get(user=id)
-        return {
-            "total": context.games,
-            "wins": context.wins,
-            "draws": context.games - (context.wins + context.losses),
-            "losses": context.losses,
-        }
+        list_data = []
+        context = Score.objects.filter(user=id).values("games", "wins", "game_type", "losses")
+        for row in context:
+            list_data.append(row)
+        return list_data
 
 
 class Game(models.Model):

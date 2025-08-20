@@ -47,7 +47,7 @@ class UserStats:
         """
         User results in one game.
         """
-        return User.retrieve(user_id, type)
+        return User.retrieve_game(user_id, type)
     
 
     @staticmethod
