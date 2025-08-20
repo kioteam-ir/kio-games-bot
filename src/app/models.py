@@ -47,9 +47,6 @@ class User(models.Model):
             is_banned=is_banned,
             lang_code=lang_code,
         )
-        Score.objects.create(
-            user=instance
-        )
         return instance
     
 
@@ -84,7 +81,13 @@ class User(models.Model):
     
     @staticmethod
     def retrieve_game(id, type):
-        pass
+        context = Score.objects.filter(user=id).filter(type=type)
+        return {
+            "total": context.games,
+            "wins": context.wins,
+            "draws": context.games - (context.wins + context.losses),
+            "losses": context.losses,
+        }
 
 
     @staticmethod
@@ -127,7 +130,7 @@ class Game(models.Model):
 
     @staticmethod
     def shared_game(instance):
-        games = Game.objects.filter(
+        games = Game.objects.filter(type=instance.type).filter(
             Q(player_1=instance.player_1) | Q(player_1=instance.player_2)
             ).filter(
             Q(player_2=instance.player_2) | Q(player_2=instance.player_1)
@@ -143,16 +146,16 @@ class Game(models.Model):
     @staticmethod
     def score_handler(instance):
         if instance.result == "player_2":
-            Score.loser(instance.player_1)
-            Score.winner(instance.player_2)
+            Score.loser(instance.player_1, instance.type)
+            Score.winner(instance.player_2, instance.type)
             return True
         elif instance.result == "player_1":
-            Score.winner(instance.player_1)
-            Score.loser(instance.player_2)
+            Score.winner(instance.player_1, instance.type)
+            Score.loser(instance.player_2, instance.type)
             return True
         else:
-            Score.draw(instance.player_1)
-            Score.draw(instance.player_2)
+            Score.draw(instance.player_1, instance.type)
+            Score.draw(instance.player_2, instance.type)
             return True
 
 
@@ -161,27 +164,37 @@ class Score(models.Model):
     games = models.IntegerField(default=0)
     wins = models.IntegerField(default=0)
     losses = models.IntegerField(default=0)
+    game_type = models.IntegerField(default=1)
 
 
     @staticmethod
-    def winner(user_id):
-        instance = Score.objects.get(user=user_id)
+    def winner(user_id, type):
+        try:
+            instance = Score.objects.get(user=user_id, game_type=type)
+        except:
+            instance = Score.objects.create(user=user_id, game_type=type)
         instance.games += 1
         instance.wins += 1
         instance.save()
 
 
     @staticmethod
-    def loser(user_id):
-        instance = Score.objects.get(user=user_id)
+    def loser(user_id, type):
+        try:
+            instance = Score.objects.get(user=user_id, game_type=type)
+        except:
+            instance = Score.objects.create(user=user_id, game_type=type)
         instance.games += 1
         instance.losses += 1
         instance.save()
 
     
     @staticmethod
-    def draw(user_id):
-        instance = Score.objects.get(user=user_id)
+    def draw(user_id, type):
+        try:
+            instance = Score.objects.get(user=user_id, game_type=type)
+        except:
+            instance = Score.objects.create(user=user_id, game_type=type)
         instance.games += 1
         instance.save()
 
@@ -194,7 +207,6 @@ class LocalizedText(models.Model):
     value = models.TextField(max_length=256)
     lang_code = models.CharField(max_length=2, default="fa")
 
-    
     @staticmethod
     def get_text(lang_code):
         text_list = []
