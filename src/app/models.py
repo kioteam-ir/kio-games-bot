@@ -81,6 +81,22 @@ class User(models.Model):
         user.is_banned = is_banned
         user.save()
 
+    
+    @staticmethod
+    def retrieve_game(id, type):
+        pass
+
+
+    @staticmethod
+    def all_games(id):
+        context = Score.objects.get(user=id)
+        return {
+            "total": context.games,
+            "wins": context.wins,
+            "draws": context.games - (context.wins + context.losses),
+            "losses": context.losses,
+        }
+
 
 class Game(models.Model):
     WINNER_CHOICES = [
@@ -168,6 +184,9 @@ class Score(models.Model):
         instance = Score.objects.get(user=user_id)
         instance.games += 1
         instance.save()
+
+    
+
 
 
 class LocalizedText(models.Model):

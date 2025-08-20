@@ -42,6 +42,22 @@ class UserStats:
         return User.status(user_id, is_banned)
     
 
+    @staticmethod
+    def retrieve_game(user_id: int, type: int) -> dict:
+        """
+        User results in one game.
+        """
+        return User.retrieve(user_id, type)
+    
+
+    @staticmethod
+    def all_games(user_id: int) -> dict:
+        """
+        User results in all games.
+        """
+        return User.all_games(user_id)
+    
+
 class GameModel:
     """
     This model is for working with games.
