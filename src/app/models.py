@@ -196,9 +196,6 @@ class Score(models.Model):
         instance.games += 1
         instance.save()
 
-    
-
-
 
 class LocalizedText(models.Model):
     key = models.IntegerField()
