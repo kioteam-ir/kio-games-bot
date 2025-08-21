@@ -258,3 +258,4 @@ class Sponser(models.Model):
         sponser = cls.objects.get(id=id)
         sponser.joined_memebers += number
         return sponser.save()
+    
