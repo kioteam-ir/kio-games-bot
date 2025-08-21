@@ -5,7 +5,7 @@ from .async_db import AsyncGameModel
 from bot.bot import bot
 
 
-async def on_delete(game_id:int, game_ui:GameUI, bot:Client) : 
+async def on_delete(game_id:int, game_ui:GameUI) : 
     # if game is multiplayer [future]
 
 
