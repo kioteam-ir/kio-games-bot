@@ -4,6 +4,8 @@ from .utils import get_tg_keyboard
 from .async_db import AsyncGameModel
 from bot.bot import bot
 
+bot = bot._client
+
 
 async def on_delete(game_id:int, game_ui:GameUI) : 
     # if game is multiplayer [future]
