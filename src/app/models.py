@@ -244,3 +244,10 @@ class Sponser(models.Model):
             "is_active": instance.is_active
         }
     
+    @classmethod
+    def get_all(cls):
+        sponser_list = []
+        spnsers = cls.objects.filter(is_active=True).values("id", "name", "link")
+        for sponser in spnsers:
+            sponser_list.append(sponser)
+        return sponser_list

@@ -99,3 +99,11 @@ class SponserModel:
         """
         return Sponser.retrieve(id)
     
+
+    @staticmethod
+    def get_all() -> list:
+        """
+        return all sponsers. A list of dictionaries.
+        """
+        return Sponser.get_all()
+    
