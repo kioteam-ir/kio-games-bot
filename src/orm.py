@@ -89,7 +89,7 @@ class TextModel:
 
 class SponserModel:
     """
-    Don't you want a dock string for this too? Stupid.
+    Don't you want a doc string for this too? Stupid.
     """
 
     @staticmethod
@@ -106,4 +106,12 @@ class SponserModel:
         return all sponsers. A list of dictionaries.
         """
         return Sponser.get_all()
+    
+
+    @staticmethod
+    def increase_member(id: int, number: int = 1) -> dict:
+        """
+        Increase in members joined for a sponsor.
+        """
+        return Sponser.increase_member(id, number)
     

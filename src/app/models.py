@@ -251,3 +251,10 @@ class Sponser(models.Model):
         for sponser in spnsers:
             sponser_list.append(sponser)
         return sponser_list
+    
+
+    @classmethod
+    def increase_member(cls, id, number):
+        sponser = cls.objects.get(id=id)
+        sponser.joined_memebers += number
+        return sponser.save()
