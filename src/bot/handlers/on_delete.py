@@ -31,9 +31,10 @@ async def on_delete(game_id:int, game_ui:GameUI) :
                 text,
                 reply_markup=get_tg_keyboard(game_ui,game_id,True)
             )
+            return
 
         # if game hasn't been started 
-        if len(game_ui.players == 1) :
+        if len(game_ui.players) == 1 :
             text = '😬🎮 هیچکسی مایل به بازی کردن نبود 😬\n\nپیش آدم باحالا بفرست اینا که نمیان بازی 😒'
             await bot.edit_inline_text(
                 game_ui.inline_message_id,

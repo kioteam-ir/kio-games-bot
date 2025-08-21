@@ -60,7 +60,9 @@ async def show_games(bot:Client,ir:types.InlineQuery) :
 async def send_game(bot:Client,cir:types.ChosenInlineResult) : 
     mid = cir.inline_message_id
 
-    if mid is None : return
+    if mid is None : 
+        print("no mid found ://///")
+        return
 
     game_type = int(cir.result_id)
 
