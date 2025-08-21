@@ -3,7 +3,7 @@ from hydrogram import types
 from core.game_engine.connect.with_friend import VsFriendEngine
 
 
-def get_tg_keyboard(board,game:GameUI,game_id:int,game_over:bool) -> types.InlineKeyboardMarkup : 
+def get_tg_keyboard(game:GameUI,game_id:int,game_over:bool) -> types.InlineKeyboardMarkup : 
     _ = []
     n = 1
     
@@ -12,7 +12,7 @@ def get_tg_keyboard(board,game:GameUI,game_id:int,game_over:bool) -> types.Inlin
     players = game.players
     _c = (game_over == False)
     
-    for row in board :
+    for row in game.game_engine.board :
         __ = []
         m=1
         for col in row :
@@ -20,7 +20,7 @@ def get_tg_keyboard(board,game:GameUI,game_id:int,game_over:bool) -> types.Inlin
                 types.InlineKeyboardButton(
                     col.as_symbol if is_xo else col.as_color ,
                     f"cell_{n}_{m}_{game_id}" if _c else None,
-                    None if _c else "https://t.me/kiogamesbot"
+                    None if _c else "https://t.me/kiogamesbot",
 
                 )
             )

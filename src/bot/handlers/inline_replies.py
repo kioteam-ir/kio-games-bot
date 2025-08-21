@@ -132,7 +132,7 @@ async def play_game(bot:Client,cb:types.CallbackQuery) :
         await bot.edit_inline_text(
             mid,
             f"🕹 نوبت : {current_player.first_name} [{game_info.game_engine.current_player.as_color}]\t\t\tㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ\n🕹 بازی کنید 🕹",                               
-            reply_markup=get_tg_keyboard(game.board,game_info,gid,False)
+            reply_markup=get_tg_keyboard(game_info,gid,False)
         )
 
 
@@ -192,7 +192,7 @@ async def play_game(bot:Client,cb:types.CallbackQuery) :
     await bot.edit_inline_text(
         mid,                      
         text,
-        reply_markup=get_tg_keyboard(game.board,game_info,gid,_c)
+        reply_markup=get_tg_keyboard(game_info,gid,_c)
         )
 
     return
