@@ -222,9 +222,25 @@ class LocalizedText(models.Model):
 class Sponser(models.Model):
     link = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
-    join_count = models.IntegerField(default=0)
+    joined_memebers = models.IntegerField(default=0)
     is_active = models.BooleanField(default=True)
     created_time = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.id} - {self.name}"
+    
+
+    @classmethod
+    def retrieve(cls, id):
+        try:
+            instance = cls.objects.get(id=id)
+        except:
+            return Exception("This sponsor does not exist")
+        return {
+            "id": instance.id,
+            "name": instance.name,
+            "link": instance.link,
+            "joined_memebers": instance.joined_memebers,
+            "is_active": instance.is_active
+        }
+    

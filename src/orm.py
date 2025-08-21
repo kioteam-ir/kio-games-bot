@@ -85,3 +85,17 @@ class TextModel:
         return key and value for lang_code.
         """
         return LocalizedText.get_text(lang_code)
+    
+
+class SponserModel:
+    """
+    Don't you want a dock string for this too? Stupid.
+    """
+
+    @staticmethod
+    def get(id: int) -> dict:
+        """
+        return Sponser details.
+        """
+        return Sponser.retrieve(id)
+    
