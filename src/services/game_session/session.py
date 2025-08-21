@@ -73,5 +73,5 @@ class GameSessionManager:
 
 session_manager = GameSessionManager(
     storage=InMemoryStorage(),
-    timeout=0.1 * 60,  # 5 minutes
+    timeout=5 * 60,  # 5 minutes
 )

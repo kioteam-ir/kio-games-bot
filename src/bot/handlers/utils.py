@@ -51,11 +51,11 @@ def get_tg_keyboard(board,game:GameUI,game_id:int,game_over:bool) -> types.Inlin
     _ps = [
         types.InlineKeyboardButton(
             f"🎮 {'🔺' if _cond else ''} {players[0].first_name}",
-            f"player_info={players[0].id}"
+            f"playerinfo_{players[0].id}_{game.game_type}"
         ),
         types.InlineKeyboardButton(
             f"🎮 {'' if _cond else '🔺'} {players[1].first_name}",
-            f"player_info={players[1].id}"
+            f"playerinfo_{players[1].id}_{game.game_type}"
         )
     ]
     _.append(_ps)

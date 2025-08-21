@@ -7,7 +7,7 @@ from core.game_engine.connect.with_friend import VsFriendEngine
 from core.game_engine.XO.with_friend import VsFriendXO
 
 from .utils import get_tg_keyboard
-from .async_db import AsyncUserStats
+from .async_db import AsyncUserStats, AsyncGameModel
 
 
 # -------------------------
@@ -90,9 +90,29 @@ async def send_game(bot:Client,cir:types.ChosenInlineResult) :
 # ---------------------------
 async def play_game(bot:Client,cb:types.CallbackQuery) : 
 
+    print(cb.data)
+
+    if cb.data.startswith("playerinfo") : 
+        _etc, player_id, game_type = cb.data.split("_")
+        user_game_data: dict = await AsyncUserStats.retrieve_game(int(player_id),int(game_type))
+
+        await cb.answer(
+            f"""
+📊 اطلاعات بازی کاربر 📊
+
+🕹همه بازی ها [{user_game_data['total']}]🕹
+🥇برد ها [{user_game_data['wins']}] 🥇
+🥈باخت ها [{user_game_data['losses']}] 🥈
+🟰 تساوی ها [{user_game_data['draws']}] 🟰
+
+"""         ,True
+        )
+        return
+
+
     clicked = cb.from_user.id
     mid = cb.inline_message_id
-                            # works for both iplay and cell
+
     gid = int(cb.data.split("_")[-1])
                                     
     game_info = session_manager.get(gid)
@@ -101,15 +121,17 @@ async def play_game(bot:Client,cb:types.CallbackQuery) :
     players = game_info.players
     current_player = game_info.current_player
 
+
     if cb.data.startswith('iplay') : 
         if clicked in [player.id for player in players] : 
-            await cb.answer("وایسا بچه سال")
+            await cb.answer("نمیتوانید با خودتان بازی کنید 😅",True)
             return
         
+        await AsyncUserStats.get_or_create(cb.from_user.id)
         players.append(cb.from_user)
         await bot.edit_inline_text(
             mid,
-            f"🕹 نوبت : {current_player.first_name} [{game_info.game_engine.current_player.as_color}]\t\t\t ‌\n🕹 بازی کنید 🕹",                               
+            f"🕹 نوبت : {current_player.first_name} [{game_info.game_engine.current_player.as_color}]\t\t\tㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ\n🕹 بازی کنید 🕹",                               
             reply_markup=get_tg_keyboard(game.board,game_info,gid,False)
         )
 
@@ -121,15 +143,15 @@ async def play_game(bot:Client,cb:types.CallbackQuery) :
     col = int(_c_r[2]) - 1
 
     if clicked not in [player.id for player in players] : 
-        await cb.answer("شما در این بازی نیستید")
+        await cb.answer("❌ شما در این بازی نیستید ❌",True)
         return
 
     if current_player.id != clicked : 
-        await cb.answer("نوبت شما نیست")
+        await cb.answer("❌ نوبت شما نیست ❌",True)
         return
     
     if not game.is_column_playable(col) : 
-        await cb.answer("ستون پر شده است")
+        await cb.answer("❌ ستون پر شده است ❌",True)
         return
 
 
@@ -149,9 +171,9 @@ async def play_game(bot:Client,cb:types.CallbackQuery) :
         _c_is_draw = (game.is_draw())
 
         # insert game to database
-        players_info : dict = GameModel.create(
-            game_info.players[0],
-            game_info.players[1],
+        players_info : dict = await AsyncGameModel.create(
+            game_info.players[0].id,
+            game_info.players[1].id,
             'draw' if _c_is_draw else f"player_{game_info.game_engine.winner.value}",
             game_info.game_type,
             mid
@@ -161,10 +183,10 @@ async def play_game(bot:Client,cb:types.CallbackQuery) :
 ⚔نتایج کل مسابقات بین شما دونفر:  [{players_info['total']} بازی]
 1️⃣ {game_info.players[0].first_name} : {players_info['p1_wins']}
 2️⃣ {game_info.players[1].first_name} : {players_info['p2_wins']}
-🟰 تساوی ها : {players_info['draw']}
+🟰 تساوی ها : {players_info['draws']}
 """
     else : 
-        text = f"🕹 نوبت : {new_player.first_name} [{game_info.game_engine.current_player.as_color}]\t\t\t ‌\n🕹 بازی کنید 🕹" 
+        text = f"🕹 نوبت : {new_player.first_name} [{game_info.game_engine.current_player.as_color}]\t\t\tㅤㅤㅤㅤㅤㅤㅤㅤ\n🕹 بازی کنید 🕹" 
 
 
     await bot.edit_inline_text(
