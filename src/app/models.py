@@ -112,6 +112,8 @@ class Game(models.Model):
     result = models.CharField(max_length=10, choices=WINNER_CHOICES)
     played_time =  models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return f"{self.mid}"
 
     @classmethod
     def geme_add(cls, player_1, player_2, type, result, mid):
@@ -164,6 +166,9 @@ class Score(models.Model):
     losses = models.IntegerField(default=0)
     game_type = models.IntegerField(default=1)
 
+    def __str__(self):
+        return f"{self.user}"
+
 
     @staticmethod
     def winner(user_id, type):
@@ -209,6 +214,9 @@ class LocalizedText(models.Model):
         for row in instance:
             text_list.append(row)
         return text_list
+    
+    def __str__(self):
+        return f"{self.key} - {self.value}" 
     
 
 class Sponser(models.Model):
