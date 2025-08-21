@@ -1,7 +1,7 @@
 from django.contrib.admin import register
 from django.contrib import admin
 
-from app.models import LocalizedText, User, Game, Score, Admin
+from app.models import LocalizedText, User, Game, Score, Admin, Sponser
 
 
 @register(Admin)
@@ -23,6 +23,12 @@ class GameAdmin(admin.ModelAdmin):
 class ScoreAdmin(admin.ModelAdmin):
     list_display = ("user", "wins", "games")
 
+
 @register(LocalizedText)
 class LocalizedTextAdmin(admin.ModelAdmin):
     list_display = ("lang_code", "key", "value")
+
+
+@register(Sponser)
+class SponserAdmin(admin.ModelAdmin):
+    list_display = ("id", "name", "link", "joined_memebers", "is_active")

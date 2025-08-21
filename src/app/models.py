@@ -112,6 +112,8 @@ class Game(models.Model):
     result = models.CharField(max_length=10, choices=WINNER_CHOICES)
     played_time =  models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return f"{self.mid}"
 
     @classmethod
     def geme_add(cls, player_1, player_2, type, result, mid):
@@ -164,6 +166,9 @@ class Score(models.Model):
     losses = models.IntegerField(default=0)
     game_type = models.IntegerField(default=1)
 
+    def __str__(self):
+        return f"{self.user}"
+
 
     @staticmethod
     def winner(user_id, type):
@@ -210,13 +215,47 @@ class LocalizedText(models.Model):
             text_list.append(row)
         return text_list
     
+    def __str__(self):
+        return f"{self.key} - {self.value}" 
+    
 
 class Sponser(models.Model):
     link = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
-    join_count = models.IntegerField(default=0)
+    joined_memebers = models.IntegerField(default=0)
     is_active = models.BooleanField(default=True)
     created_time = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.id} - {self.name}"
+    
+
+    @classmethod
+    def retrieve(cls, id):
+        try:
+            instance = cls.objects.get(id=id)
+        except:
+            return Exception("This sponsor does not exist")
+        return {
+            "id": instance.id,
+            "name": instance.name,
+            "link": instance.link,
+            "joined_memebers": instance.joined_memebers,
+            "is_active": instance.is_active
+        }
+    
+    @classmethod
+    def get_all(cls):
+        sponser_list = []
+        spnsers = cls.objects.filter(is_active=True).values("id", "name", "link")
+        for sponser in spnsers:
+            sponser_list.append(sponser)
+        return sponser_list
+    
+
+    @classmethod
+    def increase_member(cls, id, number):
+        sponser = cls.objects.get(id=id)
+        sponser.joined_memebers += number
+        return sponser.save()
+    

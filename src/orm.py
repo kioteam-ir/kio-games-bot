@@ -85,3 +85,33 @@ class TextModel:
         return key and value for lang_code.
         """
         return LocalizedText.get_text(lang_code)
+    
+
+class SponserModel:
+    """
+    Don't you want a doc string for this too? Stupid.
+    """
+
+    @staticmethod
+    def get(id: int) -> dict:
+        """
+        return Sponser details.
+        """
+        return Sponser.retrieve(id)
+    
+
+    @staticmethod
+    def get_all() -> list:
+        """
+        return all sponsers. A list of dictionaries.
+        """
+        return Sponser.get_all()
+    
+
+    @staticmethod
+    def increase_member(id: int, number: int = 1) -> dict:
+        """
+        Increase in members joined for a sponsor.
+        """
+        return Sponser.increase_member(id, number)
+    
