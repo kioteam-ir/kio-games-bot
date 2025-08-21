@@ -14,7 +14,7 @@ async def on_delete(game_id:int, game_ui:GameUI) :
             _c = 2 if game_ui.current_player == game_ui.players[0] else 1
             winner = game_ui.players[_c - 1]
             
-            players_info = AsyncGameModel.create(game_ui.players[0].id,game_ui.players[1].id,f"player_{_c}",game_ui.game_type,game_ui.inline_message_id)
+            players_info = await AsyncGameModel.create(game_ui.players[0].id,game_ui.players[1].id,f"player_{_c}",game_ui.game_type,game_ui.inline_message_id)
 
             text = f"""🎮 بازی به دلیل وقفه زیاد، متوقف شد 🎮
 
