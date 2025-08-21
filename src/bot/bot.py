@@ -60,7 +60,6 @@ bot = Bot(config=Config.from_env())
 
 bot.register_message_handler(welcome_handler)
 bot._add_handler(InlineQueryHandler(show_games))
-bot._add_handler(ChosenInlineResultHandler(send_game))
 bot.register_callbackquery_handler(play_game)
 
 

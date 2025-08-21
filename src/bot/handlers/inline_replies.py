@@ -16,11 +16,11 @@ from .async_db import AsyncUserStats, AsyncGameModel
 _gl = [
     types.InlineQueryResultArticle(
             game_lists[g].title,
-            types.InputTextMessageContent(game_lists[g].message_text),
+            types.InputTextMessageContent(game_lists[g].description + "\n\n🕹 اوکیه؟ پس بزن ساخت بازی 🕹"),
             game_lists[g]._id,
             thumb_url=game_lists[g].thumb_url,
             description=game_lists[g].description,
-            reply_markup=types.InlineKeyboardMarkup([[types.InlineKeyboardButton("⏳ loading ... ⏳",'bluh')]])
+            reply_markup=types.InlineKeyboardMarkup([[types.InlineKeyboardButton("🕹 ساخت بازی 🕹",f'makegame_{game_lists[g]._id}')]])
         ) 
     for g in game_lists
 ]
@@ -42,57 +42,21 @@ async def show_games(bot:Client,ir:types.InlineQuery) :
                 '-1',
                 description="you have been banned from using this robot"
             ) 
-            ]
+            ],0
         )
         return
     
 
 
-    await ir.answer(_gl)
+    await ir.answer(_gl,0)
     return
 
-
-
-# ---------------------------
-# chosen inline result (game)
-# ---------------------------
-
-async def send_game(bot:Client,cir:types.ChosenInlineResult) : 
-    mid = cir.inline_message_id
-
-    if mid is None : 
-        print("no mid found ://///")
-        return
-
-    game_type = int(cir.result_id)
-
-    game_type_info = game_lists[game_type]
-    
-    _cond = (game_type == GameTypes.XO)
-    
-
-    game = VsFriendXO(game_type_info.rows,game_type_info.connect) if _cond else VsFriendEngine(game_type_info.rows,game_type_info.cols,game_type_info.connect) 
-
-    game_id = session_manager.push(
-        GameUI(
-            game,mid,cir.from_user,[cir.from_user],_cond, game_type
-        )
-    )
-    
-    await bot.edit_inline_text(
-        mid,
-        f"⏳ در انتظار بازیکن... ⏳\n{game_type_info.description}",
-        reply_markup=types.InlineKeyboardMarkup([[types.InlineKeyboardButton('بازی میکنم 🙋',f"iplay_{game_id}")]])
-    )
-    return
 
 
 # ---------------------------
 # cb handler
 # ---------------------------
 async def play_game(bot:Client,cb:types.CallbackQuery) : 
-
-    print(cb.data)
 
     if cb.data.startswith("playerinfo") : 
         _etc, player_id, game_type = cb.data.split("_")
@@ -116,7 +80,29 @@ async def play_game(bot:Client,cb:types.CallbackQuery) :
     mid = cb.inline_message_id
 
     gid = int(cb.data.split("_")[-1])
-                                    
+
+    if cb.data.startswith("makegame") :
+        game_type = gid
+        game_type_info = game_lists[game_type]
+        
+        _cond = (game_type == GameTypes.XO)
+        
+
+        game = VsFriendXO(game_type_info.rows,game_type_info.connect) if _cond else VsFriendEngine(game_type_info.rows,game_type_info.cols,game_type_info.connect) 
+
+        game_id = session_manager.push(
+            GameUI(
+                game,mid,cb.from_user,[cb.from_user],_cond, game_type
+            )
+        )
+
+        await bot.edit_inline_text(
+            mid,
+            f"⏳ در انتظار بازیکن... ⏳\n{game_type_info.description}",
+            reply_markup=types.InlineKeyboardMarkup([[types.InlineKeyboardButton('بازی میکنم 🙋',f"iplay_{game_id}")]])
+        )
+        return
+
     game_info = session_manager.get(gid)
 
     game = game_info.game_engine
