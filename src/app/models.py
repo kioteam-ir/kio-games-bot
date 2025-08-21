@@ -210,3 +210,13 @@ class LocalizedText(models.Model):
             text_list.append(row)
         return text_list
     
+
+class Sponser(models.Model):
+    link = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
+    join_count = models.IntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+    created_time = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.id} - {self.name}"
