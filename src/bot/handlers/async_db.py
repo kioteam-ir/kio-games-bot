@@ -1,4 +1,4 @@
-from orm import GameModel, UserStats
+from orm import GameModel, UserStats, TextModel
 from asgiref.sync import sync_to_async
 
 
@@ -25,5 +25,17 @@ class AsyncGameModel :
                     setattr(self, attr_name, sync_to_async(attr))
 
 
+class AsyncTextModel : 
+    def __init__(self,text_model):
+        self.text_model = text_model
+
+
+        for attr_name in dir(self.text_model):
+            if not attr_name.startswith("_"):
+                attr = getattr(self.text_model, attr_name)
+                if callable(attr):
+                    setattr(self, attr_name, sync_to_async(attr))
+
 AsyncUserStats:UserStats = AsyncUserStats(UserStats)
 AsyncGameModel:GameModel = AsyncGameModel(GameModel)
+AsyncTextModel:TextModel = AsyncTextModel(TextModel)

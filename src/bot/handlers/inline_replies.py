@@ -8,7 +8,7 @@ from core.game_engine.XO.with_friend import VsFriendXO
 
 from .utils import get_tg_keyboard
 from .async_db import AsyncUserStats, AsyncGameModel
-
+from .admin_panel import update_text_database
 
 # -------------------------
 # games list as inline keys
@@ -32,13 +32,13 @@ _gl = [
 
 async def show_games(bot:Client,ir:types.InlineQuery) : 
 
-    _user = await AsyncUserStats.get_or_create(ir.from_user.id)
+    _user = await AsyncUserStats.get_or_create(ir.from_user.id,lang_code=ir.from_user.language_code)
     if _user['is_banned'] : 
         await ir.answer(
             [
                types.InlineQueryResultArticle(
                 "you are banned",
-                types.InputTextMessageContent(""),
+                types.InputTextMessageContent("you have been banned from using this robot"),
                 '-1',
                 description="you have been banned from using this robot"
             ) 
@@ -57,6 +57,10 @@ async def show_games(bot:Client,ir:types.InlineQuery) :
 # cb handler
 # ---------------------------
 async def play_game(bot:Client,cb:types.CallbackQuery) : 
+    if cb.data in ['update_texts'] : 
+        await update_text_database(bot,cb)
+        return
+
 
     if cb.data.startswith("playerinfo") : 
         _etc, player_id, game_type = cb.data.split("_")
@@ -82,17 +86,16 @@ async def play_game(bot:Client,cb:types.CallbackQuery) :
     gid = int(cb.data.split("_")[-1])
 
     if cb.data.startswith("makegame") :
-        game_type = gid
-        game_type_info = game_lists[game_type]
+        game_type_info = game_lists[gid]
         
-        _cond = (game_type == GameTypes.XO)
+        _cond = (gid == GameTypes.XO)
         
 
         game = VsFriendXO(game_type_info.rows,game_type_info.connect) if _cond else VsFriendEngine(game_type_info.rows,game_type_info.cols,game_type_info.connect) 
 
         game_id = session_manager.push(
             GameUI(
-                game,mid,cb.from_user,[cb.from_user],_cond, game_type
+                game,mid,cb.from_user,[cb.from_user],_cond, gid
             )
         )
 
@@ -115,7 +118,7 @@ async def play_game(bot:Client,cb:types.CallbackQuery) :
             await cb.answer("نمیتوانید با خودتان بازی کنید 😅",True)
             return
         
-        await AsyncUserStats.get_or_create(cb.from_user.id)
+        await AsyncUserStats.get_or_create(cb.from_user.id,lang_code=cb.from_user.language_code)
         players.append(cb.from_user)
         await bot.edit_inline_text(
             mid,

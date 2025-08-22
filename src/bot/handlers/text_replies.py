@@ -1,9 +1,10 @@
 from hydrogram import Client,types,filters
 from typing import Union
 
-from .async_db import AsyncUserStats
+from .async_db import AsyncUserStats,TextModel
 import asyncio
 
+from services.local_texts.storage import texts_cache,CommandTypes
 
 
 async def fast_reply(mes:types.Message,text,reply_markup:Union[types.ReplyKeyboardMarkup,types.InlineKeyboardMarkup,None]) -> types.Message : 
@@ -14,8 +15,9 @@ async def fast_reply(mes:types.Message,text,reply_markup:Union[types.ReplyKeyboa
     return _
 
 
-async def start_reply(mes:types.Message) -> types.Message : 
-    _ = await fast_reply(mes,"start text",reply_markup=None)
+async def start_reply(mes:types.Message) -> types.Message :
+    texts_cache.get()
+    _ = await fast_reply(mes,await TextModel.get_text(),reply_markup=None)
     return _
 
 async def guide_reply(mes:types.Message) -> types.Message : 
