@@ -1,7 +1,22 @@
 {
-    "fa" : {
-        "/start" : "",
-        "" : ""
-
-    }
+  "fa": {
+    "start": "",
+    "guide": "",
+    "settings": "",
+    "about": "",
+    "create-game-text": "",
+    "create-game-button": "",
+    "you-are-banned-title": "",
+    "you-are-banned-text": "",
+    "waiting-for-player": "",
+    "i-play": "",
+    "cannot-play-with-yourself": "",
+    "not-your-game": "",
+    "not-your-turn": "",
+    "column-full": "",
+    "player-game-stats": "",
+    "game-in-progress-text": "",
+    "game-ended-text": "",
+    "game-is-draw-text": ""
+  }
 }
