@@ -19,5 +19,27 @@
     "play-with-cool-people-button" : "😎 بازی با آدم باحالا 😎",
     "play-with-cool-people-text" : "😬🎮 هیچکسی مایل به بازی کردن نبود 😬\n\nپیش آدم باحالا بفرست اینا که نمیان بازی 😒",
     "game-stopped" : "🎮 بازی به دلیل وقفه زیاد، متوقف شد 🎮"
-  }
+  },
+  "en": {
+    "start": "Welcome to our bot ✋\nLet's play a game 👾",
+    "create-game-text": "🕹 Ready? Then create a game 🕹",
+    "create-game-button": "🕹 Create Game 🕹",
+    "you-are-banned-title": "You are banned from our bot!",
+    "you-are-banned-text": "You are banned from playing in our bot.",
+    "waiting-for-player": "⏳ Waiting for a player... ⏳",
+    "i-play": "I'll play 🙋",
+    "cannot-play-with-yourself": "You cannot play with yourself 😅",
+    "not-your-game": "❌ You are not in this game ❌",
+    "not-your-turn": "❌ It's not your turn ❌",
+    "column-full": "❌ This column is full ❌",
+    "player-game-stats": "📊 Player Stats 📊\n\n🕹 All games [{all_games}] 🕹\n🥇 Wins [{wins}] 🥇\n🥈 Losses [{losses}] 🥈\n🟰 Draws [{draws}] 🟰",
+    "game-in-progress-text": "🕹 Turn: {name} [{color}]ㅤ                       ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ\n🕹 Make your move 🕹",
+    "game-ended-text": "🏆 Winner of the game: {winner}\n⚔ Total matches played between you two: [{total} {game}]\n1️⃣ {p1_name}: {p1_wins}\n2️⃣ {p2_name}: {p2_wins}\n🟰 Draws: {draws}",
+    "game-is-draw-text": "No winner 💢",
+    "game": "Game",
+    "play-with-cool-people-button": "😎 Play with cool people 😎",
+    "play-with-cool-people-text": "😬🎮 Nobody wanted to play 😬\n\nSend it to the cool ones, they won’t say no 😒",
+    "game-stopped": "🎮 The game was stopped due to inactivity 🎮"
+}
+
 }

@@ -13,7 +13,6 @@ from .async_db import AsyncUserStats, AsyncGameModel
 # -------------------------
 # games list as inline keys
 # -------------------------
-_gl = ''
 
 def gl_maker(lang_code:str) : 
     return [
@@ -53,7 +52,7 @@ async def show_games(bot:Client,ir:types.InlineQuery) :
     
 
 
-    await ir.answer(_gl,0)
+    await ir.answer(gl_maker(_l),0)
     return
 
 
@@ -73,7 +72,7 @@ async def play_game(bot:Client,cb:types.CallbackQuery) :
             texts_cache.get(_user_l,CommandTypes.PLAYER_GAME_STATS).format(
                 all_games=user_game_data['total'],
                 wins=user_game_data['wins'],
-                losses=user_game_data['wins'],
+                losses=user_game_data['losses'],
                 draws=user_game_data['draws']
             ),True
         )

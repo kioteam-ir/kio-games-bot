@@ -57,7 +57,7 @@ class CommandCache:
         return self._cache
     
     def load(self) :
-        self._cache = json.load(open("texts.json","r",encoding='utf-8'))
+        self._cache = json.load(open("src/texts.json","r",encoding='utf-8'))
         self._lang()
 
     def _lang(self) :

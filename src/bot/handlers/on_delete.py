@@ -16,6 +16,10 @@ async def on_delete(game_id:int, game_ui:GameUI) :
 
         # game has been started
         if len(game_ui.players) == 2 : 
+            # if game has been ended before
+            if game_ui.game_engine.ended : 
+                return
+
             _c = 2 if game_ui.current_player == game_ui.players[0] else 1
             winner = game_ui.players[_c - 1]
             
