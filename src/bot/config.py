@@ -14,7 +14,6 @@ class Config:
     TOKEN        : Optional[str]
     API_HASH     : Optional[str]
     API_ID       : Optional[str]
-    
     @classmethod
     def from_env(cls) -> Self:
         return cls(

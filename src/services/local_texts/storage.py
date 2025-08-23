@@ -1,6 +1,6 @@
 from enum import Enum
-from typing import Dict, Optional
-
+from typing import Dict, Optional, List
+import json
 
 class CommandTypes(Enum):
     START = "start"
@@ -10,7 +10,7 @@ class CommandTypes(Enum):
     CREATE_GAME_TEXT = 'create-game-text'
     CREATE_GAME_BUTTON = 'create-game-button'
     YOU_ARE_BANNED_TITLE = 'you-are-banned-title'
-    YOU_ARE_BANNED_TEXt = 'you-are-banned-text'
+    YOU_ARE_BANNED_TEXT = 'you-are-banned-text'
     WAITING_FOR_PLAYER = 'waiting-for-player'
     IPLAY = 'i-play'
     CANNOT_PLAY_WITH_YOURSELF = 'cannot-play-with-yourself'
@@ -21,17 +21,23 @@ class CommandTypes(Enum):
     GAME_IN_PROGRESS_TEXT = 'game-in-progress-text'
     GAME_ENDED_TEXT = 'game-ended-text'
     GAME_IS_DRAW_TEXT = 'game-is-draw-text'
+    GAME='game'
+    PLAY_WITH_COOL_PEOPLE_BUTTON='play-with-cool-people-button'
+    PLAY_WITH_COOL_PEOPLE_TEXT='play-with-cool-people-text'
+    GAME_STOPPED = 'game-stopped'
 
 
 class CommandCache:
     _instance = None
+    _cache : Dict[str, Dict[str, str]]
+    langs : List[str]
 
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
             cls._instance._cache = {}
         return cls._instance
-
+    
     def set(self, lang: str, command: CommandTypes, value: str) -> None:
         if lang not in self._cache:
             self._cache[lang] = {}
@@ -49,7 +55,13 @@ class CommandCache:
 
     def all(self) -> Dict[str, Dict[str, str]]:
         return self._cache
+    
+    def load(self) :
+        self._cache = json.load(open("texts.json","r",encoding='utf-8'))
+        self._lang()
 
+    def _lang(self) :
+        self.langs = list(self._cache.keys()) 
 
 texts_cache = CommandCache()
-
+texts_cache.load()

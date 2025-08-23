@@ -3,27 +3,31 @@ from .game_utils import game_lists,GameTypes
 
 from ..gameUI import GameUI
 from services.game_session.session import session_manager
+from services.local_texts.storage import texts_cache,CommandTypes
 from core.game_engine.connect.with_friend import VsFriendEngine
 from core.game_engine.XO.with_friend import VsFriendXO
 
 from .utils import get_tg_keyboard
 from .async_db import AsyncUserStats, AsyncGameModel
-from .admin_panel import update_text_database
 
 # -------------------------
 # games list as inline keys
 # -------------------------
-_gl = [
-    types.InlineQueryResultArticle(
-            game_lists[g].title,
-            types.InputTextMessageContent(game_lists[g].description + "\n\n🕹 اوکیه؟ پس بزن ساخت بازی 🕹"),
-            game_lists[g]._id,
-            thumb_url=game_lists[g].thumb_url,
-            description=game_lists[g].description,
-            reply_markup=types.InlineKeyboardMarkup([[types.InlineKeyboardButton("🕹 ساخت بازی 🕹",f'makegame_{game_lists[g]._id}')]])
-        ) 
-    for g in game_lists
-]
+_gl = ''
+
+def gl_maker(lang_code:str) : 
+    return [
+        types.InlineQueryResultArticle(
+                game_lists[lang_code][g].title,
+                types.InputTextMessageContent(game_lists[lang_code][g].description + f"\n\n{texts_cache.get(lang_code,CommandTypes.CREATE_GAME_TEXT)}"),
+                game_lists[lang_code][g]._id,
+                thumb_url=game_lists[lang_code][g].thumb_url,
+                description=game_lists[lang_code][g].description,
+                reply_markup=types.InlineKeyboardMarkup([[types.InlineKeyboardButton(texts_cache.get(lang_code,CommandTypes.CREATE_GAME_BUTTON),f'makegame_{game_lists[lang_code][g]._id}')]])
+            ) 
+        for g in game_lists[lang_code]
+    ]
+    
 
 
 # --------------------
@@ -32,15 +36,16 @@ _gl = [
 
 async def show_games(bot:Client,ir:types.InlineQuery) : 
 
-    _user = await AsyncUserStats.get_or_create(ir.from_user.id,lang_code=ir.from_user.language_code)
+    _user = await AsyncUserStats.get_or_create(ir.from_user.id,lang_code=ir.from_user.language_code if ir.from_user.language_code in texts_cache.langs else 'en')
+    _l = _user['lang_code']
     if _user['is_banned'] : 
         await ir.answer(
             [
                types.InlineQueryResultArticle(
-                "you are banned",
-                types.InputTextMessageContent("you have been banned from using this robot"),
+                texts_cache.get(_l,CommandTypes.YOU_ARE_BANNED_TITLE),
+                types.InputTextMessageContent(texts_cache.get(_l,CommandTypes.YOU_ARE_BANNED_TEXT)),
                 '-1',
-                description="you have been banned from using this robot"
+                description=texts_cache.get(_l,CommandTypes.YOU_ARE_BANNED_TEXT)
             ) 
             ],0
         )
@@ -56,26 +61,21 @@ async def show_games(bot:Client,ir:types.InlineQuery) :
 # ---------------------------
 # cb handler
 # ---------------------------
-async def play_game(bot:Client,cb:types.CallbackQuery) : 
-    if cb.data in ['update_texts'] : 
-        await update_text_database(bot,cb)
-        return
-
+async def play_game(bot:Client,cb:types.CallbackQuery) :
+    _user = await AsyncUserStats.get_or_create(cb.from_user.id,lang_code=cb.from_user.language_code if cb.from_user.language_code in texts_cache.langs else 'en') 
+    _user_l = _user['lang_code'] 
 
     if cb.data.startswith("playerinfo") : 
         _etc, player_id, game_type = cb.data.split("_")
         user_game_data: dict = await AsyncUserStats.retrieve_game(int(player_id),int(game_type))
 
         await cb.answer(
-            f"""
-📊 اطلاعات بازی کاربر 📊
-
-🕹همه بازی ها [{user_game_data['total']}]🕹
-🥇برد ها [{user_game_data['wins']}] 🥇
-🥈باخت ها [{user_game_data['losses']}] 🥈
-🟰 تساوی ها [{user_game_data['draws']}] 🟰
-
-"""         ,True
+            texts_cache.get(_user_l,CommandTypes.PLAYER_GAME_STATS).format(
+                all_games=user_game_data['total'],
+                wins=user_game_data['wins'],
+                losses=user_game_data['wins'],
+                draws=user_game_data['draws']
+            ),True
         )
         return
 
@@ -86,7 +86,7 @@ async def play_game(bot:Client,cb:types.CallbackQuery) :
     gid = int(cb.data.split("_")[-1])
 
     if cb.data.startswith("makegame") :
-        game_type_info = game_lists[gid]
+        game_type_info = game_lists[_user_l][gid]
         
         _cond = (gid == GameTypes.XO)
         
@@ -98,11 +98,10 @@ async def play_game(bot:Client,cb:types.CallbackQuery) :
                 game,mid,cb.from_user,[cb.from_user],_cond, gid
             )
         )
-
         await bot.edit_inline_text(
             mid,
-            f"⏳ در انتظار بازیکن... ⏳\n{game_type_info.description}",
-            reply_markup=types.InlineKeyboardMarkup([[types.InlineKeyboardButton('بازی میکنم 🙋',f"iplay_{game_id}")]])
+            f"{texts_cache.get(_user_l,CommandTypes.WAITING_FOR_PLAYER)}\n{game_type_info.description}",
+            reply_markup=types.InlineKeyboardMarkup([[types.InlineKeyboardButton(texts_cache.get(_user_l,CommandTypes.IPLAY),f"iplay_{game_id}")]])
         )
         return
 
@@ -115,14 +114,17 @@ async def play_game(bot:Client,cb:types.CallbackQuery) :
 
     if cb.data.startswith('iplay') : 
         if clicked in [player.id for player in players] : 
-            await cb.answer("نمیتوانید با خودتان بازی کنید 😅",True)
+            await cb.answer(texts_cache.get(_user_l,CommandTypes.CANNOT_PLAY_WITH_YOURSELF),True)
             return
         
-        await AsyncUserStats.get_or_create(cb.from_user.id,lang_code=cb.from_user.language_code)
+        await AsyncUserStats.get_or_create(cb.from_user.id,lang_code=cb.from_user.language_code if cb.from_user.language_code in texts_cache.langs else 'en')
         players.append(cb.from_user)
         await bot.edit_inline_text(
             mid,
-            f"🕹 نوبت : {current_player.first_name} [{game_info.game_engine.current_player.as_color}]\t\t\tㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ\n🕹 بازی کنید 🕹",                               
+            texts_cache.get(_user_l,CommandTypes.GAME_IN_PROGRESS_TEXT).format(
+                name=current_player.first_name,
+                color=game_info.game_engine.current_player.as_color
+            ),
             reply_markup=get_tg_keyboard(game_info,gid,False)
         )
 
@@ -134,15 +136,15 @@ async def play_game(bot:Client,cb:types.CallbackQuery) :
     col = int(_c_r[2]) - 1
 
     if clicked not in [player.id for player in players] : 
-        await cb.answer("❌ شما در این بازی نیستید ❌",True)
+        await cb.answer(texts_cache.get(_user_l,CommandTypes.NOT_YOUR_GAME),True)
         return
 
     if current_player.id != clicked : 
-        await cb.answer("❌ نوبت شما نیست ❌",True)
+        await cb.answer(texts_cache.get(_user_l,CommandTypes.NOT_YOUR_TURN),True)
         return
     
     if not game.is_column_playable(col) : 
-        await cb.answer("❌ ستون پر شده است ❌",True)
+        await cb.answer(texts_cache.get(_user_l,CommandTypes.COLUMN_FULL),True)
         return
 
 
@@ -170,16 +172,22 @@ async def play_game(bot:Client,cb:types.CallbackQuery) :
             mid
         )
 
-        text = f"""🏆برنده بازی : {'بدون برنده 💢' if _c_is_draw else game_info.players[game.winner.value - 1].first_name } 
-⚔نتایج کل مسابقات بین شما دونفر:  [{players_info['total']} بازی]
-1️⃣ {game_info.players[0].first_name} : {players_info['p1_wins']}
-2️⃣ {game_info.players[1].first_name} : {players_info['p2_wins']}
-🟰 تساوی ها : {players_info['draws']}
-"""
+        text = texts_cache.get(_user_l,CommandTypes.GAME_ENDED_TEXT).format(
+            winner=texts_cache.get(_user_l,CommandTypes.GAME_IS_DRAW_TEXT) if _c_is_draw else game_info.players[game.winner.value - 1].first_name,
+            total=players_info['total'],
+            game=texts_cache.get(_user_l,CommandTypes.GAME),
+            p1_name=game_info.players[0].first_name,
+            p1_wins=players_info['p1_wins'],
+            p2_name=game_info.players[1].first_name,
+            p2_wins=players_info['p2_wins'],
+            draws=players_info['draws']
+        )
+        
     else : 
-        text = f"🕹 نوبت : {new_player.first_name} [{game_info.game_engine.current_player.as_color}]\t\t\tㅤㅤㅤㅤㅤㅤㅤㅤ\n🕹 بازی کنید 🕹" 
-
-
+        text = texts_cache.get(_user_l,CommandTypes.GAME_IN_PROGRESS_TEXT).format(
+            name=new_player.first_name,
+            color=game_info.game_engine.current_player.as_color
+        )
     await bot.edit_inline_text(
         mid,                      
         text,
