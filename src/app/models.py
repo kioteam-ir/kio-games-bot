@@ -36,7 +36,7 @@ class User(models.Model):
             "is_banned": ins.is_banned,
             "is_superuser": ins.is_superuser,
             "joined_time": ins.joined_time,
-            "lang_code": lang_code
+            "lang_code": ins.lang_code
         }
     
     @staticmethod
