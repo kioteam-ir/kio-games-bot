@@ -25,6 +25,10 @@ class CommandTypes(Enum):
     PLAY_WITH_COOL_PEOPLE_BUTTON='play-with-cool-people-button'
     PLAY_WITH_COOL_PEOPLE_TEXT='play-with-cool-people-text'
     GAME_STOPPED = 'game-stopped'
+    LANG_CHANGED = 'lang-changed'
+    CHANGE_YOUR_LANG = 'change-your-lang'
+    CHANGE_YOUR_LANG_TEXT = 'change-your-lang-text'
+    JOIN_FIRST = 'join-first'
 
 
 class CommandCache:

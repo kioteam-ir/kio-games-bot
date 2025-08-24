@@ -1,4 +1,4 @@
-from orm import GameModel, UserStats, TextModel
+from orm import GameModel, UserStats, SponserModel
 from asgiref.sync import sync_to_async
 
 
@@ -25,7 +25,7 @@ class AsyncGameModel :
                     setattr(self, attr_name, sync_to_async(attr))
 
 
-class AsyncTextModel : 
+class AsyncSponserModel : 
     def __init__(self,text_model):
         self.text_model = text_model
 
@@ -38,4 +38,4 @@ class AsyncTextModel :
 
 AsyncUserStats:UserStats = AsyncUserStats(UserStats)
 AsyncGameModel:GameModel = AsyncGameModel(GameModel)
-AsyncTextModel:TextModel = AsyncTextModel(TextModel)
+AsyncSponserModel:SponserModel = AsyncSponserModel(SponserModel)

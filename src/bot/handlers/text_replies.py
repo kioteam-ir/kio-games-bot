@@ -5,7 +5,7 @@ from .async_db import AsyncUserStats,TextModel
 import asyncio
 
 from services.local_texts.storage import texts_cache,CommandTypes
-
+from .utils import is_joined, make_sponsors_keys
 
 async def fast_reply(mes:types.Message,text,reply_markup:Union[types.ReplyKeyboardMarkup,types.InlineKeyboardMarkup,None]) -> types.Message : 
     _ = await mes.reply(
@@ -61,6 +61,10 @@ async def welcome_handler(bot:Client,mes:types.Message) :
 
     if _user['is_banned'] : 
         await mes.reply(texts_cache.get(_user['lang_code'],CommandTypes.YOU_ARE_BANNED_TEXT),True)
+        return
+
+    if not is_joined(bot,mes.from_user.id) :        
+        await mes.reply(texts_cache.get(_user['lang_code'],CommandTypes.JOIN_FIRST),True,reply_markup=make_sponsors_keys())
         return
 
     if text in _dk : 

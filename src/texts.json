@@ -15,10 +15,14 @@
     "game-in-progress-text": "🕹 نوبت : {name} [{color}]ㅤ                       ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ\n🕹 بازی کنید 🕹",
     "game-ended-text": "🏆 برنده بازی : {winner}\n⚔ نتایج کل مسابقات بین شما دو نفر: [{total} {game}]\n1️⃣ {p1_name} : {p1_wins}\n2️⃣ {p2_name} : {p2_wins}\n🟰 تساوی‌ها : {draws}",
     "game-is-draw-text": "بدون برنده 💢",
-    "game" : "بازی",
-    "play-with-cool-people-button" : "😎 بازی با آدم باحالا 😎",
-    "play-with-cool-people-text" : "😬🎮 هیچکسی مایل به بازی کردن نبود 😬\n\nپیش آدم باحالا بفرست اینا که نمیان بازی 😒",
-    "game-stopped" : "🎮 بازی به دلیل وقفه زیاد، متوقف شد 🎮"
+    "game": "بازی",
+    "play-with-cool-people-button": "😎 بازی با آدم باحالا 😎",
+    "play-with-cool-people-text": "😬🎮 هیچکسی مایل به بازی کردن نبود 😬\n\nپیش آدم باحالا بفرست اینا که نمیان بازی 😒",
+    "game-stopped": "🎮 بازی به دلیل وقفه زیاد، متوقف شد 🎮",
+    "lang-changed": "زبان با موفقیت به فارسی تبدیل شد 🇮🇷✅",
+    "change-your-lang": "✅ تغییر زبان ✅",
+    "change-your-lang-text": "✅ برای تغییر زبان کلیک کنید ✅",
+    "join-first": "✅ ابتدا در کانال های ما عضو شوید ✅"
   },
   "en": {
     "start": "Welcome to our bot ✋\nLet's play a game 👾",
@@ -39,7 +43,35 @@
     "game": "Game",
     "play-with-cool-people-button": "😎 Play with cool people 😎",
     "play-with-cool-people-text": "😬🎮 Nobody wanted to play 😬\n\nSend it to the cool ones, they won’t say no 😒",
-    "game-stopped": "🎮 The game was stopped due to inactivity 🎮"
-}
-
+    "game-stopped": "🎮 The game was stopped due to inactivity 🎮",
+    "lang-changed": "Language changed to English successfully 🇺🇸✅",
+    "change-your-lang": "✅ Change Language ✅",
+    "change-your-lang-text": "✅ Click to change language ✅",
+    "join-first": "✅ Please join our channels first ✅"
+  },
+  "ru": {
+    "start": "Добро пожаловать в нашего бота ✋\nДавайте сыграем 👾",
+    "create-game-text": "🕹 Готовы? Тогда создайте игру 🕹",
+    "create-game-button": "🕹 Создать игру 🕹",
+    "you-are-banned-title": "Вы заблокированы в нашем боте!",
+    "you-are-banned-text": "Вам запрещено играть в нашем боте.",
+    "waiting-for-player": "⏳ Ожидание игрока... ⏳",
+    "i-play": "Я играю 🙋",
+    "cannot-play-with-yourself": "Вы не можете играть сами с собой 😅",
+    "not-your-game": "❌ Вы не участвуете в этой игре ❌",
+    "not-your-turn": "❌ Сейчас не ваш ход ❌",
+    "column-full": "❌ Этот столбец заполнен ❌",
+    "player-game-stats": "📊 Статистика игрока 📊\n\n🕹 Всего игр [{all_games}] 🕹\n🥇 Победы [{wins}] 🥇\n🥈 Поражения [{losses}] 🥈\n🟰 Ничьи [{draws}] 🟰",
+    "game-in-progress-text": "🕹 Ход: {name} [{color}]ㅤ                       ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ\n🕹 Сделайте свой ход 🕹",
+    "game-ended-text": "🏆 Победитель: {winner}\n⚔ Всего матчей между вами: [{total} {game}]\n1️⃣ {p1_name}: {p1_wins}\n2️⃣ {p2_name}: {p2_wins}\n🟰 Ничьи: {draws}",
+    "game-is-draw-text": "Ничья 💢",
+    "game": "Игра",
+    "play-with-cool-people-button": "😎 Играть с классными людьми 😎",
+    "play-with-cool-people-text": "😬🎮 Никто не захотел играть 😬\n\nОтправьте это классным ребятам, они не откажутся 😒",
+    "game-stopped": "🎮 Игра была остановлена из-за долгого бездействия 🎮",
+    "lang-changed": "Язык успешно изменён на русский 🇷🇺✅",
+    "change-your-lang": "✅ Сменить язык ✅",
+    "change-your-lang-text": "✅ Нажмите, чтобы сменить язык ✅",
+    "join-first": "✅ Сначала подпишитесь на наши каналы ✅"
+  }
 }

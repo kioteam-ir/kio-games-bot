@@ -7,7 +7,7 @@ from services.local_texts.storage import texts_cache,CommandTypes
 from core.game_engine.connect.with_friend import VsFriendEngine
 from core.game_engine.XO.with_friend import VsFriendXO
 
-from .utils import get_tg_keyboard
+from .utils import get_tg_keyboard, change_lang, is_joined, make_sponsors_keys
 from .async_db import AsyncUserStats, AsyncGameModel
 
 # -------------------------
@@ -15,18 +15,36 @@ from .async_db import AsyncUserStats, AsyncGameModel
 # -------------------------
 
 def gl_maker(lang_code:str) : 
-    return [
+    des = texts_cache.get(lang_code,CommandTypes.CHANGE_YOUR_LANG_TEXT)
+    _ = [
+        types.InlineQueryResultArticle(
+            texts_cache.get(lang_code,CommandTypes.CHANGE_YOUR_LANG),
+            types.InputTextMessageContent(des),
+            999,
+            None,
+            des,
+            types.InlineKeyboardMarkup([
+                [types.InlineKeyboardButton("🇺🇸 English 🇺🇸",'chl_en')],
+                [types.InlineKeyboardButton("🇮🇷 فارسی 🇮🇷",'chl_fa')],
+                [types.InlineKeyboardButton("🇷🇺 Russian 🇷🇺",'chl_ru')],
+            ])
+        )
+    ]
+
+    games = [
         types.InlineQueryResultArticle(
                 game_lists[lang_code][g].title,
                 types.InputTextMessageContent(game_lists[lang_code][g].description + f"\n\n{texts_cache.get(lang_code,CommandTypes.CREATE_GAME_TEXT)}"),
                 game_lists[lang_code][g]._id,
                 thumb_url=game_lists[lang_code][g].thumb_url,
                 description=game_lists[lang_code][g].description,
-                reply_markup=types.InlineKeyboardMarkup([[types.InlineKeyboardButton(texts_cache.get(lang_code,CommandTypes.CREATE_GAME_BUTTON),f'makegame_{game_lists[lang_code][g]._id}')]])
+                reply_markup=make_sponsors_keys([types.InlineKeyboardButton(texts_cache.get(lang_code,CommandTypes.CREATE_GAME_BUTTON),f'makegame_{game_lists[lang_code][g]._id}')])
             ) 
         for g in game_lists[lang_code]
     ]
-    
+
+    _.extend(games)
+    return _
 
 
 # --------------------
@@ -64,6 +82,12 @@ async def play_game(bot:Client,cb:types.CallbackQuery) :
     _user = await AsyncUserStats.get_or_create(cb.from_user.id,lang_code=cb.from_user.language_code if cb.from_user.language_code in texts_cache.langs else 'en') 
     _user_l = _user['lang_code'] 
 
+
+    if cb.data.startswith("chl_") : 
+        await change_lang(bot,cb)
+        return
+
+
     if cb.data.startswith("playerinfo") : 
         _etc, player_id, game_type = cb.data.split("_")
         user_game_data: dict = await AsyncUserStats.retrieve_game(int(player_id),int(game_type))
@@ -85,6 +109,12 @@ async def play_game(bot:Client,cb:types.CallbackQuery) :
     gid = int(cb.data.split("_")[-1])
 
     if cb.data.startswith("makegame") :
+        # check if user in sponsers
+        if not is_joined(bot,clicked) : 
+            await cb.answer(texts_cache.get(_user_l,CommandTypes.JOIN_FIRST),True)
+            return
+        
+
         game_type_info = game_lists[_user_l][gid]
         
         _cond = (gid == GameTypes.XO)
@@ -112,6 +142,12 @@ async def play_game(bot:Client,cb:types.CallbackQuery) :
 
 
     if cb.data.startswith('iplay') : 
+        # check if user in sponsers
+        if not is_joined(bot, clicked) : 
+            await cb.answer(texts_cache.get(_user_l,CommandTypes.JOIN_FIRST),True)
+            return
+        
+
         if clicked in [player.id for player in players] : 
             await cb.answer(texts_cache.get(_user_l,CommandTypes.CANNOT_PLAY_WITH_YOURSELF),True)
             return
