@@ -17,7 +17,7 @@ class User(models.Model):
     joined_time = models.DateTimeField(auto_now_add=True)
     is_superuser = models.BooleanField(default=False)
     is_banned = models.BooleanField(default=False)
-    lang_code = models.CharField(max_length=2)
+    lang_code = models.CharField(max_length=2, default="fa")
     
 
     @staticmethod
