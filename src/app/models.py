@@ -39,6 +39,7 @@ class User(models.Model):
             "lang_code": ins.lang_code
         }
     
+    
     @staticmethod
     def create(id, is_superuser=False, is_banned=False, lang_code="fa"):
         instance = User.objects.create(
@@ -97,6 +98,13 @@ class User(models.Model):
         for row in context:
             list_data.append(row)
         return list_data
+    
+
+    @classmethod
+    def change_lang(cls, id, lang_code):
+        user = cls.objects.get(id=id)
+        user.lang_code = lang_code
+        user.save()
 
 
 class Game(models.Model):

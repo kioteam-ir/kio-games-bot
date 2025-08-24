@@ -27,6 +27,14 @@ class UserStats:
 
 
     @staticmethod
+    def change_lang(id: int, lang_code: str):
+        """
+        Change user language.
+        """
+        return User.change_lang(id, lang_code)
+
+
+    @staticmethod
     def get_all(id: int) -> dict:
         """
         return all user data.
