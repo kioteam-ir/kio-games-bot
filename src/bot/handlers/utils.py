@@ -2,7 +2,7 @@ from ..gameUI import GameUI
 from hydrogram import types, Client
 from core.game_engine.connect.with_friend import VsFriendEngine
 from services.local_texts.storage import texts_cache,CommandTypes
-from async_db import UserStats
+from .async_db import AsyncUserStats
 from services.sponsers.storage import sponsor_cache
 
 def get_tg_keyboard(game:GameUI,game_id:int,game_over:bool) -> types.InlineKeyboardMarkup : 
@@ -67,9 +67,9 @@ async def change_lang(bot:Client,cb:types.CallbackQuery) :
     new_l = cb.data.split("_")[-1]
     u = cb.from_user.id
     if new_l not in texts_cache.langs :
-        await UserStats.change_lang(u,"en")
+        await AsyncUserStats.change_lang(u,"en")
     else : 
-        await UserStats.change_lang(u,new_l)
+        await AsyncUserStats.change_lang(u,new_l)
 
     await cb.answer(
         texts_cache.get(new_l,CommandTypes.LANG_CHANGED),True
@@ -78,18 +78,20 @@ async def change_lang(bot:Client,cb:types.CallbackQuery) :
 
 
 async def is_joined(bot:Client,user_id:int) -> bool : 
-    sps = sponsor_cache.get_all()
+    sps = await sponsor_cache.get_all()
     for sp in sps : 
         try : 
-            await bot.get_chat_member(sp.link, user_id)
-        except : 
+            await bot.get_chat_member(sp.id, user_id)
+            print("[*] user is joined")
+        except Exception as e :
+            print(e) 
             return False
     return True
 
 
-def make_sponsors_keys(extra_key:list=[], index:int=0) -> types.InlineKeyboardMarkup : 
+async def make_sponsors_keys(extra_key:list=[], index:int=0) -> types.InlineKeyboardMarkup : 
     _ = [
-        [types.InlineKeyboardButton(sp.name,url=sp.link)] for sp in sponsor_cache.get_all()
+        [types.InlineKeyboardButton(f"🎫 {sp.name.strip()} 🎫",url=sp.link)] for sp in await sponsor_cache.get_all()
     ]
     if extra_key :
         _.insert(

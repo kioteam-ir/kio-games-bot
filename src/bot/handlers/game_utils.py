@@ -85,5 +85,36 @@ game_lists = {
                 "https://static.drimify.com/wp-content/uploads/2024/12/screenshot-415-min.png",
                 8,8,5
             ),
+    },
+
+    "ru" : {
+        1 : EachGame(
+                'XO GAME | КРЕСТИКИ-НОЛИКИ',
+                1,
+                "❌⭕️ Классическая игра крестики-нолики, также известная как XO ❌⭕️",
+                "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Tic_tac_toe.svg/1200px-Tic_tac_toe.svg.png",
+                3,3,3
+            ),
+        2 : EachGame(
+                'CONNECT 3 | СОЕДИНИ 3 И ПОБЕДИ!',
+                2,
+                "🥇 Всё, что нужно — выстроить 3 своих фишки подряд: по горизонтали, вертикали или диагонали 🥇",
+                "https://lh6.googleusercontent.com/proxy/TYpZrjlqu_tnJvoNtKQHNZXwlxuCbZxEsO_Aq09iS5KAcUDKPaU9mHlr6pLl5Nvyk28rd6y_JoL4aqrxZ0tRQgSKT0ewVMAybrqk20W-UznJCA22AfUyVyTcHm2rRnh18Fa3K5PIXYgSaVs",
+                6,7,3
+            ),
+        3 : EachGame(
+                'CONNECT 4 | СОЕДИНИ 4 И ПОБЕДИ!',
+                3,
+                "🥇 Всё, что нужно — выстроить 4 своих фишки подряд: по горизонтали, вертикали или диагонали 🥇",
+                "https://www.researchgate.net/profile/Gaetan-Sanchez/publication/258381798/figure/fig1/AS:311148797808643@1451195062476/Traditional-Connect-Four-Here-Red-wins-with-four-coins-aligned-diagonally.png",
+                6,7,4
+            ),
+        4 : EachGame(
+                'CONNECT 5 | СОЕДИНИ 5 И ПОБЕДИ!',
+                4,
+                "🥇 Всё, что нужно — выстроить 5 своих фишек подряд: по горизонтали, вертикали или диагонали 🥇",
+                "https://static.drimify.com/wp-content/uploads/2024/12/screenshot-415-min.png",
+                8,8,5
+            ),
     }
 }

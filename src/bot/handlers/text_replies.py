@@ -1,11 +1,12 @@
 from hydrogram import Client,types,filters
 from typing import Union
 
-from .async_db import AsyncUserStats,TextModel
+from .async_db import AsyncUserStats
 import asyncio
 
 from services.local_texts.storage import texts_cache,CommandTypes
 from .utils import is_joined, make_sponsors_keys
+from .admin_panel import update_cache
 
 async def fast_reply(mes:types.Message,text,reply_markup:Union[types.ReplyKeyboardMarkup,types.InlineKeyboardMarkup,None]) -> types.Message : 
     _ = await mes.reply(
@@ -63,9 +64,14 @@ async def welcome_handler(bot:Client,mes:types.Message) :
         await mes.reply(texts_cache.get(_user['lang_code'],CommandTypes.YOU_ARE_BANNED_TEXT),True)
         return
 
-    if not is_joined(bot,mes.from_user.id) :        
-        await mes.reply(texts_cache.get(_user['lang_code'],CommandTypes.JOIN_FIRST),True,reply_markup=make_sponsors_keys())
+    if text and text in ['/update_sps'] : 
+        await update_cache(bot,mes)
         return
+    
+    if not await is_joined(bot,mes.from_user.id) :        
+        await mes.reply(texts_cache.get(_user['lang_code'],CommandTypes.JOIN_FIRST),True,reply_markup=await make_sponsors_keys())
+        return
+    
 
     if text in _dk : 
         await _d[text](mes)

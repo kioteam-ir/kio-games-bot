@@ -14,7 +14,7 @@ from .async_db import AsyncUserStats, AsyncGameModel
 # games list as inline keys
 # -------------------------
 
-def gl_maker(lang_code:str) : 
+async def gl_maker(lang_code:str,user_id:int) : 
     des = texts_cache.get(lang_code,CommandTypes.CHANGE_YOUR_LANG_TEXT)
     _ = [
         types.InlineQueryResultArticle(
@@ -38,7 +38,7 @@ def gl_maker(lang_code:str) :
                 game_lists[lang_code][g]._id,
                 thumb_url=game_lists[lang_code][g].thumb_url,
                 description=game_lists[lang_code][g].description,
-                reply_markup=make_sponsors_keys([types.InlineKeyboardButton(texts_cache.get(lang_code,CommandTypes.CREATE_GAME_BUTTON),f'makegame_{game_lists[lang_code][g]._id}')])
+                reply_markup=await make_sponsors_keys([types.InlineKeyboardButton(texts_cache.get(lang_code,CommandTypes.CREATE_GAME_BUTTON),f'makegame_{user_id}_{game_lists[lang_code][g]._id}')])
             ) 
         for g in game_lists[lang_code]
     ]
@@ -70,7 +70,7 @@ async def show_games(bot:Client,ir:types.InlineQuery) :
     
 
 
-    await ir.answer(gl_maker(_l),0)
+    await ir.answer(await gl_maker(_l,ir.from_user.id),0)
     return
 
 
@@ -106,11 +106,17 @@ async def play_game(bot:Client,cb:types.CallbackQuery) :
     clicked = cb.from_user.id
     mid = cb.inline_message_id
 
-    gid = int(cb.data.split("_")[-1])
+    _data_from_cb = cb.data.split("_") 
+    gid = int(_data_from_cb[-1])
 
     if cb.data.startswith("makegame") :
+        # only sender allowed to make game
+        if clicked != (int(_data_from_cb[1])) : 
+            await cb.answer("❌",True)
+            return
+
         # check if user in sponsers
-        if not is_joined(bot,clicked) : 
+        if not await is_joined(bot,clicked) : 
             await cb.answer(texts_cache.get(_user_l,CommandTypes.JOIN_FIRST),True)
             return
         
@@ -143,7 +149,7 @@ async def play_game(bot:Client,cb:types.CallbackQuery) :
 
     if cb.data.startswith('iplay') : 
         # check if user in sponsers
-        if not is_joined(bot, clicked) : 
+        if not await is_joined(bot, clicked) : 
             await cb.answer(texts_cache.get(_user_l,CommandTypes.JOIN_FIRST),True)
             return
         
@@ -154,9 +160,13 @@ async def play_game(bot:Client,cb:types.CallbackQuery) :
         
         await AsyncUserStats.get_or_create(cb.from_user.id,lang_code=cb.from_user.language_code if cb.from_user.language_code in texts_cache.langs else 'en')
         players.append(cb.from_user)
+
+        # lang based on sender 
+        game_lang = await AsyncUserStats.get_or_create(game_info.players[0].id)
+        game_lang = game_lang['lang_code']
         await bot.edit_inline_text(
             mid,
-            texts_cache.get(_user_l,CommandTypes.GAME_IN_PROGRESS_TEXT).format(
+            texts_cache.get(game_lang,CommandTypes.GAME_IN_PROGRESS_TEXT).format(
                 name=current_player.first_name,
                 color=game_info.game_engine.current_player.as_color
             ),
@@ -192,6 +202,11 @@ async def play_game(bot:Client,cb:types.CallbackQuery) :
 
     _c = (game.ended or game.is_draw())
 
+
+    # lang based on sender 
+    game_lang = await AsyncUserStats.get_or_create(game_info.players[0].id)
+    game_lang = game_lang['lang_code']
+
     text = ''
         # game ended 
     if _c : 
@@ -207,10 +222,10 @@ async def play_game(bot:Client,cb:types.CallbackQuery) :
             mid
         )
 
-        text = texts_cache.get(_user_l,CommandTypes.GAME_ENDED_TEXT).format(
-            winner=texts_cache.get(_user_l,CommandTypes.GAME_IS_DRAW_TEXT) if _c_is_draw else game_info.players[game.winner.value - 1].first_name,
+        text = texts_cache.get(game_lang,CommandTypes.GAME_ENDED_TEXT).format(
+            winner=texts_cache.get(game_lang,CommandTypes.GAME_IS_DRAW_TEXT) if _c_is_draw else game_info.players[game.winner.value - 1].first_name,
             total=players_info['total'],
-            game=texts_cache.get(_user_l,CommandTypes.GAME),
+            game=texts_cache.get(game_lang,CommandTypes.GAME),
             p1_name=game_info.players[0].first_name,
             p1_wins=players_info['p1_wins'],
             p2_name=game_info.players[1].first_name,
@@ -219,7 +234,7 @@ async def play_game(bot:Client,cb:types.CallbackQuery) :
         )
         
     else : 
-        text = texts_cache.get(_user_l,CommandTypes.GAME_IN_PROGRESS_TEXT).format(
+        text = texts_cache.get(game_lang,CommandTypes.GAME_IN_PROGRESS_TEXT).format(
             name=new_player.first_name,
             color=game_info.game_engine.current_player.as_color
         )

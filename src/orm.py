@@ -19,7 +19,7 @@ class UserStats:
     """
 
     @staticmethod
-    def get_or_create(id: int, lang_code: str, is_superuser: bool = False, is_banned: bool = False) -> dict:
+    def get_or_create(id: int, lang_code: str = "en", is_superuser: bool = False, is_banned: bool = False) -> dict:
         """
         Create user or get user data.
         """
