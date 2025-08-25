@@ -228,6 +228,7 @@ class LocalizedText(models.Model):
     
 
 class Sponser(models.Model):
+    id = models.BigIntegerField(primary_key=True)
     link = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
     joined_memebers = models.IntegerField(default=0)
