@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  django:
+    build: .
+    command: ["django"]
+    volumes:
+      - static_volume:/bot/static
+      - media_volume:/bot/media
+    expose:
+      - 8000
+    env_file:
+      - ./.env.dev
+    depends_on:
+      - db
+  db:
+    image: postgres:17.5-alpine3.22
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - ./.env.dev
+
+  nginx:
+    build: ./nginx
+    volumes:
+      - static_volume:/data_voice/static
+      - media_volume:/data_voice/media
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/nginx.conf:ro
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - django
+
+  bot:
+    build: .
+    command: ["bot"]
+    volumes:
+      - .:/bot
+    env_file:
+      - ./.env.dev
+    depends_on:
+      - db
+      - django
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
+
+

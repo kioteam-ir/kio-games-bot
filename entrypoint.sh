@@ -1,0 +1,22 @@
+#!/bin/sh
+set -e
+
+echo "Waiting for postgres..."
+until nc -z db 5432; do
+  sleep 1
+done
+echo "Postgres is up!"
+
+if [ "$1" = "django" ]; then
+    echo "Applying migrations..."
+    python src/manage.py migrate --noinput
+    echo "Starting Django with Gunicorn..."
+    exec gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 3
+
+elif [ "$1" = "bot" ]; then
+    echo "Starting Telegram bot..."
+    exec python src
+
+else
+    exec "$@"
+fi
