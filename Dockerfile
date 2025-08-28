@@ -14,13 +14,8 @@ RUN pip3 install --upgrade pip
 COPY requirements.txt .
 RUN pip3 install -r requirements.txt
 
-COPY . /bot
-
-RUN sed -i 's/\r$//g' /bot/entrypoint.sh
-RUN chmod +x /bot/entrypoint.sh
-
-# copy project
-
-
-# run entrypoint.sh
+COPY entrypoint.sh /bot/entrypoint.sh
+COPY . /bot/
+RUN chmod +x /bot/entrypoint.sh && \
+    sed -i 's/\r$//g' /bot/entrypoint.sh
 ENTRYPOINT ["/bot/entrypoint.sh"]
