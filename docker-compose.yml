@@ -10,7 +10,7 @@ services:
     expose:
       - 8000
     env_file:
-      - ./.env.dev
+      - ./src/.env.dev
     depends_on:
       - db
   db:
@@ -18,14 +18,14 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
-      - ./.env.dev
+      - ./src/.env.dev
 
   nginx:
-    build: ./nginx
+    build: ./src/nginx
     volumes:
       - static_volume:/data_voice/static
       - media_volume:/data_voice/media
-      - ./nginx/nginx.conf:/etc/nginx/conf.d/nginx.conf:ro
+      - ./src/nginx/nginx.conf:/etc/nginx/conf.d/nginx.conf:ro
     ports:
       - "80:80"
       - "443:443"
@@ -38,7 +38,7 @@ services:
     volumes:
       - .:/bot
     env_file:
-      - ./.env.dev
+      - ./src/.env.dev
     depends_on:
       - db
       - django

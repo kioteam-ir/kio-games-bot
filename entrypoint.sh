@@ -11,7 +11,7 @@ if [ "$1" = "django" ]; then
     echo "Applying migrations..."
     python src/manage.py migrate --noinput
     echo "Starting Django with Gunicorn..."
-    exec gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 3
+    exec gunicorn --chdir src config.wsgi:application --bind 0.0.0.0:8000 --workers 3
 
 elif [ "$1" = "bot" ]; then
     echo "Starting Telegram bot..."
