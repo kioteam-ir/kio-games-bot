@@ -1,22 +1,26 @@
-#!/bin/sh
-set -e
+# pull official base image
+FROM python:3.12.11-alpine
 
-echo "Waiting for postgres..."
-until nc -z db 5432; do
-  sleep 1
-done
-echo "Postgres is up!"
+# set work directory
+RUN mkdir bot
+WORKDIR /bot
 
-if [ "$1" = "django" ]; then
-    echo "Applying migrations..."
-    python src/manage.py migrate --noinput
-    echo "Starting Django with Gunicorn..."
-    exec gunicorn --chdir src config.wsgi:application --bind 0.0.0.0:8000 --workers 3
+# set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
-elif [ "$1" = "bot" ]; then
-    echo "Starting Telegram bot..."
-    exec python src
+# install dependencies
+RUN pip3 install --upgrade pip
+COPY requirements.txt .
+RUN pip3 install -r requirements.txt
 
-else
-    exec "$@"
-fi
+COPY . /bot
+
+RUN sed -i 's/\r$//g' /bot/entrypoint.sh
+RUN chmod +x /bot/entrypoint.sh
+
+# copy project
+
+
+# run entrypoint.sh
+ENTRYPOINT ["/bot/entrypoint.sh"]
