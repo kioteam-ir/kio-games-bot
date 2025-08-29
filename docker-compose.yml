@@ -12,7 +12,7 @@ services:
 
   django:
     build: .
-    command: ["django"]
+    command: ["sh", "-c", "/bot/entrypoint.sh django"]
     volumes:
       - static_volume:/bot/src/static
       - media_volume:/bot/src/media
@@ -36,7 +36,7 @@ services:
 
   bot:
     build: .
-    command: ["bot"]
+    command: ["sh", "-c", "/bot/entrypoint.sh bot"]
     volumes:
       - .:/bot
     env_file:
