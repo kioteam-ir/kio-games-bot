@@ -14,8 +14,8 @@ services:
     build: .
     command: ["django"]
     volumes:
-      - static_volume:/bot/static
-      - media_volume:/bot/media
+      - static_volume:/bot/src/static
+      - media_volume:/bot/src/media
     expose:
       - 8000
     env_file:
@@ -26,8 +26,8 @@ services:
   nginx:
     build: ./src/nginx
     volumes:
-      - static_volume:/data_voice/static
-      - media_volume:/data_voice/media
+      - static_volume:/bot/src/static
+      - media_volume:/bot/src/media
       - ./src/nginx/nginx.conf:/etc/nginx/conf.d/nginx.conf
     ports:
       - "80:80"
