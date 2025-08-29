@@ -13,6 +13,8 @@ if [ "$1" = "django" ]; then
     python src/manage.py makemigrations --noinput
     echo "Applying migrations..."
     python src/manage.py migrate --noinput
+    echo "run collectstatic"
+    python src/manage.py collectstatic --noinput
     echo "Starting Django with Gunicorn..."
     exec gunicorn --chdir src config.wsgi:application --bind 0.0.0.0:8000 --workers 3
 
