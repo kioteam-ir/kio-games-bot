@@ -1,6 +1,15 @@
 version: '3.8'
 
 services:
+
+  db:
+    image: postgres:17.5-alpine3.22
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - ./src/.env.dev
+
+
   django:
     build: .
     command: ["django"]
@@ -13,12 +22,6 @@ services:
       - ./src/.env.dev
     depends_on:
       - db
-  db:
-    image: postgres:17.5-alpine3.22
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/
-    env_file:
-      - ./src/.env.dev
 
   nginx:
     build: ./src/nginx

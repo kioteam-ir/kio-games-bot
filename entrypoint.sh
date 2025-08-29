@@ -9,6 +9,8 @@ done
 echo "Postgres is up!"
 
 if [ "$1" = "django" ]; then
+    echo "Apply makemigrations"
+    python src/manage.py makemigrations --noinput
     echo "Applying migrations..."
     python src/manage.py migrate --noinput
     echo "Starting Django with Gunicorn..."
