@@ -90,8 +90,16 @@ async def play_game(bot:Client,cb:types.CallbackQuery) :
 
     if cb.data.startswith("playerinfo") : 
         _etc, player_id, game_type = cb.data.split("_")
-        user_game_data: dict = await AsyncUserStats.retrieve_game(int(player_id),int(game_type))
-
+        try : 
+            user_game_data: dict = await AsyncUserStats.retrieve_game(int(player_id),int(game_type))
+        except : 
+            user_game_data: dict = {
+                'total' : 0,
+                'wins' : 0,
+                'losses' : 0,
+                'draws' : 0,
+            }
+        
         await cb.answer(
             texts_cache.get(_user_l,CommandTypes.PLAYER_GAME_STATS).format(
                 all_games=user_game_data['total'],

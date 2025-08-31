@@ -5,6 +5,21 @@ from services.local_texts.storage import texts_cache,CommandTypes
 from .async_db import AsyncUserStats
 from services.sponsers.storage import sponsor_cache
 
+
+_numbers_in_emoji = {
+    0 : '0️⃣',
+    1 : '1️⃣',
+    2 : '2️⃣',
+    3 : '3️⃣',
+    4 : '4️⃣',
+    5 : '5️⃣',
+    6 : '6️⃣',
+    7 : '7️⃣',
+    8 : '8️⃣',
+    9 : '9️⃣',
+    10 : '🔟',
+}
+
 def get_tg_keyboard(game:GameUI,game_id:int,game_over:bool) -> types.InlineKeyboardMarkup : 
     _ = []
     n = 1
@@ -38,7 +53,7 @@ def get_tg_keyboard(game:GameUI,game_id:int,game_over:bool) -> types.InlineKeybo
             if j not in legal_moves : 
                 t = '🚫'
             else : 
-                t = '✅'
+                t = _numbers_in_emoji[j+1]
 
             _lm.append(
                 types.InlineKeyboardButton(
@@ -61,6 +76,14 @@ def get_tg_keyboard(game:GameUI,game_id:int,game_over:bool) -> types.InlineKeybo
         )
     ]
     _.append(_ps)
+    _.append(
+        [
+            types.InlineKeyboardButton(
+                '🕹 Kio Games bot | ربات بازی کایو 🕹',
+                url='https://t.me/kiogamesbot'
+            )
+        ]
+    )
     return types.InlineKeyboardMarkup(_)
 
 async def change_lang(bot:Client,cb:types.CallbackQuery) : 
