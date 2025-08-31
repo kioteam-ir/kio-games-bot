@@ -185,3 +185,7 @@ cython_debug/
 
 # Ignore debbug file
 debug.*
+*.session
+*.session-shm
+*.session-wal
+*.save

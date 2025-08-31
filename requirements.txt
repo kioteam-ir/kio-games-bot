@@ -1,4 +1,14 @@
+aiosqlite==0.21.0
 asgiref==3.9.1
 Django==4.2
+dotenv==0.9.9
+gunicorn==23.0.0
+Hydrogram==0.2.0
+packaging==25.0
+psycopg2-binary==2.9.10
+pyaes==1.6.1
+PySocks==1.7.1
+python-dotenv==1.1.1
 sqlparse==0.5.3
+typing_extensions==4.15.0
 tzdata==2025.2

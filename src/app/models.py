@@ -139,14 +139,24 @@ class Game(models.Model):
     @staticmethod
     def shared_game(instance):
         games = Game.objects.filter(type=instance.type).filter(
-            Q(player_1=instance.player_1) | Q(player_1=instance.player_2)
-            ).filter(
-            Q(player_2=instance.player_2) | Q(player_2=instance.player_1)
+            (Q(player_1=instance.player_1) & Q(player_2=instance.player_2)) |
+            (Q(player_1=instance.player_2) & Q(player_2=instance.player_1))
             )
+        
+        p1_wins = games.filter(
+            (Q(player_1=instance.player_1) & Q(result="player_1")) |
+            (Q(player_2=instance.player_1) & Q(result="player_2"))
+        ).count()
+        
+        p2_wins = games.filter(
+            (Q(player_1=instance.player_2) & Q(result="player_1")) |
+            (Q(player_2=instance.player_2) & Q(result="player_2"))
+        ).count()
+
         return {
             "total": games.count(),
-            "p1_wins": games.filter(result="player_1").count(),
-            "p2_wins": games.filter(result="player_2").count(),
+            "p1_wins": p1_wins,
+            "p2_wins": p2_wins,
             "draws": games.filter(result="draw").count(),
         }
     
@@ -209,23 +219,6 @@ class Score(models.Model):
         instance.games += 1
         instance.save()
 
-
-class LocalizedText(models.Model):
-    key = models.IntegerField()
-    value = models.TextField(max_length=256)
-    lang_code = models.CharField(max_length=2, default="fa")
-
-    @staticmethod
-    def get_text(lang_code):
-        text_list = []
-        instance = LocalizedText.objects.filter(lang_code=lang_code).values("key", "value")
-        for row in instance:
-            text_list.append(row)
-        return text_list
-    
-    def __str__(self):
-        return f"{self.key} - {self.value}" 
-    
 
 class Sponser(models.Model):
     id = models.BigIntegerField(primary_key=True)
