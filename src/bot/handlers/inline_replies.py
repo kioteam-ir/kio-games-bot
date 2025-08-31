@@ -240,6 +240,8 @@ async def play_game(bot:Client,cb:types.CallbackQuery) :
             p2_wins=players_info['p2_wins'],
             draws=players_info['draws']
         )
+
+        await session_manager.delete(gid)
         
     else : 
         text = texts_cache.get(game_lang,CommandTypes.GAME_IN_PROGRESS_TEXT).format(
