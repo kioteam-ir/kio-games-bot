@@ -139,14 +139,24 @@ class Game(models.Model):
     @staticmethod
     def shared_game(instance):
         games = Game.objects.filter(type=instance.type).filter(
-            Q(player_1=instance.player_1) | Q(player_1=instance.player_2)
-            ).filter(
-            Q(player_2=instance.player_2) | Q(player_2=instance.player_1)
+            (Q(player_1=instance.player_1) & Q(player_2=instance.player_2)) |
+            (Q(player_1=instance.player_2) & Q(player_2=instance.player_1))
             )
+        
+        p1_wins = games.filter(
+            (Q(player_1=instance.player_1) & Q(result="player_1")) |
+            (Q(player_2=instance.player_1) & Q(result="player_2"))
+        ).count()
+        
+        p2_wins = games.filter(
+            (Q(player_1=instance.player_2) & Q(result="player_1")) |
+            (Q(player_2=instance.player_2) & Q(result="player_2"))
+        ).count()
+
         return {
             "total": games.count(),
-            "p1_wins": games.filter(result="player_1").count(),
-            "p2_wins": games.filter(result="player_2").count(),
+            "p1_wins": p1_wins,
+            "p2_wins": p2_wins,
             "draws": games.filter(result="draw").count(),
         }
     

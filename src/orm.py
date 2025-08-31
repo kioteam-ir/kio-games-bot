@@ -81,18 +81,18 @@ class GameModel:
         return Game.geme_add(player_1, player_2, type, result, mid)
         
 
-class TextModel:
-    """
-    This model is for working with Texts.
-    P.S: All methods are @staticmethod.
-    """
+# class TextModel:
+#     """
+#     This model is for working with Texts.
+#     P.S: All methods are @staticmethod.
+#     """
 
-    @staticmethod
-    def get_text(lang_code: str = "fa") -> list:
-        """
-        return key and value for lang_code.
-        """
-        return LocalizedText.get_text(lang_code)
+#     @staticmethod
+#     def get_text(lang_code: str = "fa") -> list:
+#         """
+#         return key and value for lang_code.
+#         """
+#         return LocalizedText.get_text(lang_code)
     
 
 class SponserModel:
