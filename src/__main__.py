@@ -11,8 +11,8 @@ def custom_excepthook(exc_type, exc_value, exc_traceback):
     sys.exit(1)
 
 sys.excepthook = custom_excepthook
-sys.stdout = open('stdout.log', 'a')
-sys.stderr = open('stderr.log', 'a')
+sys.stdout     = open('stdout.log', 'a')
+sys.stderr     = open('stderr.log', 'a')
 
 async def main():
     session_manager._event_bus.subscribe('session_deleted',on_delete)
