@@ -5,7 +5,7 @@ from time import monotonic
 from uuid import uuid4
 import asyncio
 from collections import defaultdict
-
+from contextlib import suppress
 
 def generate_game_id() -> int:
     return uuid4().int
@@ -23,9 +23,10 @@ class EventBus:
     async def notify(self, event_name: str, **kwargs) -> None:
         """Notify all listeners of an event."""
         for callback in self._listeners.get(event_name, []):
-            result = callback(**kwargs)
-            if asyncio.iscoroutine(result):
-                await result
+            with suppress(Exception):
+                result = callback(**kwargs)
+                if asyncio.iscoroutine(result):
+                    await result
 
 
 class GameSessionManager:
