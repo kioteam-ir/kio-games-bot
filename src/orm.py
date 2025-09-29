@@ -108,4 +108,3 @@ class SponserModel:
         Increase in members joined for a sponsor.
         """
         return Sponser.increase_member(id, number)
-    

@@ -11,7 +11,7 @@ class AdminAdmin(admin.ModelAdmin):
 
 @register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ("id", "is_superuser", "is_banned", "joined_time", "lang_code")
+    list_display = ("name", "id", "is_superuser", "is_banned", "joined_time", "lang_code")
 
 
 @register(Game)
@@ -21,7 +21,7 @@ class GameAdmin(admin.ModelAdmin):
 
 @register(Score)
 class ScoreAdmin(admin.ModelAdmin):
-    list_display = ("user", "wins", "games")
+    list_display = ("user", "games", "wins", "losses", "game_type")
 
 
 # @register(LocalizedText)

@@ -3,6 +3,7 @@ from django.db.models import Q
 
 from django.contrib.auth.models import AbstractUser
 
+
 class Admin(AbstractUser):
 
     REQUIRED_FIELDS = []
@@ -14,6 +15,8 @@ class Admin(AbstractUser):
 
 class User(models.Model):
     id = models.BigIntegerField(primary_key=True)
+    username = models.CharField(max_length=48, default="WithOUtName")
+    name = models.CharField(max_length=48, default="WithOUtUsernName")
     joined_time = models.DateTimeField(auto_now_add=True)
     is_superuser = models.BooleanField(default=False)
     is_banned = models.BooleanField(default=False)
@@ -21,12 +24,14 @@ class User(models.Model):
     
 
     @staticmethod
-    def get_or_create(id: int, is_superuser: bool = False, is_banned: bool = False, lang_code: str = "fa"):
+    def get_or_create(id: int, name="", username="", is_superuser: bool = False, is_banned: bool = False, lang_code: str = "fa"):
         try:
             ins = User.objects.get(id=id)
         except:
             ins = User.create(
                 id,
+                name,
+                username,
                 is_superuser,
                 is_banned,
                 lang_code
@@ -39,11 +44,13 @@ class User(models.Model):
             "lang_code": ins.lang_code
         }
     
-    
+
     @staticmethod
-    def create(id, is_superuser=False, is_banned=False, lang_code="fa"):
+    def create(id, name="", username="", is_superuser=False, is_banned=False, lang_code="fa"):
         instance = User.objects.create(
             id=id,
+            name=name,
+            username=username,
             is_superuser=is_superuser,
             is_banned=is_banned,
             lang_code=lang_code,
@@ -57,6 +64,8 @@ class User(models.Model):
         score = Score.objects.get(user=user)
         return  {
             "id": user.id,
+            "name": user.name,
+            "username": user.username,
             "is_banned": user.is_banned,
             "is_superuser": user.is_superuser,
             "joined_time": user.joined_time,
@@ -67,7 +76,6 @@ class User(models.Model):
                 "losses": score.losses,
             }
         }
-
 
     def __str__(self):
         return f"{self.id}"
@@ -113,6 +121,7 @@ class Game(models.Model):
         ('player_2', 'player_2'),
         ('draw', 'draw'),
     ]
+
     mid = models.CharField(max_length=48)
     player_1 = models.ForeignKey(User, related_name="player_1", on_delete=models.CASCADE, null=True)
     player_2 = models.ForeignKey(User, related_name="player_2", on_delete=models.CASCADE, null=True)
@@ -132,7 +141,7 @@ class Game(models.Model):
             result=result,
             mid=mid
         )
-        cls.score_handler(instance)
+        instance.save()
         return cls.shared_game(instance)
     
 
@@ -159,22 +168,6 @@ class Game(models.Model):
             "p2_wins": p2_wins,
             "draws": games.filter(result="draw").count(),
         }
-    
-
-    @staticmethod
-    def score_handler(instance):
-        if instance.result == "player_2":
-            Score.loser(instance.player_1, instance.type)
-            Score.winner(instance.player_2, instance.type)
-            return True
-        elif instance.result == "player_1":
-            Score.winner(instance.player_1, instance.type)
-            Score.loser(instance.player_2, instance.type)
-            return True
-        else:
-            Score.draw(instance.player_1, instance.type)
-            Score.draw(instance.player_2, instance.type)
-            return True
 
 
 class Score(models.Model):
@@ -209,7 +202,7 @@ class Score(models.Model):
         instance.losses += 1
         instance.save()
 
-    
+
     @staticmethod
     def draw(user_id, type):
         try:
