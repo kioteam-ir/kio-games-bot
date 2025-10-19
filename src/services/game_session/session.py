@@ -8,7 +8,7 @@ from collections import defaultdict
 from contextlib import suppress
 
 def generate_game_id() -> int:
-    return uuid4().int
+    return uuid4().int % (10 ** 18)
 
 
 class EventBus:

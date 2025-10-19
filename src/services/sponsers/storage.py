@@ -1,6 +1,6 @@
 from typing import List
 from orm import SponserModel
-from bot.handlers.async_db import AsyncSponserModel
+from bot.rooters.async_db import AsyncSponserModel
 
 class SponsorType:
 
