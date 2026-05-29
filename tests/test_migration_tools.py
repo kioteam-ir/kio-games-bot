@@ -7,7 +7,7 @@ import pytest
 from tools.schemas import normalize_lang_code
 from tools.sql_dump import parse_copy_block, row_dict, split_copy_line
 
-SQL_DUMP = Path("kio-bot.sql")
+SQL_DUMP = Path(__file__).resolve().parent / "fixtures" / "migration_sample.sql"
 
 
 def test_split_copy_line_null() -> None:
