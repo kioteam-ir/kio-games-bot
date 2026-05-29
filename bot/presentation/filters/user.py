@@ -36,7 +36,12 @@ class ResolvedUserFilter(BaseFilter):
 
 
 class NotBannedFilter(BaseFilter):
-    async def __call__(self, **kwargs: Any) -> bool | dict[str, Any]:
+    async def __call__(
+        self,
+        event: Message | CallbackQuery | InlineQuery | None = None,
+        **kwargs: Any,
+    ) -> bool | dict[str, Any]:
+        _ = event
         user_context = _user_context(kwargs)
         if user_context is None:
             return False
@@ -46,7 +51,12 @@ class NotBannedFilter(BaseFilter):
 
 
 class BannedUserFilter(BaseFilter):
-    async def __call__(self, **kwargs: Any) -> bool | dict[str, Any]:
+    async def __call__(
+        self,
+        event: Message | CallbackQuery | InlineQuery | None = None,
+        **kwargs: Any,
+    ) -> bool | dict[str, Any]:
+        _ = event
         user_context = _user_context(kwargs)
         if user_context is None:
             return False

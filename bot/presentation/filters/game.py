@@ -41,7 +41,8 @@ class CreatorMatchFilter(BaseFilter):
 
 
 class TwoPlayerSessionFilter(BaseFilter):
-    async def __call__(self, **kwargs: Any) -> bool | dict[str, Any]:
+    async def __call__(self, event: CallbackQuery | None = None, **kwargs: Any) -> bool | dict[str, Any]:
+        _ = event
         game_session = kwargs.get("game_session")
         if not isinstance(game_session, GameSession):
             return False

@@ -25,17 +25,17 @@ def _context(*, banned: bool) -> ResolvedUserContext:
 @pytest.mark.asyncio
 async def test_not_banned_filter_reads_user_context_from_kwargs() -> None:
     context = _context(banned=False)
-    assert await NotBannedFilter()(**{"user_context": context}) == {}
+    assert await NotBannedFilter()(None, **{"user_context": context}) == {}
 
 
 @pytest.mark.asyncio
 async def test_not_banned_filter_rejects_banned_user() -> None:
     context = _context(banned=True)
-    assert await NotBannedFilter()(**{"user_context": context}) is False
+    assert await NotBannedFilter()(None, **{"user_context": context}) is False
 
 
 @pytest.mark.asyncio
 async def test_banned_filter_reads_user_context_from_kwargs() -> None:
     context = _context(banned=True)
-    result = await BannedUserFilter()(**{"user_context": context})
+    result = await BannedUserFilter()(None, **{"user_context": context})
     assert result == {"banned_context": context}
