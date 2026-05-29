@@ -24,6 +24,6 @@ class DatabaseConfigClass(BaseConfig):
         )
 
 
-DatabaseConfig = DatabaseConfigClass()  # type: ignore[call-arg]
+DatabaseConfig = DatabaseConfigClass()
 
 __all__ = ("DatabaseConfig", "DatabaseConfigClass")

@@ -11,6 +11,6 @@ class SessionConfigClass(BaseConfig):
     inline_query_cache_time: int = Field(default=0, alias="INLINE_QUERY_CACHE_TIME")
 
 
-SessionConfig = SessionConfigClass()  # type: ignore[call-arg]
+SessionConfig = SessionConfigClass()
 
 __all__ = ("SessionConfig", "SessionConfigClass")

@@ -14,6 +14,6 @@ class I18nConfigClass(BaseConfig):
     )
 
 
-I18nConfig = I18nConfigClass()  # type: ignore[call-arg]
+I18nConfig = I18nConfigClass()
 
 __all__ = ("I18nConfig", "I18nConfigClass")
