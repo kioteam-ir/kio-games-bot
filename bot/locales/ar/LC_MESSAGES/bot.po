@@ -61,6 +61,18 @@ msgstr "😬🎮 لم يرغب أحد باللعب 😬\n\nأرسلها للرا
 msgid "game-stopped"
 msgstr "🎮 توقفت اللعبة بسبب عدم النشاط 🎮"
 
+msgid "already-game-creator"
+msgstr "أنت من أنشأ هذه اللعبة — انتظر لاعباً آخر 😅"
+
+msgid "game-already-started"
+msgstr "❌ هذه اللعبة لديها لاعبان بالفعل ❌"
+
+msgid "game-already-ended"
+msgstr "❌ هذه اللعبة انتهت بالفعل ❌"
+
+msgid "game-expired"
+msgstr "⏳ هذه اللعبة لم تعد متاحة ⏳"
+
 msgid "lang-changed"
 msgstr "تم تغيير اللغة بنجاح ✅"
 

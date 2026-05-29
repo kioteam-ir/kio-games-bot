@@ -61,6 +61,18 @@ msgstr "😬🎮 Kimse oynamak istemedi 😬\n\nHavalı arkadaşlarına gönder,
 msgid "game-stopped"
 msgstr "🎮 Oyun uzun süre hareketsizlik nedeniyle durduruldu 🎮"
 
+msgid "already-game-creator"
+msgstr "Bu oyunu sen oluşturdun — başka birinin katılmasını bekle 😅"
+
+msgid "game-already-started"
+msgstr "❌ Bu oyunda zaten iki oyuncu var ❌"
+
+msgid "game-already-ended"
+msgstr "❌ Bu oyun zaten bitti ❌"
+
+msgid "game-expired"
+msgstr "⏳ Bu oyun artık mevcut değil ⏳"
+
 msgid "lang-changed"
 msgstr "Dil başarıyla değiştirildi ✅"
 

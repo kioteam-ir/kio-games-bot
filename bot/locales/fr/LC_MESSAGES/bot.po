@@ -61,6 +61,18 @@ msgstr "😬🎮 Personne n'a voulu jouer 😬\n\nEnvoie-le aux cool, ils diront
 msgid "game-stopped"
 msgstr "🎮 La partie a été arrêtée pour inactivité 🎮"
 
+msgid "already-game-creator"
+msgstr "Vous avez créé cette partie — attendez un autre joueur 😅"
+
+msgid "game-already-started"
+msgstr "❌ Cette partie a déjà deux joueurs ❌"
+
+msgid "game-already-ended"
+msgstr "❌ Cette partie est déjà terminée ❌"
+
+msgid "game-expired"
+msgstr "⏳ Cette partie n'est plus disponible ⏳"
+
 msgid "lang-changed"
 msgstr "Langue changée avec succès ✅"
 

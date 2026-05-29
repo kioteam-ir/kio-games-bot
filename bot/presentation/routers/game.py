@@ -36,18 +36,20 @@ router = Router(name="inline")
 @router.inline_query(ResolvedUserFilter())
 async def inline_games_handler(
     inline_query: InlineQuery,
-    inline_games_service: object,
     inline_results: InlineQueryResultService,
     session_config: SessionConfigClass,
     container: AppContainer,
+    user_context: ResolvedUserContext,
 ) -> None:
-    from bot.application.services.game_flow import InlineGamesService
+    from bot.application.dto.game import InlineGamesContext
 
-    if not isinstance(inline_games_service, InlineGamesService) or inline_query.from_user is None:
+    if inline_query.from_user is None:
         return
-    context = await inline_games_service.build_context(
-        inline_query.from_user,
-        inline_query.from_user.language_code,
+    context = InlineGamesContext(
+        user=user_context.user,
+        lang=user_context.lang,
+        games=container.catalog.list_for_lang(user_context.lang),
+        is_banned=user_context.user.is_banned,
     )
     sponsors = await container.sponsor_repo.list_active()
     results = inline_results.build_results(context, inline_query.from_user.id, sponsors)
@@ -191,9 +193,13 @@ async def cell_move_handler(
     translator: Translator,
     user_context: ResolvedUserContext,
     game_id: int,
+    game_session: object | None = None,
 ) -> None:
+    from bot.domain.entities.game_session import GameSession
+
     if callback.from_user is None or callback.inline_message_id is None or callback.bot is None:
         return
+    prefetched = game_session if isinstance(game_session, GameSession) else None
     request = MoveGameRequest(
         player_id=callback.from_user.id,
         game_id=game_id,
@@ -201,7 +207,7 @@ async def cell_move_handler(
         col=callback_data.col,
         lang=user_context.lang,
     )
-    result = await game_flow_service.move(request)
+    result = await game_flow_service.move(request, session=prefetched)
     if isinstance(result, UseCaseError):
         await callback.answer(
             translator.t(result.message_key, user_context.lang),

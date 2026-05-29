@@ -61,6 +61,21 @@ msgstr "😬🎮 Nobody wanted to play 😬\n\nSend it to the cool ones, they wo
 msgid "game-stopped"
 msgstr "🎮 The game was stopped due to inactivity 🎮"
 
+msgid "already-game-creator"
+msgstr "You created this game — wait for someone else to join 😅"
+
+msgid "game-already-started"
+msgstr "This game already has two players ❌"
+
+msgid "game-already-ended"
+msgstr "This game is already over ❌"
+
+msgid "game-expired"
+msgstr "This game is no longer available ⏳"
+
+msgid "rate-limit-exceeded"
+msgstr "Too many requests — please wait a moment ⏳"
+
 msgid "lang-changed"
 msgstr "Language changed successfully ✅"
 

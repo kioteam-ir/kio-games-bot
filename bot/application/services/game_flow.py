@@ -15,6 +15,7 @@ from bot.application.dto.game import (
     SessionTimeoutResult,
     UseCaseError,
 )
+from bot.application.dto.session import JoinSessionError
 from bot.application.services.board_state import BoardStateBuilder
 from bot.application.services.game_catalog import GameCatalogService
 from bot.application.services.session_manager import GameSessionManager
@@ -116,6 +117,21 @@ class GameFlowService:
         self._translator = translator
 
     async def create(self, request: MakeGameRequest) -> CreateGameResult | UseCaseError:
+        existing_id = await self._sessions.find_by_inline_message(request.inline_message_id)
+        if existing_id is not None:
+            existing = await self._sessions.get(existing_id)
+            if existing is not None:
+                if existing.players[0].id != request.creator.id:
+                    return UseCaseError(message_key=I18nKeys.NOT_YOUR_GAME)
+                if len(existing.players) >= 2:
+                    return UseCaseError(message_key=I18nKeys.GAME_ALREADY_STARTED)
+                entry = self._catalog.get(request.lang, existing.game_type)
+                waiting = self._translator.t(I18nKeys.WAITING_FOR_PLAYER, request.lang)
+                return CreateGameResult(
+                    text=f"{waiting}\n{entry.description}",
+                    game_id=existing_id,
+                )
+
         entry = self._catalog.get(request.lang, request.game_type)
         engine = create_engine(entry)
         session = GameSession(
@@ -132,31 +148,45 @@ class GameFlowService:
         return CreateGameResult(text=text, game_id=game_id)
 
     async def join(self, request: JoinGameRequest) -> JoinGameResult | UseCaseError:
-        session = await self._sessions.get(request.game_id)
+        outcome = await self._sessions.try_join(request.game_id, request.player)
+        if outcome.error == JoinSessionError.NOT_FOUND:
+            return UseCaseError(message_key=I18nKeys.GAME_EXPIRED)
+        if outcome.error == JoinSessionError.CREATOR:
+            return UseCaseError(message_key=I18nKeys.ALREADY_GAME_CREATOR)
+        if outcome.error == JoinSessionError.FULL:
+            return UseCaseError(message_key=I18nKeys.GAME_ALREADY_STARTED)
+        session = outcome.session
         if session is None:
-            return UseCaseError(message_key=I18nKeys.NOT_YOUR_GAME)
-        if request.player.id in {p.id for p in session.players}:
-            return UseCaseError(message_key=I18nKeys.CANNOT_PLAY_WITH_YOURSELF)
-        await self._users.get_or_create(
-            request.player.id,
-            name=request.player.first_name,
-            username=request.player.username or "",
-            lang_code=self._translator.resolve_lang(request.player.lang_code),
-        )
-        session.players.append(request.player)
-        await self._sessions.save(request.game_id, session)
-        creator = await self._users.get_or_create(session.players[0].id)
-        view = self._build_board_view(session, request.game_id, creator.lang_code, game_over=False)
+            return UseCaseError(message_key=I18nKeys.GAME_EXPIRED)
+
+        if not outcome.idempotent:
+            await self._users.get_or_create(
+                request.player.id,
+                name=request.player.first_name,
+                username=request.player.username or "",
+                lang_code=self._translator.resolve_lang(request.player.lang_code),
+            )
+        view = self._build_board_view(session, request.game_id, session.lang, game_over=False)
         return JoinGameResult(view=view)
 
-    async def move(self, request: MoveGameRequest) -> MoveGameResult | UseCaseError:
-        session = await self._sessions.get(request.game_id)
+    async def move(
+        self,
+        request: MoveGameRequest,
+        *,
+        session: GameSession | None = None,
+    ) -> MoveGameResult | UseCaseError:
+        session = session or await self._sessions.get(request.game_id)
         if session is None:
-            return UseCaseError(message_key=I18nKeys.NOT_YOUR_GAME)
+            return UseCaseError(message_key=I18nKeys.GAME_EXPIRED)
+        if len(session.players) < 2:
+            return UseCaseError(message_key=I18nKeys.GAME_ALREADY_STARTED, alert=False)
         if request.player_id not in {p.id for p in session.players}:
             return UseCaseError(message_key=I18nKeys.NOT_YOUR_GAME)
+        engine = session.game_engine
+        if engine.ended or engine.is_draw():
+            return UseCaseError(message_key=I18nKeys.GAME_ALREADY_ENDED, alert=False)
         if session.current_player.id != request.player_id:
-            return UseCaseError(message_key=I18nKeys.NOT_YOUR_TURN)
+            return UseCaseError(message_key=I18nKeys.NOT_YOUR_TURN, alert=False)
 
         engine = session.game_engine
         module = get_game_module(session.game_type)
@@ -171,8 +201,7 @@ class GameFlowService:
         session.current_player = new_player
         await self._sessions.save(request.game_id, session)
 
-        creator = await self._users.get_or_create(session.players[0].id)
-        game_lang = creator.lang_code
+        game_lang = session.lang
         game_over = engine.ended or engine.is_draw()
         match_summary = None
         if game_over and len(session.players) == 2:
@@ -204,18 +233,16 @@ class GameFlowService:
     async def get_state(self, game_id: int) -> GameBoardView | UseCaseError:
         session = await self._sessions.get(game_id)
         if session is None:
-            return UseCaseError(message_key=I18nKeys.NOT_YOUR_GAME)
-        creator = await self._users.get_or_create(session.players[0].id)
+            return UseCaseError(message_key=I18nKeys.GAME_EXPIRED)
         game_over = session.game_engine.ended or session.game_engine.is_draw()
-        return self._build_board_view(session, game_id, creator.lang_code, game_over=game_over)
+        return self._build_board_view(session, game_id, session.lang, game_over=game_over)
 
     async def handle_timeout(
         self,
         game_id: int,
         session: GameSession,
     ) -> SessionTimeoutResult | None:
-        creator = await self._users.get_or_create(session.players[0].id)
-        lang = creator.lang_code
+        lang = session.lang
         if len(session.players) == 2:
             if session.game_engine.ended:
                 return None

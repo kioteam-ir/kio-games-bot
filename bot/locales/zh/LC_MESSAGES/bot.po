@@ -61,6 +61,18 @@ msgstr "😬🎮 没人想玩 😬\n\n发给酷的朋友们，他们不会拒绝
 msgid "game-stopped"
 msgstr "🎮 由于长时间无操作，游戏已停止 🎮"
 
+msgid "already-game-creator"
+msgstr "这是你创建的游戏——请等待其他人加入 😅"
+
+msgid "game-already-started"
+msgstr "❌ 这局游戏已有两名玩家 ❌"
+
+msgid "game-already-ended"
+msgstr "❌ 这局游戏已经结束 ❌"
+
+msgid "game-expired"
+msgstr "⏳ 这局游戏已不可用 ⏳"
+
 msgid "lang-changed"
 msgstr "语言已成功更改 ✅"
 

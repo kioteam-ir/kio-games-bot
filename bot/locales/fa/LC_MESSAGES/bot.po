@@ -61,6 +61,21 @@ msgstr "😬🎮 هیچکسی مایل به بازی کردن نبود 😬\n\n�
 msgid "game-stopped"
 msgstr "🎮 بازی به دلیل وقفه زیاد، متوقف شد 🎮"
 
+msgid "already-game-creator"
+msgstr "این بازی رو خودت ساختی — منتظر نفر دوم بمون 😅"
+
+msgid "game-already-started"
+msgstr "❌ این بازی قبلاً دو بازیکن داره ❌"
+
+msgid "game-already-ended"
+msgstr "❌ این بازی تموم شده ❌"
+
+msgid "game-expired"
+msgstr "⏳ این بازی دیگه در دسترس نیست ⏳"
+
+msgid "rate-limit-exceeded"
+msgstr "⏳ درخواست‌های زیاد — لطفاً کمی صبر کن ⏳"
+
 msgid "lang-changed"
 msgstr "زبان با موفقیت تغییر کرد ✅"
 

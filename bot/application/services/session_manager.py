@@ -8,8 +8,12 @@ from contextlib import suppress
 from time import monotonic
 from uuid import uuid4
 
+from redis.asyncio import Redis
+
+from bot.application.dto.session import JoinSessionError, JoinSessionOutcome
 from bot.application.services.game_catalog import GameCatalogService
 from bot.domain.entities.game_session import GameSession
+from bot.domain.schemas.player import TelegramPlayer
 from bot.domain.schemas.session_store import StoredGameSession, from_stored_session, to_stored_session
 
 
@@ -63,9 +67,19 @@ SessionDeletedHandler = Callable[[int, GameSession], Awaitable[None]]
 
 
 class GameSessionManager:
-    def __init__(self, storage: GameSessionStorage, timeout: float) -> None:
+    def __init__(
+        self,
+        storage: GameSessionStorage,
+        timeout: float,
+        *,
+        redis_client: Redis | None = None,
+        inline_key_prefix: str = "kio:inline:",
+    ) -> None:
         self._storage = storage
         self._timeout = timeout
+        self._redis = redis_client
+        self._inline_key_prefix = inline_key_prefix
+        self._inline_index: dict[str, int] = {}
         self._last_accessed: dict[int, float] = {}
         self._listeners: dict[str, list[SessionDeletedHandler]] = defaultdict(list)
         self._lock = asyncio.Lock()
@@ -79,11 +93,42 @@ class GameSessionManager:
             self._last_accessed[game_id] = monotonic()
         return session
 
+    async def find_by_inline_message(self, inline_message_id: str) -> int | None:
+        if self._redis is not None:
+            raw = await self._redis.get(f"{self._inline_key_prefix}{inline_message_id}")
+            if raw is None:
+                return None
+            if isinstance(raw, bytes):
+                raw = raw.decode()
+            return int(raw)
+        return self._inline_index.get(inline_message_id)
+
     async def push(self, session: GameSession) -> int:
         game_id = uuid4().int % (10**18)
         await self._storage.set(game_id, session)
         self._last_accessed[game_id] = monotonic()
+        await self._bind_inline_message(session.inline_message_id, game_id)
         return game_id
+
+    async def try_join(self, game_id: int, player: TelegramPlayer) -> JoinSessionOutcome:
+        async with self._lock:
+            session = await self._storage.get(game_id)
+            if session is None:
+                return JoinSessionOutcome(error=JoinSessionError.NOT_FOUND)
+
+            player_ids = {existing.id for existing in session.players}
+            if player.id == session.players[0].id:
+                return JoinSessionOutcome(error=JoinSessionError.CREATOR)
+            if player.id in player_ids and len(session.players) == 2:
+                self._last_accessed[game_id] = monotonic()
+                return JoinSessionOutcome(session=session, idempotent=True)
+            if len(session.players) >= 2:
+                return JoinSessionOutcome(error=JoinSessionError.FULL)
+
+            session.players.append(player)
+            await self._storage.set(game_id, session)
+            self._last_accessed[game_id] = monotonic()
+            return JoinSessionOutcome(session=session)
 
     async def save(self, game_id: int, session: GameSession) -> None:
         await self._storage.set(game_id, session)
@@ -95,8 +140,26 @@ class GameSessionManager:
             if session is not None:
                 with suppress(Exception):
                     await handler(game_id, session)
+        if session is not None:
+            await self._unbind_inline_message(session.inline_message_id)
         await self._storage.delete(game_id)
         self._last_accessed.pop(game_id, None)
+
+    async def _bind_inline_message(self, inline_message_id: str, game_id: int) -> None:
+        if self._redis is not None:
+            await self._redis.set(
+                f"{self._inline_key_prefix}{inline_message_id}",
+                str(game_id),
+                ex=int(self._timeout),
+            )
+        else:
+            self._inline_index[inline_message_id] = game_id
+
+    async def _unbind_inline_message(self, inline_message_id: str) -> None:
+        if self._redis is not None:
+            await self._redis.delete(f"{self._inline_key_prefix}{inline_message_id}")
+        else:
+            self._inline_index.pop(inline_message_id, None)
 
     async def start_cleanup_loop(self) -> None:
         while True:

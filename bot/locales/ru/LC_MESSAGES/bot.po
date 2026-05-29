@@ -61,6 +61,18 @@ msgstr "😬🎮 Никто не захотел играть 😬\n\nОтпра�
 msgid "game-stopped"
 msgstr "🎮 Игра остановлена из-за бездействия 🎮"
 
+msgid "already-game-creator"
+msgstr "Вы создали эту игру — дождитесь второго игрока 😅"
+
+msgid "game-already-started"
+msgstr "❌ В этой игре уже два игрока ❌"
+
+msgid "game-already-ended"
+msgstr "❌ Игра уже завершена ❌"
+
+msgid "game-expired"
+msgstr "⏳ Игра больше недоступна ⏳"
+
 msgid "lang-changed"
 msgstr "Язык успешно изменён ✅"
 

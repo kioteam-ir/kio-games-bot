@@ -22,7 +22,7 @@ class GameSessionFilter(BaseFilter):
             return False
         session = await session_manager.get(game_id)
         if session is None:
-            return False
+            return {"game_id": game_id, "game_session": None}
         return {"game_session": session, "game_id": game_id}
 
 

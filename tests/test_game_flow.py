@@ -3,6 +3,7 @@ from __future__ import annotations
 import pytest
 
 from bot.application.dto.game import JoinGameRequest, MakeGameRequest, MoveGameRequest
+from bot.application.dto.session import JoinSessionError
 from bot.application.services.game_catalog import GameCatalogService
 from bot.application.services.game_flow import GameFlowService
 from bot.application.services.session_manager import GameSessionManager, InMemoryGameSessionStorage
@@ -154,3 +155,113 @@ async def test_connect_move_updates_board(translator: Translator) -> None:
     session = await flow._sessions.get(created.game_id)
     assert session is not None
     assert session.game_engine.move_count == 1
+
+
+@pytest.mark.asyncio
+async def test_creator_cannot_join_own_game(translator: Translator) -> None:
+    flow = _flow(translator)
+    created = await flow.create(
+        MakeGameRequest(
+            creator=TelegramPlayer(id=1, first_name="Alice"),
+            game_type=GameTypeId.CONNECT_4,
+            inline_message_id="inline-1",
+            lang="en",
+        )
+    )
+    err = await flow.join(
+        JoinGameRequest(
+            player=TelegramPlayer(id=1, first_name="Alice"),
+            game_id=created.game_id,
+            lang="en",
+        )
+    )
+    assert err.message_key == I18nKeys.ALREADY_GAME_CREATOR
+
+
+@pytest.mark.asyncio
+async def test_create_is_idempotent_for_same_inline_message(translator: Translator) -> None:
+    flow = _flow(translator)
+    request = MakeGameRequest(
+        creator=TelegramPlayer(id=1, first_name="Alice"),
+        game_type=GameTypeId.CONNECT_4,
+        inline_message_id="inline-1",
+        lang="en",
+    )
+    first = await flow.create(request)
+    second = await flow.create(request)
+    assert first.game_id == second.game_id
+
+
+@pytest.mark.asyncio
+async def test_join_rejects_third_player(translator: Translator) -> None:
+    flow = _flow(translator)
+    created = await flow.create(
+        MakeGameRequest(
+            creator=TelegramPlayer(id=1, first_name="Alice"),
+            game_type=GameTypeId.CONNECT_4,
+            inline_message_id="inline-1",
+            lang="en",
+        )
+    )
+    await flow.join(
+        JoinGameRequest(
+            player=TelegramPlayer(id=2, first_name="Bob"),
+            game_id=created.game_id,
+            lang="en",
+        )
+    )
+    err = await flow.join(
+        JoinGameRequest(
+            player=TelegramPlayer(id=3, first_name="Carol"),
+            game_id=created.game_id,
+            lang="en",
+        )
+    )
+    assert err.message_key == I18nKeys.GAME_ALREADY_STARTED
+
+
+@pytest.mark.asyncio
+async def test_join_is_idempotent_for_existing_player(translator: Translator) -> None:
+    flow = _flow(translator)
+    created = await flow.create(
+        MakeGameRequest(
+            creator=TelegramPlayer(id=1, first_name="Alice"),
+            game_type=GameTypeId.CONNECT_4,
+            inline_message_id="inline-1",
+            lang="en",
+        )
+    )
+    bob = TelegramPlayer(id=2, first_name="Bob")
+    first = await flow.join(JoinGameRequest(player=bob, game_id=created.game_id, lang="en"))
+    second = await flow.join(JoinGameRequest(player=bob, game_id=created.game_id, lang="en"))
+    assert first.view.game_id == second.view.game_id
+
+
+@pytest.mark.asyncio
+async def test_move_rejects_after_game_expired(translator: Translator) -> None:
+    flow = _flow(translator)
+    created = await flow.create(
+        MakeGameRequest(
+            creator=TelegramPlayer(id=1, first_name="Alice"),
+            game_type=GameTypeId.CONNECT_4,
+            inline_message_id="inline-1",
+            lang="en",
+        )
+    )
+    await flow.join(
+        JoinGameRequest(
+            player=TelegramPlayer(id=2, first_name="Bob"),
+            game_id=created.game_id,
+            lang="en",
+        )
+    )
+    await flow._sessions.delete(created.game_id)
+    err = await flow.move(MoveGameRequest(game_id=created.game_id, player_id=1, row=0, col=1, lang="en"))
+    assert err.message_key == I18nKeys.GAME_EXPIRED
+
+
+@pytest.mark.asyncio
+async def test_try_join_reports_missing_session(translator: Translator) -> None:
+    flow = _flow(translator)
+    outcome = await flow._sessions.try_join(999, TelegramPlayer(id=2, first_name="Bob"))
+    assert outcome.error == JoinSessionError.NOT_FOUND
