@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from sqlalchemy import and_, func, or_, select
+from sqlalchemy import and_, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from api.infrastructure.database.connection import get_session_factory, session_scope
@@ -80,34 +80,29 @@ async def _shared_game(
         ),
     )
 
-    total = await session.scalar(select(func.count()).select_from(AppGame).where(pair_filter))
-
-    p1_win_filter = and_(
-        pair_filter,
-        or_(
-            and_(AppGame.player_1_id == player_1_id, AppGame.result == "player_1"),
-            and_(AppGame.player_2_id == player_1_id, AppGame.result == "player_2"),
-        ),
+    result = await session.execute(
+        select(AppGame.result, AppGame.player_1_id, AppGame.player_2_id).where(pair_filter)
     )
-    p1_wins = await session.scalar(select(func.count()).select_from(AppGame).where(p1_win_filter))
-
-    p2_win_filter = and_(
-        pair_filter,
-        or_(
-            and_(AppGame.player_1_id == player_2_id, AppGame.result == "player_1"),
-            and_(AppGame.player_2_id == player_2_id, AppGame.result == "player_2"),
-        ),
-    )
-    p2_wins = await session.scalar(select(func.count()).select_from(AppGame).where(p2_win_filter))
-
-    draw_filter = and_(pair_filter, AppGame.result == "draw")
-    draws = await session.scalar(select(func.count()).select_from(AppGame).where(draw_filter))
+    rows = result.all()
+    total = len(rows)
+    p1_wins = 0
+    p2_wins = 0
+    draws = 0
+    for row in rows:
+        if row.result == "draw":
+            draws += 1
+            continue
+        winner_id = row.player_1_id if row.result == "player_1" else row.player_2_id
+        if winner_id == player_1_id:
+            p1_wins += 1
+        elif winner_id == player_2_id:
+            p2_wins += 1
 
     return HeadToHeadStats(
-        total=int(total or 0),
-        p1_wins=int(p1_wins or 0),
-        p2_wins=int(p2_wins or 0),
-        draws=int(draws or 0),
+        total=total,
+        p1_wins=p1_wins,
+        p2_wins=p2_wins,
+        draws=draws,
     )
 
 
