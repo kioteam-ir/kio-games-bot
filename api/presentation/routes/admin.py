@@ -49,18 +49,18 @@ def verify_admin_token(x_admin_token: AdminTokenDep, api_config: ApiConfigDep) -
         )
 
 
-AdminAuthDep = Annotated[None, Depends(verify_admin_token)]
+AdminAuthDep = Depends(verify_admin_token)
 
 
-@router.get("/users", response_model=list[UserAdminResponse])
-async def list_users(_: AdminAuthDep, session: SessionDep) -> list[UserAdminResponse]:
+@router.get("/users", response_model=list[UserAdminResponse], dependencies=[AdminAuthDep])
+async def list_users(session: SessionDep) -> list[UserAdminResponse]:
     result = await session.execute(select(AppUser).order_by(AppUser.joined_time.desc()))
     users = result.scalars().all()
     return [UserAdminResponse.model_validate(user) for user in users]
 
 
-@router.get("/sponsors", response_model=list[SponsorAdminResponse])
-async def list_sponsors(_: AdminAuthDep, session: SessionDep) -> list[SponsorAdminResponse]:
+@router.get("/sponsors", response_model=list[SponsorAdminResponse], dependencies=[AdminAuthDep])
+async def list_sponsors(session: SessionDep) -> list[SponsorAdminResponse]:
     result = await session.execute(select(AppSponser).order_by(AppSponser.created_time.desc()))
     sponsors = result.scalars().all()
     return [SponsorAdminResponse.model_validate(sponsor) for sponsor in sponsors]
