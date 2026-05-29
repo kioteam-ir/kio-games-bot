@@ -16,7 +16,8 @@ WORKDIR /bot
 COPY pyproject.toml poetry.lock README.md ./
 COPY bot ./bot
 COPY api ./api
-RUN poetry install --only main
+RUN poetry install --only main \
+    && poetry run pybabel compile -d bot/locales -D bot
 
 FROM python:3.13-alpine AS runtime
 
