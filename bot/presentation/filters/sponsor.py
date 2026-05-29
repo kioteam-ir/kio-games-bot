@@ -32,9 +32,11 @@ class SponsorRequiredFilter(BaseFilter):
         self,
         event: Message | CallbackQuery,
         container: AppContainer,
-        user_context: ResolvedUserContext,
         **kwargs: Any,
     ) -> bool | dict[str, Any]:
+        user_context = kwargs.get("user_context")
+        if not isinstance(user_context, ResolvedUserContext):
+            return False
         if container.sponsor_checker is None:
             return False
         user = event.from_user

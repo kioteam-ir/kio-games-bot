@@ -9,6 +9,11 @@ from bot.application.dto.game import ResolvedUserContext
 from bot.application.services.game_flow import UserService
 
 
+def _user_context(kwargs: dict[str, Any]) -> ResolvedUserContext | None:
+    ctx = kwargs.get("user_context")
+    return ctx if isinstance(ctx, ResolvedUserContext) else None
+
+
 class ResolvedUserFilter(BaseFilter):
     async def __call__(
         self,
@@ -31,22 +36,20 @@ class ResolvedUserFilter(BaseFilter):
 
 
 class NotBannedFilter(BaseFilter):
-    async def __call__(
-        self,
-        user_context: ResolvedUserContext,
-        **kwargs: Any,
-    ) -> bool | dict[str, Any]:
+    async def __call__(self, **kwargs: Any) -> bool | dict[str, Any]:
+        user_context = _user_context(kwargs)
+        if user_context is None:
+            return False
         if user_context.user.is_banned:
             return False
         return {}
 
 
 class BannedUserFilter(BaseFilter):
-    async def __call__(
-        self,
-        user_context: ResolvedUserContext,
-        **kwargs: Any,
-    ) -> bool | dict[str, Any]:
+    async def __call__(self, **kwargs: Any) -> bool | dict[str, Any]:
+        user_context = _user_context(kwargs)
+        if user_context is None:
+            return False
         if not user_context.user.is_banned:
             return False
         return {"banned_context": user_context}

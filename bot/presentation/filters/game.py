@@ -41,11 +41,10 @@ class CreatorMatchFilter(BaseFilter):
 
 
 class TwoPlayerSessionFilter(BaseFilter):
-    async def __call__(
-        self,
-        game_session: GameSession,
-        **kwargs: Any,
-    ) -> bool | dict[str, Any]:
+    async def __call__(self, **kwargs: Any) -> bool | dict[str, Any]:
+        game_session = kwargs.get("game_session")
+        if not isinstance(game_session, GameSession):
+            return False
         if len(game_session.players) != 2:
             return False
         return {"two_player_session": True}
