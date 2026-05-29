@@ -39,11 +39,13 @@ def test_row_dict_matches_columns() -> None:
 @pytest.mark.parametrize(
     ("raw", "expected"),
     [
-        ("ru", "tr"),
+        ("ru", "ru"),
+        ("de", "de"),
         ("fa", "fa"),
         ("en", "en"),
         ("tr", "tr"),
-        ("de", "en"),
+        ("he", "he"),
+        ("zz", "en"),
     ],
 )
 def test_normalize_lang_code(raw: str, expected: str) -> None:

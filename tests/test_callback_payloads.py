@@ -18,11 +18,10 @@ class CallbackPayloadTests(unittest.TestCase):
         restored = ChangeLangCallback.unpack(payload.pack())
         self.assertEqual(restored.lang, "tr")
 
-    def test_change_lang_roundtrip(self) -> None:
-        payload = ChangeLangCallback(lang="en")
-        packed = payload.pack()
-        restored = ChangeLangCallback.unpack(packed)
-        self.assertEqual(restored.lang, "en")
+    def test_change_lang_russian_roundtrip(self) -> None:
+        payload = ChangeLangCallback(lang="ru")
+        restored = ChangeLangCallback.unpack(payload.pack())
+        self.assertEqual(restored.lang, "ru")
 
     def test_make_game_roundtrip(self) -> None:
         payload = MakeGameCallback(creator_id=42, game_type=GameTypeId.CONNECT_4)

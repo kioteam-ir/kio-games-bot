@@ -5,8 +5,8 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-SUPPORTED_LANGS: frozenset[str] = frozenset({"tr", "en", "fa"})
-LEGACY_LANG_MAP: dict[str, str] = {"ru": "tr"}
+SUPPORTED_LANGS: frozenset[str] = frozenset({"tr", "en", "fa", "he", "ru", "zh", "ar", "de", "fr"})
+LEGACY_LANG_MAP: dict[str, str] = {}
 
 
 def normalize_lang_code(value: str) -> str:

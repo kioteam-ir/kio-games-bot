@@ -21,7 +21,10 @@ class I18nCatalogTests(unittest.TestCase):
         cls.translator = Translator(I18nConfigClass(), i18n)
 
     def test_supported_langs(self) -> None:
-        self.assertEqual(set(self.translator.supported_langs), {"tr", "en", "fa"})
+        self.assertEqual(
+            set(self.translator.supported_langs),
+            {"tr", "en", "fa", "he", "ru", "zh", "ar", "de", "fr"},
+        )
 
     def test_english_start_message(self) -> None:
         text = self.translator.t(I18nKeys.START, "en")
