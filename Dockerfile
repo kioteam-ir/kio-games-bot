@@ -13,7 +13,8 @@ RUN apk add --no-cache build-base libffi-dev openssl-dev postgresql-dev \
     && pip install --no-cache-dir "poetry==${POETRY_VERSION}"
 
 WORKDIR /bot
-COPY pyproject.toml poetry.lock ./
+COPY pyproject.toml poetry.lock README.md ./
+COPY bot ./bot
 RUN poetry install --only main
 
 FROM python:3.13-alpine AS runtime
@@ -33,7 +34,8 @@ WORKDIR /bot
 COPY --from=builder /usr/local/lib/python3.13/site-packages /usr/local/lib/python3.13/site-packages
 COPY --from=builder /usr/local/bin /usr/local/bin
 
-COPY pyproject.toml poetry.lock ./
+COPY pyproject.toml poetry.lock README.md ./
+COPY bot ./bot
 COPY entrypoint.sh /bot/entrypoint.sh
 COPY . /bot/
 
