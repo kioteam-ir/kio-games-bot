@@ -76,7 +76,8 @@ class ChangeLanguageService:
         resolved_lang = self._translator.resolve_lang(lang)
         await self._users.change_lang(user_id, resolved_lang)
         return ChangeLangResult(
-            alert_text=self._translator.t(I18nKeys.LANG_CHANGED, resolved_lang),
+            lang=resolved_lang,
+            message_text=self._translator.t(I18nKeys.LANG_CHANGED, resolved_lang),
         )
 
 

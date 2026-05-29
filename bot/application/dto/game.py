@@ -53,7 +53,8 @@ class PlayerStatsResult(BaseModel):
 class ChangeLangResult(BaseModel):
     model_config = ConfigDict(frozen=True)
 
-    alert_text: str
+    lang: str
+    message_text: str
 
 
 class SessionTimeoutResult(BaseModel):

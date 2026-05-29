@@ -68,8 +68,18 @@ async def change_lang_handler(
 
     if callback.from_user is None or not isinstance(change_language_service, ChangeLanguageService):
         return
+    if callback.bot is None:
+        return
     result = await change_language_service.change(callback.from_user.id, callback_data.lang)
-    await callback.answer(result.alert_text, show_alert=True)
+    if callback.inline_message_id:
+        await callback.bot.edit_message_text(
+            inline_message_id=callback.inline_message_id,
+            text=result.message_text,
+            reply_markup=None,
+        )
+    elif callback.message:
+        await callback.message.edit_text(text=result.message_text, reply_markup=None)
+    await callback.answer()
 
 
 @router.callback_query(PlayerInfoCallback.filter(), ResolvedUserFilter())
