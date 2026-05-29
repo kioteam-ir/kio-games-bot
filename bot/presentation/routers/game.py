@@ -24,6 +24,7 @@ from bot.infrastructure.callback.payloads import (
     PlayerInfoCallback,
 )
 from bot.infrastructure.i18n.translator import Translator
+from bot.infrastructure.telegram.editing import edit_callback_message
 from bot.infrastructure.telegram.keyboards import KeyboardService
 from bot.locales.i18n_keys import I18nKeys
 from bot.presentation.filters.game import CreatorMatchFilter, GameSessionFilter
@@ -70,17 +71,8 @@ async def change_lang_handler(
 
     if callback.from_user is None or not isinstance(change_language_service, ChangeLanguageService):
         return
-    if callback.bot is None:
-        return
     result = await change_language_service.change(callback.from_user.id, callback_data.lang)
-    if callback.inline_message_id:
-        await callback.bot.edit_message_text(
-            inline_message_id=callback.inline_message_id,
-            text=result.message_text,
-            reply_markup=None,
-        )
-    elif callback.message:
-        await callback.message.edit_text(text=result.message_text, reply_markup=None)
+    await edit_callback_message(callback, text=result.message_text)
     await callback.answer()
 
 
