@@ -34,8 +34,8 @@ from bot.domain.repositories import (
 )
 from bot.infrastructure.cache.redis_cache import CacheBackend, build_cache_backend
 from bot.infrastructure.cache.repositories import CachedSponsorRepository, CachedUserRepository
-from bot.infrastructure.idempotency.store import IdempotencyStore, build_idempotency_store
 from bot.infrastructure.i18n.translator import Translator
+from bot.infrastructure.idempotency.store import IdempotencyStore, build_idempotency_store
 from bot.infrastructure.ratelimit.service import RateLimitService, build_rate_limit_service
 from bot.infrastructure.session.factory import build_session_storage
 from bot.infrastructure.telegram.sponsor_checker import TelegramSponsorMembershipChecker
@@ -98,15 +98,9 @@ class AppContainer:
         )
         resolved_redis = redis if redis is not None else redis_client
         cache_backend = build_cache_backend(resolved_redis)
-        user_repo = (
-            raw_user_repo
-            if user_repo is not None
-            else CachedUserRepository(raw_user_repo, cache_backend)
-        )
+        user_repo = raw_user_repo if user_repo is not None else CachedUserRepository(raw_user_repo, cache_backend)
         sponsor_repo = (
-            raw_sponsor_repo
-            if sponsor_repo is not None
-            else CachedSponsorRepository(raw_sponsor_repo, cache_backend)
+            raw_sponsor_repo if sponsor_repo is not None else CachedSponsorRepository(raw_sponsor_repo, cache_backend)
         )
         session_manager = GameSessionManager(
             storage=storage,

@@ -11,7 +11,6 @@ from bot.infrastructure.callback.service import CallbackService
 from bot.infrastructure.i18n.translator import Translator
 from bot.locales.i18n_keys import I18nKeys
 
-
 LANGUAGE_OPTIONS: list[tuple[str, str]] = [
     ("tr", "🇹🇷 Türkçe 🇹🇷"),
     ("en", "🇺🇸 English 🇺🇸"),
@@ -36,10 +35,7 @@ class KeyboardService:
         *,
         extra_row: list[InlineKeyboardButton] | None = None,
     ) -> InlineKeyboardMarkup:
-        rows = [
-            [InlineKeyboardButton(text=f"🎫 {s.name.strip()} 🎫", url=str(s.link))]
-            for s in sponsors
-        ]
+        rows = [[InlineKeyboardButton(text=f"🎫 {s.name.strip()} 🎫", url=str(s.link))] for s in sponsors]
         if extra_row:
             rows.insert(0, extra_row)
         return InlineKeyboardMarkup(inline_keyboard=rows)
@@ -96,9 +92,7 @@ class KeyboardService:
                 move_row.append(
                     InlineKeyboardButton(
                         text=option.label,
-                        callback_data=CallbackService.build_cell_move(0, option.col, board.game_id)
-                        if active
-                        else None,
+                        callback_data=CallbackService.build_cell_move(0, option.col, board.game_id) if active else None,
                         url=None if active else bot_url,
                     )
                 )

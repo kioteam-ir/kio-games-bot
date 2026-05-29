@@ -193,11 +193,7 @@ class GameFlowService:
         if not module.apply_ui_move(engine, row=request.row, col=request.col):
             return UseCaseError(message_key=I18nKeys.COLUMN_FULL)
 
-        new_player = (
-            session.players[0]
-            if session.current_player.id != session.players[0].id
-            else session.players[1]
-        )
+        new_player = session.players[0] if session.current_player.id != session.players[0].id else session.players[1]
         session.current_player = new_player
         await self._sessions.save(request.game_id, session)
 

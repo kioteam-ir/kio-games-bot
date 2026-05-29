@@ -77,13 +77,11 @@ class MigrationStats:
         for name, stats in self.steps.items():
             total.merge(stats)
             lines.append(
-                f"  {name:<24} +{stats.created:<5} ~{stats.updated:<5} "
-                f"skip={stats.skipped:<5} err={stats.errors}"
+                f"  {name:<24} +{stats.created:<5} ~{stats.updated:<5} skip={stats.skipped:<5} err={stats.errors}"
             )
         lines.append("-" * 65)
         lines.append(
-            f"  {'TOTAL':<24} +{total.created:<5} ~{total.updated:<5} "
-            f"skip={total.skipped:<5} err={total.errors}"
+            f"  {'TOTAL':<24} +{total.created:<5} ~{total.updated:<5} skip={total.skipped:<5} err={total.errors}"
         )
         lines.append("=" * 65)
         return "\n".join(lines)

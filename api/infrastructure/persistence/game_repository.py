@@ -80,9 +80,7 @@ async def _shared_game(
         ),
     )
 
-    result = await session.execute(
-        select(AppGame.result, AppGame.player_1_id, AppGame.player_2_id).where(pair_filter)
-    )
+    result = await session.execute(select(AppGame.result, AppGame.player_1_id, AppGame.player_2_id).where(pair_filter))
     rows = result.all()
     total = len(rows)
     p1_wins = 0

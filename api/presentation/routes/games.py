@@ -66,9 +66,7 @@ async def get_game_state(game_id: int, game_flow: GameFlowDep) -> GameBoardRespo
 
 @router.post("/{game_id}/join", response_model=GameBoardResponse)
 async def join_game(game_id: int, body: JoinGameBody, game_flow: GameFlowDep) -> GameBoardResponse:
-    result = await game_flow.join(
-        JoinGameRequest(player=body.player, game_id=game_id, lang=body.lang)
-    )
+    result = await game_flow.join(JoinGameRequest(player=body.player, game_id=game_id, lang=body.lang))
     if isinstance(result, UseCaseError):
         _raise_use_case(result)
     return _board_response(result.view)

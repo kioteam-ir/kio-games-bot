@@ -10,9 +10,9 @@ from aiogram.utils.i18n import I18n
 from bot.application.dto.game import SessionTimeoutResult
 from bot.core.container import AppContainer
 from bot.infrastructure.telegram.keyboards import KeyboardService
-from bot.presentation.middlewares.idempotency import CallbackIdempotencyMiddleware
 from bot.presentation.middlewares.container import ContainerMiddleware
 from bot.presentation.middlewares.i18n import KioI18nMiddleware, UserLocaleMiddleware
+from bot.presentation.middlewares.idempotency import CallbackIdempotencyMiddleware
 from bot.presentation.middlewares.ratelimit import RateLimitMiddleware
 from bot.presentation.middlewares.services import ServicesMiddleware
 from bot.presentation.routers.game import router as game_router

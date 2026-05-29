@@ -46,9 +46,7 @@ class InlineQueryResultService:
             )
         ]
         for game in context.games:
-            description = (
-                f"{game.description}\n\n{self._translator.t(I18nKeys.CREATE_GAME_TEXT, lang)}"
-            )
+            description = f"{game.description}\n\n{self._translator.t(I18nKeys.CREATE_GAME_TEXT, lang)}"
             results.append(
                 InlineQueryResultArticle(
                     id=str(int(game.game_type_id)),
@@ -58,9 +56,7 @@ class InlineQueryResultService:
                     thumbnail_url=game.thumb_url,
                     reply_markup=self._keyboards.sponsor_keyboard(
                         sponsors,
-                        extra_row=[
-                            self._keyboards.make_game_button(lang, user_id, game.game_type_id)
-                        ],
+                        extra_row=[self._keyboards.make_game_button(lang, user_id, game.game_type_id)],
                     ),
                 )
             )

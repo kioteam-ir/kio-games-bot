@@ -45,9 +45,7 @@ class NotBannedFilter(BaseFilter):
         user_context = _user_context(kwargs)
         if user_context is None:
             return False
-        if user_context.user.is_banned:
-            return False
-        return True
+        return not user_context.user.is_banned
 
 
 class BannedUserFilter(BaseFilter):
@@ -78,6 +76,4 @@ class AdminFilter(BaseFilter):
             return False
         if event.from_user is None:
             return False
-        if event.from_user.id not in container.bot_config.admin_ids:
-            return False
-        return True
+        return event.from_user.id in container.bot_config.admin_ids

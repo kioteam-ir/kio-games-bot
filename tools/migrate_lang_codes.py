@@ -46,9 +46,7 @@ async def migrate_lang_codes(args: LangMigrationArgs, stats: MigrationStats) -> 
                     new_lang=normalized,
                 )
             )
-            await session.execute(
-                update(AppUser).where(AppUser.id == user.id).values(lang_code=normalized)
-            )
+            await session.execute(update(AppUser).where(AppUser.id == user.id).values(lang_code=normalized))
             step.updated += 1
             print(f"  user {user.id}: {user.lang_code} -> {normalized}")
 

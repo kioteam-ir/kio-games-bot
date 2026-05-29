@@ -10,13 +10,7 @@ from bot.infrastructure.callback.payloads import (
     PlayerInfoCallback,
 )
 
-CallbackPayload = (
-    ChangeLangCallback
-    | PlayerInfoCallback
-    | MakeGameCallback
-    | JoinGameCallback
-    | CellMoveCallback
-)
+CallbackPayload = ChangeLangCallback | PlayerInfoCallback | MakeGameCallback | JoinGameCallback | CellMoveCallback
 
 
 class CallbackService:

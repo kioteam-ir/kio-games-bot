@@ -4,9 +4,7 @@ import re
 from dataclasses import dataclass
 from pathlib import Path
 
-_COPY_HEADER = re.compile(
-    r"^COPY public\.(?P<table>[a-z_]+) \((?P<columns>[^)]+)\) FROM stdin;$"
-)
+_COPY_HEADER = re.compile(r"^COPY public\.(?P<table>[a-z_]+) \((?P<columns>[^)]+)\) FROM stdin;$")
 
 
 @dataclass(frozen=True, slots=True)
