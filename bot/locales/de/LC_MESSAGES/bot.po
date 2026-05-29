@@ -1,0 +1,77 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: kio-games-bot\n"
+"Language: de\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "start"
+msgstr "Willkommen in unserem Bot ✋\nLass uns spielen 👾"
+
+msgid "create-game-text"
+msgstr "🕹 Bereit? Dann erstelle ein Spiel 🕹"
+
+msgid "create-game-button"
+msgstr "🕹 Spiel erstellen 🕹"
+
+msgid "you-are-banned-title"
+msgstr "Du bist in unserem Bot gesperrt!"
+
+msgid "you-are-banned-text"
+msgstr "Du darfst in unserem Bot nicht spielen."
+
+msgid "waiting-for-player"
+msgstr "⏳ Warte auf einen Spieler... ⏳"
+
+msgid "i-play"
+msgstr "Ich spiele mit 🙋"
+
+msgid "cannot-play-with-yourself"
+msgstr "Du kannst nicht gegen dich selbst spielen 😅"
+
+msgid "not-your-game"
+msgstr "❌ Du bist nicht in diesem Spiel ❌"
+
+msgid "not-your-turn"
+msgstr "❌ Du bist nicht dran ❌"
+
+msgid "column-full"
+msgstr "❌ Diese Spalte ist voll ❌"
+
+msgid "player-game-stats"
+msgstr "📊 Spielerstatistik 📊\n\n🕹 Alle Spiele [{all_games}] 🕹\n🥇 Siege [{wins}] 🥇\n🥈 Niederlagen [{losses}] 🥈\n🟰 Unentschieden [{draws}] 🟰"
+
+msgid "game-in-progress-text"
+msgstr "🕹 Zug: {name} [{color}]ㅤ                       ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ\n🕹 Mach deinen Zug 🕹"
+
+msgid "game-ended-text"
+msgstr "🏆 Gewinner: {winner}\n⚔ Gesamtspiele zwischen euch: [{total} {game}]\n1️⃣ {p1_name}: {p1_wins}\n2️⃣ {p2_name}: {p2_wins}\n🟰 Unentschieden: {draws}"
+
+msgid "game-is-draw-text"
+msgstr "Kein Gewinner 💢"
+
+msgid "game"
+msgstr "Spiel"
+
+msgid "play-with-cool-people-button"
+msgstr "😎 Mit coolen Leuten spielen 😎"
+
+msgid "play-with-cool-people-text"
+msgstr "😬🎮 Niemand wollte spielen 😬\n\nSchick es den Coolen — die sagen nicht nein 😒"
+
+msgid "game-stopped"
+msgstr "🎮 Das Spiel wurde wegen Inaktivität beendet 🎮"
+
+msgid "lang-changed"
+msgstr "Sprache erfolgreich geändert ✅"
+
+msgid "change-your-lang"
+msgstr "✅ Sprache ändern ✅"
+
+msgid "change-your-lang-text"
+msgstr "✅ Klicke, um die Sprache zu ändern ✅"
+
+msgid "join-first"
+msgstr "✅ Bitte tritt zuerst unseren Kanälen bei ✅"
+
+msgid "sponsors-updated"
+msgstr "Sponsoren aktualisiert: {count}"
