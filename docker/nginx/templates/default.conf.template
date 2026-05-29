@@ -1,5 +1,5 @@
-upstream django_app {
-    server django:8000;
+upstream api_app {
+    server api:8000;
 }
 
 server {
@@ -11,7 +11,7 @@ server {
 
     location / {
         include /etc/nginx/snippets/proxy_params.conf;
-        proxy_pass http://django_app;
+        proxy_pass http://api_app;
     }
 
     location /static/ {

@@ -15,6 +15,7 @@ RUN apk add --no-cache build-base libffi-dev openssl-dev postgresql-dev \
 WORKDIR /bot
 COPY pyproject.toml poetry.lock README.md ./
 COPY bot ./bot
+COPY api ./api
 RUN poetry install --only main
 
 FROM python:3.13-alpine AS runtime
@@ -36,6 +37,7 @@ COPY --from=builder /usr/local/bin /usr/local/bin
 
 COPY pyproject.toml poetry.lock README.md ./
 COPY bot ./bot
+COPY api ./api
 COPY entrypoint.sh /bot/entrypoint.sh
 COPY . /bot/
 
