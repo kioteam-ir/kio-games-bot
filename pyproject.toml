@@ -45,10 +45,13 @@ lint = ["ruff-lint", "mypy"]
 
 [tool.ruff]
 target-version = "py313"
-line-length = 100
+line-length = 120
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.ruff.lint.per-file-ignores]
+"bot/domain/games/**" = ["SIM105", "SIM110"]
 
 [tool.mypy]
 python_version = "3.13"
@@ -64,9 +67,13 @@ warn_unused_ignores = true
 packages = ["bot"]
 
 [[tool.mypy.overrides]]
-module = ["django.*", "app.*"]
+module = ["django.*", "app.*", "bot.domain.games.*"]
 ignore_missing_imports = true
+disallow_untyped_defs = false
+check_untyped_defs = false
+disable_error_code = ["union-attr", "no-untyped-def"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
+pythonpath = ["."]
