@@ -1,6 +1,6 @@
 from bot.bot import bot
 from services.game_session.session import session_manager
-from bot.rooters.on_delete import on_delete
+from bot.handlers.on_delete import on_delete
 import sys
 from bot.logger import setup_logger
 
