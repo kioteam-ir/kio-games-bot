@@ -106,7 +106,7 @@ async def test_join_adds_second_player(translator: Translator) -> None:
             lang="en",
         )
     )
-    assert len(joined.view.session.players) == 2
+    assert len(joined.view.board.players) == 2
 
 
 @pytest.mark.asyncio
@@ -149,5 +149,8 @@ async def test_connect_move_updates_board(translator: Translator) -> None:
             lang="en",
         )
     )
-    moved = await flow.move(MoveGameRequest(game_id=created.game_id, player_id=1, row=1, col=1, lang="en"))
-    assert moved.view.session.game_engine.move_count == 1
+    moved = await flow.move(MoveGameRequest(game_id=created.game_id, player_id=1, row=0, col=1, lang="en"))
+    assert moved.view.board.game_id == created.game_id
+    session = await flow._sessions.get(created.game_id)
+    assert session is not None
+    assert session.game_engine.move_count == 1
