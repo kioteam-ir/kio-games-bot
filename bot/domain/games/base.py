@@ -97,6 +97,10 @@ class GameEngine(ABC):
     def is_draw(self) -> bool:
         return self.move_count >= self.rows * self.cols and self.winner is None
 
+    def apply_ui_move(self, *, row: int, col: int) -> bool:
+        """Apply a 1-indexed UI callback. Subclasses define interaction rules."""
+        raise NotImplementedError
+
     # ---------------------------
     # Piece placement helpers
     # ---------------------------

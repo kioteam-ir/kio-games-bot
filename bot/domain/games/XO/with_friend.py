@@ -19,6 +19,11 @@ class VsFriendXO(GameEngine):
             return True
         raise ValueError("XO only supports tuple moves")
 
+    def apply_ui_move(self, *, row: int, col: int) -> bool:
+        if row <= 0 or col <= 0:
+            return False
+        return self.make_move((row - 1, col - 1))
+
     def is_valid_move(self, move: tuple[int, int]) -> bool:
         for n in move:
             if n >= self.cols or n < 0 or not self.board[move[0]][move[1]].is_empty:

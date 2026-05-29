@@ -26,3 +26,9 @@ class VsFriendEngine(GameEngine):
 
             return True
         raise ValueError("connect-game only supports int moves(columns)")
+
+    def apply_ui_move(self, *, row: int, col: int) -> bool:
+        # row=0 means column-picker row in Telegram UI
+        if row != 0:
+            return False
+        return self.make_move(col - 1)
