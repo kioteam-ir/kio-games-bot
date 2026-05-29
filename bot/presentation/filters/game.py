@@ -13,11 +13,12 @@ from bot.infrastructure.callback.payloads import MakeGameCallback
 class GameSessionFilter(BaseFilter):
     async def __call__(
         self,
-        callback_data: object,
+        callback: CallbackQuery,
         session_manager: GameSessionManager,
         **kwargs: Any,
     ) -> bool | dict[str, Any]:
-        game_id = _extract_game_id(callback_data)
+        _ = callback
+        game_id = _extract_game_id(kwargs.get("callback_data"))
         if game_id is None:
             return False
         session = await session_manager.get(game_id)
