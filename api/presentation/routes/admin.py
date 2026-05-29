@@ -10,12 +10,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.config.api import ApiConfigClass
 from api.infrastructure.database.models import AppSponser, AppUser
-from api.presentation.dependencies import get_session
+from api.presentation.dependencies import get_api_config, get_session
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 
 AdminTokenDep = Annotated[str, Header(alias="X-Admin-Token")]
-ApiConfigDep = Annotated[ApiConfigClass, Depends(ApiConfigClass)]
+ApiConfigDep = Annotated[ApiConfigClass, Depends(get_api_config)]
 SessionDep = Annotated[AsyncSession, Depends(get_session)]
 
 
