@@ -4,14 +4,14 @@ from aiogram.types import InlineQueryResultArticle, InputTextMessageContent
 
 from bot.application.dto.game import InlineGamesContext
 from bot.domain.schemas.sponsor import SponsorRecord
-from bot.domain.schemas.texts import CommandKey
-from bot.infrastructure.i18n.texts import TextsService
+from bot.infrastructure.i18n.translator import Translator
 from bot.infrastructure.telegram.keyboards import KeyboardService
+from bot.locales.i18n_keys import I18nKeys
 
 
 class InlineQueryResultService:
-    def __init__(self, texts: TextsService, keyboards: KeyboardService) -> None:
-        self._texts = texts
+    def __init__(self, translator: Translator, keyboards: KeyboardService) -> None:
+        self._translator = translator
         self._keyboards = keyboards
 
     def build_results(
@@ -25,11 +25,11 @@ class InlineQueryResultService:
             return [
                 InlineQueryResultArticle(
                     id="-1",
-                    title=self._texts.get(lang, CommandKey.YOU_ARE_BANNED_TITLE),
+                    title=self._translator.t(I18nKeys.YOU_ARE_BANNED_TITLE, lang),
                     input_message_content=InputTextMessageContent(
-                        message_text=self._texts.get(lang, CommandKey.YOU_ARE_BANNED_TEXT),
+                        message_text=self._translator.t(I18nKeys.YOU_ARE_BANNED_TEXT, lang),
                     ),
-                    description=self._texts.get(lang, CommandKey.YOU_ARE_BANNED_TEXT),
+                    description=self._translator.t(I18nKeys.YOU_ARE_BANNED_TEXT, lang),
                 )
             ]
 
@@ -37,17 +37,17 @@ class InlineQueryResultService:
         results: list[InlineQueryResultArticle] = [
             InlineQueryResultArticle(
                 id="999",
-                title=self._texts.get(lang, CommandKey.CHANGE_YOUR_LANG),
+                title=self._translator.t(I18nKeys.CHANGE_YOUR_LANG, lang),
                 input_message_content=InputTextMessageContent(
-                    message_text=self._texts.get(lang, CommandKey.CHANGE_YOUR_LANG_TEXT),
+                    message_text=self._translator.t(I18nKeys.CHANGE_YOUR_LANG_TEXT, lang),
                 ),
-                description=self._texts.get(lang, CommandKey.CHANGE_YOUR_LANG_TEXT),
+                description=self._translator.t(I18nKeys.CHANGE_YOUR_LANG_TEXT, lang),
                 reply_markup=self._keyboards.language_switcher(),
             )
         ]
         for game in context.games:
             description = (
-                f"{game.description}\n\n{self._texts.get(lang, CommandKey.CREATE_GAME_TEXT)}"
+                f"{game.description}\n\n{self._translator.t(I18nKeys.CREATE_GAME_TEXT, lang)}"
             )
             results.append(
                 InlineQueryResultArticle(

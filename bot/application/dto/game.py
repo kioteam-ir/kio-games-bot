@@ -3,14 +3,14 @@ from pydantic import BaseModel, ConfigDict
 from bot.domain.entities.game_session import GameSession
 from bot.domain.schemas.game import GameCatalogEntry, GameMatchSummary, GameTypeId
 from bot.domain.schemas.player import TelegramPlayer
-from bot.domain.schemas.texts import CommandKey
 from bot.domain.schemas.user import UserRecord
+from bot.locales.i18n_keys import I18nKeys
 
 
 class UseCaseError(BaseModel):
     model_config = ConfigDict(frozen=True)
 
-    message_key: CommandKey
+    message_key: I18nKeys
     alert: bool = True
 
 

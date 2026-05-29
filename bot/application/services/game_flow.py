@@ -21,19 +21,24 @@ from bot.domain.entities.game_session import GameSession
 from bot.domain.games.connect.with_friend import VsFriendEngine
 from bot.domain.games.XO.with_friend import VsFriendXO
 from bot.domain.repositories import GameRepository, UserRepository, telegram_player_from_user
-from bot.domain.schemas.game import GameResultKind, GameTypeId, PlayerGameStats
-from bot.domain.schemas.texts import CommandKey
-from bot.infrastructure.i18n.texts import TextsService
+from bot.domain.schemas.game import GameMatchSummary, GameResultKind, GameTypeId, PlayerGameStats
+from bot.infrastructure.i18n.translator import Translator
+from bot.locales.i18n_keys import I18nKeys
 
 
 class UserService:
-    def __init__(self, user_repo: UserRepository, texts: TextsService) -> None:
+    def __init__(self, user_repo: UserRepository, translator: Translator) -> None:
         self._users = user_repo
-        self._texts = texts
+        self._translator = translator
 
-    async def resolve_user(self, tg_user: object, *, lang_hint: str | None = None) -> ResolvedUserContext:
+    async def resolve_user(
+        self,
+        tg_user: object,
+        *,
+        lang_hint: str | None = None,
+    ) -> ResolvedUserContext:
         player = telegram_player_from_user(tg_user)
-        lang = self._texts.resolve_lang(lang_hint or player.lang_code)
+        lang = self._translator.resolve_lang(lang_hint or player.lang_code)
         user = await self._users.get_or_create(
             player.id,
             name=player.first_name,
@@ -63,31 +68,34 @@ class InlineGamesService:
 
 
 class ChangeLanguageService:
-    def __init__(self, user_repo: UserRepository, texts: TextsService) -> None:
+    def __init__(self, user_repo: UserRepository, translator: Translator) -> None:
         self._users = user_repo
-        self._texts = texts
+        self._translator = translator
 
     async def change(self, user_id: int, lang: str) -> ChangeLangResult:
-        resolved_lang = self._texts.resolve_lang(lang)
+        resolved_lang = self._translator.resolve_lang(lang)
         await self._users.change_lang(user_id, resolved_lang)
-        return ChangeLangResult(alert_text=self._texts.get(resolved_lang, CommandKey.LANG_CHANGED))
+        return ChangeLangResult(
+            alert_text=self._translator.t(I18nKeys.LANG_CHANGED, resolved_lang),
+        )
 
 
 class PlayerStatsService:
-    def __init__(self, user_repo: UserRepository, texts: TextsService) -> None:
+    def __init__(self, user_repo: UserRepository, translator: Translator) -> None:
         self._users = user_repo
-        self._texts = texts
+        self._translator = translator
 
     async def stats(self, player_id: int, game_type: GameTypeId, lang: str) -> PlayerStatsResult:
         stats: PlayerGameStats = await self._users.get_game_stats(player_id, game_type)
-        template = self._texts.get(lang, CommandKey.PLAYER_GAME_STATS)
         return PlayerStatsResult(
-            text=template.format(
+            text=self._translator.t(
+                I18nKeys.PLAYER_GAME_STATS,
+                lang,
                 all_games=stats.total,
                 wins=stats.wins,
                 losses=stats.losses,
                 draws=stats.draws,
-            )
+            ),
         )
 
 
@@ -98,13 +106,13 @@ class GameFlowService:
         catalog: GameCatalogService,
         game_repo: GameRepository,
         user_repo: UserRepository,
-        texts: TextsService,
+        translator: Translator,
     ) -> None:
         self._sessions = sessions
         self._catalog = catalog
         self._games = game_repo
         self._users = user_repo
-        self._texts = texts
+        self._translator = translator
 
     def _create_engine(self, entry: object, is_xo: bool) -> VsFriendXO | VsFriendEngine:
         from bot.domain.schemas.game import GameCatalogEntry
@@ -128,50 +136,48 @@ class GameFlowService:
             game_type=request.game_type,
         )
         game_id = self._sessions.push(session)
-        text = (
-            f"{self._texts.get(request.lang, CommandKey.WAITING_FOR_PLAYER)}\n{entry.description}"
-        )
+        waiting = self._translator.t(I18nKeys.WAITING_FOR_PLAYER, request.lang)
+        text = f"{waiting}\n{entry.description}"
         return CreateGameResult(text=text, game_id=game_id, session=session)
 
     async def join(self, request: JoinGameRequest) -> JoinGameResult | UseCaseError:
         session = self._sessions.get(request.game_id)
         if session is None:
-            return UseCaseError(message_key=CommandKey.NOT_YOUR_GAME)
+            return UseCaseError(message_key=I18nKeys.NOT_YOUR_GAME)
         if request.player.id in {p.id for p in session.players}:
-            return UseCaseError(message_key=CommandKey.CANNOT_PLAY_WITH_YOURSELF)
+            return UseCaseError(message_key=I18nKeys.CANNOT_PLAY_WITH_YOURSELF)
         await self._users.get_or_create(
             request.player.id,
             name=request.player.first_name,
             username=request.player.username or "",
-            lang_code=self._texts.resolve_lang(request.player.lang_code),
+            lang_code=self._translator.resolve_lang(request.player.lang_code),
         )
         session.players.append(request.player)
         creator = await self._users.get_or_create(session.players[0].id)
-        game_lang = creator.lang_code
-        view = self._build_board_view(session, request.game_id, game_lang, game_over=False)
+        view = self._build_board_view(session, request.game_id, creator.lang_code, game_over=False)
         return JoinGameResult(view=view)
 
     async def move(self, request: MoveGameRequest) -> MoveGameResult | UseCaseError:
         session = self._sessions.get(request.game_id)
         if session is None:
-            return UseCaseError(message_key=CommandKey.NOT_YOUR_GAME)
+            return UseCaseError(message_key=I18nKeys.NOT_YOUR_GAME)
         if request.player_id not in {p.id for p in session.players}:
-            return UseCaseError(message_key=CommandKey.NOT_YOUR_GAME)
+            return UseCaseError(message_key=I18nKeys.NOT_YOUR_GAME)
         if session.current_player.id != request.player_id:
-            return UseCaseError(message_key=CommandKey.NOT_YOUR_TURN)
+            return UseCaseError(message_key=I18nKeys.NOT_YOUR_TURN)
 
         row = request.row - 1
         col = request.col - 1
         engine = session.game_engine
         if session.is_xo:
             if not isinstance(engine, VsFriendXO):
-                return UseCaseError(message_key=CommandKey.COLUMN_FULL)
+                return UseCaseError(message_key=I18nKeys.COLUMN_FULL)
             if not engine.is_valid_move((row, col)):
-                return UseCaseError(message_key=CommandKey.COLUMN_FULL)
+                return UseCaseError(message_key=I18nKeys.COLUMN_FULL)
             engine.make_move((row, col))
         else:
             if not engine.is_column_playable(col):
-                return UseCaseError(message_key=CommandKey.COLUMN_FULL)
+                return UseCaseError(message_key=I18nKeys.COLUMN_FULL)
             engine.make_move(col)
 
         new_player = (
@@ -211,7 +217,11 @@ class GameFlowService:
             should_delete_session=game_over,
         )
 
-    async def handle_timeout(self, game_id: int, session: GameSession) -> SessionTimeoutResult | None:
+    async def handle_timeout(
+        self,
+        game_id: int,
+        session: GameSession,
+    ) -> SessionTimeoutResult | None:
         creator = await self._users.get_or_create(session.players[0].id)
         lang = creator.lang_code
         if len(session.players) == 2:
@@ -227,17 +237,20 @@ class GameFlowService:
                 session.game_type,
                 session.inline_message_id,
             )
-            ended = self._texts.get(lang, CommandKey.GAME_ENDED_TEXT).format(
+            ended = self._translator.t(
+                I18nKeys.GAME_ENDED_TEXT,
+                lang,
                 winner=winner_player.first_name,
                 total=summary.head_to_head.total,
-                game=self._texts.get(lang, CommandKey.GAME),
+                game=self._translator.t(I18nKeys.GAME, lang),
                 p1_name=session.players[0].first_name,
                 p1_wins=summary.head_to_head.p1_wins,
                 p2_name=session.players[1].first_name,
                 p2_wins=summary.head_to_head.p2_wins,
                 draws=summary.head_to_head.draws,
             )
-            text = f"{self._texts.get(lang, CommandKey.GAME_STOPPED)}\n\n{ended}"
+            stopped = self._translator.t(I18nKeys.GAME_STOPPED, lang)
+            text = f"{stopped}\n\n{ended}"
             return SessionTimeoutResult(
                 inline_message_id=session.inline_message_id,
                 text=text,
@@ -245,7 +258,7 @@ class GameFlowService:
                 game_over=True,
                 session=session,
             )
-        text = self._texts.get(lang, CommandKey.PLAY_WITH_COOL_PEOPLE_TEXT)
+        text = self._translator.t(I18nKeys.PLAY_WITH_COOL_PEOPLE_TEXT, lang)
         return SessionTimeoutResult(
             inline_message_id=session.inline_message_id,
             text=text,
@@ -261,25 +274,22 @@ class GameFlowService:
         lang: str,
         *,
         game_over: bool,
-        match_summary: object | None = None,
+        match_summary: GameMatchSummary | None = None,
     ) -> GameBoardView:
         engine = session.game_engine
         if game_over and match_summary is not None:
-            from bot.domain.schemas.game import GameMatchSummary
-
-            if not isinstance(match_summary, GameMatchSummary):
-                msg = "Expected GameMatchSummary"
-                raise TypeError(msg)
             is_draw = engine.is_draw()
             winner_name = (
-                self._texts.get(lang, CommandKey.GAME_IS_DRAW_TEXT)
+                self._translator.t(I18nKeys.GAME_IS_DRAW_TEXT, lang)
                 if is_draw
                 else session.players[engine.winner.value - 1].first_name  # type: ignore[union-attr]
             )
-            text = self._texts.get(lang, CommandKey.GAME_ENDED_TEXT).format(
+            text = self._translator.t(
+                I18nKeys.GAME_ENDED_TEXT,
+                lang,
                 winner=winner_name,
                 total=match_summary.head_to_head.total,
-                game=self._texts.get(lang, CommandKey.GAME),
+                game=self._translator.t(I18nKeys.GAME, lang),
                 p1_name=session.players[0].first_name,
                 p1_wins=match_summary.head_to_head.p1_wins,
                 p2_name=session.players[1].first_name,
@@ -287,9 +297,11 @@ class GameFlowService:
                 draws=match_summary.head_to_head.draws,
             )
         elif game_over:
-            text = self._texts.get(lang, CommandKey.PLAY_WITH_COOL_PEOPLE_TEXT)
+            text = self._translator.t(I18nKeys.PLAY_WITH_COOL_PEOPLE_TEXT, lang)
         else:
-            text = self._texts.get(lang, CommandKey.GAME_IN_PROGRESS_TEXT).format(
+            text = self._translator.t(
+                I18nKeys.GAME_IN_PROGRESS_TEXT,
+                lang,
                 name=session.current_player.first_name,
                 color=engine.current_player.as_color,
             )

@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from aiogram import Bot
+from aiogram.utils.i18n import I18n
 
 from api.config.database import DatabaseConfigClass
 from api.infrastructure.database.connection import init_database
@@ -30,7 +31,7 @@ from bot.domain.repositories import (
     SponsorRepository,
     UserRepository,
 )
-from bot.infrastructure.i18n.texts import TextsService
+from bot.infrastructure.i18n.translator import Translator
 from bot.infrastructure.telegram.sponsor_checker import TelegramSponsorMembershipChecker
 
 
@@ -38,7 +39,8 @@ from bot.infrastructure.telegram.sponsor_checker import TelegramSponsorMembershi
 class AppContainer:
     bot_config: BotConfigClass
     session_config: SessionConfigClass
-    texts: TextsService
+    i18n_config: I18nConfigClass
+    translator: Translator
     catalog: GameCatalogService
     user_repo: UserRepository
     game_repo: GameRepository
@@ -56,7 +58,8 @@ class AppContainer:
         bot_cfg = bot_config or BotConfigClass()  # type: ignore[call-arg]
         session_cfg = SessionConfigClass()
         i18n_cfg = I18nConfigClass()
-        texts = TextsService(i18n_cfg)
+        i18n = I18n.get_current()
+        translator = Translator(i18n_cfg, i18n)
         catalog = GameCatalogService()
         init_database(DatabaseConfigClass())
         user_repo = SqlAlchemyUserRepository()
@@ -66,15 +69,16 @@ class AppContainer:
             storage=InMemoryGameSessionStorage(),
             timeout=session_cfg.game_session_timeout_seconds,
         )
-        user_service = UserService(user_repo, texts)
+        user_service = UserService(user_repo, translator)
         inline_games = InlineGamesService(user_service, catalog)
-        change_lang = ChangeLanguageService(user_repo, texts)
-        player_stats = PlayerStatsService(user_repo, texts)
-        game_flow = GameFlowService(session_manager, catalog, game_repo, user_repo, texts)
+        change_lang = ChangeLanguageService(user_repo, translator)
+        player_stats = PlayerStatsService(user_repo, translator)
+        game_flow = GameFlowService(session_manager, catalog, game_repo, user_repo, translator)
         return cls(
             bot_config=bot_cfg,
             session_config=session_cfg,
-            texts=texts,
+            i18n_config=i18n_cfg,
+            translator=translator,
             catalog=catalog,
             user_repo=user_repo,
             game_repo=game_repo,
