@@ -7,9 +7,10 @@ from bot.config.base import BaseConfig
 
 class I18nConfigClass(BaseConfig):
     default_lang: str = Field(default="fa", alias="DEFAULT_LANG")
-    texts_path: Path = Field(default=Path("src/texts.json"), alias="TEXTS_PATH")
+    domain: str = Field(default="bot", alias="I18N_DOMAIN")
+    locales_path: Path = Field(default=Path("bot/locales"), alias="LOCALES_PATH")
     supported_langs: list[str] = Field(
-        default_factory=lambda: ["fa", "en", "ru"],
+        default_factory=lambda: ["tr", "en", "fa"],
         alias="SUPPORTED_LANGS",
     )
 

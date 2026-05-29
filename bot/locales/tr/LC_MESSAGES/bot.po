@@ -1,0 +1,77 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: kio-games-bot\n"
+"Language: tr\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "start"
+msgstr "Botumuza hoş geldiniz ✋\nHadi oynayalım 👾"
+
+msgid "create-game-text"
+msgstr "🕹 Hazır mısın? Oyun oluştur 🕹"
+
+msgid "create-game-button"
+msgstr "🕹 Oyun Oluştur 🕹"
+
+msgid "you-are-banned-title"
+msgstr "Botumuzdan yasaklandınız!"
+
+msgid "you-are-banned-text"
+msgstr "Botumuzda oynamanız yasaklandı."
+
+msgid "waiting-for-player"
+msgstr "⏳ Oyuncu bekleniyor... ⏳"
+
+msgid "i-play"
+msgstr "Oynayacağım 🙋"
+
+msgid "cannot-play-with-yourself"
+msgstr "Kendinizle oynayamazsınız 😅"
+
+msgid "not-your-game"
+msgstr "❌ Bu oyunda değilsiniz ❌"
+
+msgid "not-your-turn"
+msgstr "❌ Sıra sizde değil ❌"
+
+msgid "column-full"
+msgstr "❌ Bu sütun dolu ❌"
+
+msgid "player-game-stats"
+msgstr "📊 Oyuncu İstatistikleri 📊\n\n🕹 Tüm oyunlar [{all_games}] 🕹\n🥇 Galibiyetler [{wins}] 🥇\n🥈 Mağlubiyetler [{losses}] 🥈\n🟰 Beraberlikler [{draws}] 🟰"
+
+msgid "game-in-progress-text"
+msgstr "🕹 Sıra: {name} [{color}]ㅤ                       ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ\n🕹 Hamlenizi yapın 🕹"
+
+msgid "game-ended-text"
+msgstr "🏆 Oyunun galibi: {winner}\n⚔ İkiniz arasındaki toplam maç: [{total} {game}]\n1️⃣ {p1_name}: {p1_wins}\n2️⃣ {p2_name}: {p2_wins}\n🟰 Beraberlikler: {draws}"
+
+msgid "game-is-draw-text"
+msgstr "Berabere 💢"
+
+msgid "game"
+msgstr "Oyun"
+
+msgid "play-with-cool-people-button"
+msgstr "😎 Havalı insanlarla oyna 😎"
+
+msgid "play-with-cool-people-text"
+msgstr "😬🎮 Kimse oynamak istemedi 😬\n\nHavalı arkadaşlarına gönder, reddetmezler 😒"
+
+msgid "game-stopped"
+msgstr "🎮 Oyun uzun süre hareketsizlik nedeniyle durduruldu 🎮"
+
+msgid "lang-changed"
+msgstr "Dil başarıyla değiştirildi ✅"
+
+msgid "change-your-lang"
+msgstr "✅ Dil Değiştir ✅"
+
+msgid "change-your-lang-text"
+msgstr "✅ Dil değiştirmek için tıklayın ✅"
+
+msgid "join-first"
+msgstr "✅ Lütfen önce kanallarımıza katılın ✅"
+
+msgid "sponsors-updated"
+msgstr "Sponsorlar güncellendi: {count}"
