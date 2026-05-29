@@ -19,7 +19,7 @@ class ContainerMiddleware(BaseMiddleware):
         data: dict[str, Any],
     ) -> Any:
         data["container"] = self._container
-        data["texts"] = self._container.texts
+        data["translator"] = self._container.translator
         data["user_service"] = self._container.user_service
         data["inline_games_service"] = self._container.inline_games_service
         data["change_language_service"] = self._container.change_language_service

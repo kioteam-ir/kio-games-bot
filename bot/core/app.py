@@ -5,11 +5,13 @@ import asyncio
 from aiogram import Bot, Dispatcher, Router
 from aiogram.client.default import DefaultBotProperties
 from aiogram.fsm.storage.memory import MemoryStorage
+from aiogram.utils.i18n import I18n
 
 from bot.application.dto.game import SessionTimeoutResult
 from bot.core.container import AppContainer
 from bot.infrastructure.telegram.keyboards import KeyboardService
 from bot.presentation.middlewares.container import ContainerMiddleware
+from bot.presentation.middlewares.i18n import KioI18nMiddleware, UserLocaleMiddleware
 from bot.presentation.middlewares.services import ServicesMiddleware
 from bot.presentation.routers.game import router as game_router
 from bot.presentation.routers.start import router as start_router
@@ -38,10 +40,17 @@ class BotApplication:
         await self.dispatcher.start_polling(self.bot, polling_timeout=15)
 
     def _register_middlewares(self) -> None:
-        container_mw = ContainerMiddleware(self.container)
-        services_mw = ServicesMiddleware(self.container)
-        self.dispatcher.update.middleware.register(container_mw)
-        self.dispatcher.update.middleware.register(services_mw)
+        i18n = I18n.get_current()
+        if i18n is None:
+            msg = "I18n is not initialized; import bot.i18n_bootstrap before BotApplication"
+            raise RuntimeError(msg)
+
+        self.dispatcher.update.middleware.register(ContainerMiddleware(self.container))
+        self.dispatcher.update.middleware.register(
+            UserLocaleMiddleware(self.container.user_service, self.container.i18n_config),
+        )
+        self.dispatcher.update.middleware.register(KioI18nMiddleware(i18n=i18n))
+        self.dispatcher.update.middleware.register(ServicesMiddleware(self.container))
 
     def _register_routers(self) -> None:
         self.root_router.include_router(start_router)
@@ -63,7 +72,7 @@ class BotApplication:
 
     async def _render_timeout(self, result: SessionTimeoutResult) -> None:
         keyboards = KeyboardService(
-            self.container.texts,
+            self.container.translator,
             self.container.bot_config.bot_username,
         )
         if len(result.session.players) == 1:

@@ -7,7 +7,7 @@ from aiogram.types import CallbackQuery, Message
 
 from bot.application.dto.game import ResolvedUserContext
 from bot.core.container import AppContainer
-from bot.domain.schemas.texts import CommandKey
+from bot.locales.i18n_keys import I18nKeys
 
 
 class SponsorOkFilter(BaseFilter):
@@ -46,5 +46,5 @@ class SponsorRequiredFilter(BaseFilter):
         return {
             "sponsor_required": True,
             "sponsors": sponsors,
-            "join_message": container.texts.get(user_context.lang, CommandKey.JOIN_FIRST),
+            "join_message": container.translator.t(I18nKeys.JOIN_FIRST, user_context.lang),
         }

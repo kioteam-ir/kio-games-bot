@@ -8,9 +8,9 @@ from bot.domain.entities.game_session import GameSession
 from bot.domain.games.connect.with_friend import VsFriendEngine
 from bot.domain.schemas.game import GameTypeId
 from bot.domain.schemas.sponsor import SponsorRecord
-from bot.domain.schemas.texts import CommandKey
 from bot.infrastructure.callback.service import CallbackService
-from bot.infrastructure.i18n.texts import TextsService
+from bot.infrastructure.i18n.translator import Translator
+from bot.locales.i18n_keys import I18nKeys
 
 _NUMBER_EMOJI: dict[int, str] = {
     0: "0️⃣",
@@ -28,8 +28,8 @@ _NUMBER_EMOJI: dict[int, str] = {
 
 
 class KeyboardService:
-    def __init__(self, texts: TextsService, bot_username: str) -> None:
-        self._texts = texts
+    def __init__(self, translator: Translator, bot_username: str) -> None:
+        self._translator = translator
         self._bot_username = bot_username
 
     def sponsor_keyboard(
@@ -51,7 +51,7 @@ class KeyboardService:
             inline_keyboard=[
                 [
                     InlineKeyboardButton(
-                        text=self._texts.get(lang, CommandKey.IPLAY),
+                        text=self._translator.t(I18nKeys.IPLAY, lang),
                         callback_data=CallbackService.build_join_game(game_id),
                     )
                 ]
@@ -63,7 +63,7 @@ class KeyboardService:
             inline_keyboard=[
                 [
                     InlineKeyboardButton(
-                        text=self._texts.get(lang, CommandKey.PLAY_WITH_COOL_PEOPLE_BUTTON),
+                        text=self._translator.t(I18nKeys.PLAY_WITH_COOL_PEOPLE_BUTTON, lang),
                         switch_inline_query=" ",
                     )
                 ]
@@ -146,14 +146,14 @@ class KeyboardService:
     def language_switcher(self) -> InlineKeyboardMarkup:
         return InlineKeyboardMarkup(
             inline_keyboard=[
+                [InlineKeyboardButton(text="🇹🇷 Türkçe 🇹🇷", callback_data=CallbackService.build_change_lang("tr"))],
                 [InlineKeyboardButton(text="🇺🇸 English 🇺🇸", callback_data=CallbackService.build_change_lang("en"))],
                 [InlineKeyboardButton(text="🇮🇷 فارسی 🇮🇷", callback_data=CallbackService.build_change_lang("fa"))],
-                [InlineKeyboardButton(text="🇷🇺 Russian 🇷🇺", callback_data=CallbackService.build_change_lang("ru"))],
             ]
         )
 
     def make_game_button(self, lang: str, creator_id: int, game_type: GameTypeId) -> InlineKeyboardButton:
         return InlineKeyboardButton(
-            text=self._texts.get(lang, CommandKey.CREATE_GAME_BUTTON),
+            text=self._translator.t(I18nKeys.CREATE_GAME_BUTTON, lang),
             callback_data=CallbackService.build_make_game(creator_id, int(game_type)),
         )

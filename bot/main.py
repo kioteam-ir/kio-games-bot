@@ -18,6 +18,7 @@ def _configure_pythonpath() -> None:
 def main() -> None:
     _configure_pythonpath()
     logging.basicConfig(level=logging.INFO)
+    import bot.i18n_bootstrap  # noqa: F401
     from bot.config.bot import BotConfigClass
     from bot.core.app import BotApplication
     from bot.core.container import AppContainer

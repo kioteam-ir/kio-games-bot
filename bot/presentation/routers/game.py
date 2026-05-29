@@ -16,7 +16,6 @@ from bot.application.services.session_manager import GameSessionManager
 from bot.config.session import SessionConfigClass
 from bot.core.container import AppContainer
 from bot.domain.repositories import telegram_player_from_user
-from bot.domain.schemas.texts import CommandKey
 from bot.infrastructure.callback.payloads import (
     CellMoveCallback,
     ChangeLangCallback,
@@ -24,8 +23,9 @@ from bot.infrastructure.callback.payloads import (
     MakeGameCallback,
     PlayerInfoCallback,
 )
-from bot.infrastructure.i18n.texts import TextsService
+from bot.infrastructure.i18n.translator import Translator
 from bot.infrastructure.telegram.keyboards import KeyboardService
+from bot.locales.i18n_keys import I18nKeys
 from bot.presentation.filters.game import CreatorMatchFilter, GameSessionFilter
 from bot.presentation.filters.sponsor import SponsorOkFilter, SponsorRequiredFilter
 from bot.presentation.filters.user import BannedUserFilter, NotBannedFilter, ResolvedUserFilter
@@ -103,7 +103,7 @@ async def make_game_handler(
     callback_data: MakeGameCallback,
     game_flow_service: GameFlowService,
     keyboards: KeyboardService,
-    texts: TextsService,
+    translator: Translator,
     user_context: ResolvedUserContext,
 ) -> None:
     if callback.from_user is None or callback.inline_message_id is None or callback.bot is None:
@@ -117,7 +117,7 @@ async def make_game_handler(
     result = await game_flow_service.create(request)
     if isinstance(result, UseCaseError):
         await callback.answer(
-            texts.get(user_context.lang, result.message_key),
+            translator.t(result.message_key, user_context.lang),
             show_alert=result.alert,
         )
         return
@@ -141,7 +141,7 @@ async def join_game_handler(
     callback_data: JoinGameCallback,
     game_flow_service: GameFlowService,
     keyboards: KeyboardService,
-    texts: TextsService,
+    translator: Translator,
     user_context: ResolvedUserContext,
     game_id: int,
 ) -> None:
@@ -155,7 +155,7 @@ async def join_game_handler(
     result = await game_flow_service.join(request)
     if isinstance(result, UseCaseError):
         await callback.answer(
-            texts.get(user_context.lang, result.message_key),
+            translator.t(result.message_key, user_context.lang),
             show_alert=result.alert,
         )
         return
@@ -178,7 +178,7 @@ async def cell_move_handler(
     game_flow_service: GameFlowService,
     session_manager: GameSessionManager,
     keyboards: KeyboardService,
-    texts: TextsService,
+    translator: Translator,
     user_context: ResolvedUserContext,
     game_id: int,
 ) -> None:
@@ -194,7 +194,7 @@ async def cell_move_handler(
     result = await game_flow_service.move(request)
     if isinstance(result, UseCaseError):
         await callback.answer(
-            texts.get(user_context.lang, result.message_key),
+            translator.t(result.message_key, user_context.lang),
             show_alert=result.alert,
         )
         return
@@ -211,10 +211,10 @@ async def cell_move_handler(
 @router.message(ResolvedUserFilter(), BannedUserFilter())
 async def banned_message_handler(
     message: Message,
-    texts: TextsService,
     banned_context: ResolvedUserContext,
+    translator: Translator,
 ) -> None:
-    await message.answer(texts.get(banned_context.lang, CommandKey.YOU_ARE_BANNED_TEXT))
+    await message.answer(translator.t(I18nKeys.YOU_ARE_BANNED_TEXT, banned_context.lang))
 
 
 @router.message(ResolvedUserFilter(), NotBannedFilter(), SponsorRequiredFilter())

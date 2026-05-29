@@ -13,9 +13,13 @@ class ResolvedUserFilter(BaseFilter):
     async def __call__(
         self,
         event: Message | CallbackQuery | InlineQuery,
-        user_service: UserService,
+        user_service: UserService | None = None,
         **kwargs: Any,
     ) -> bool | dict[str, Any]:
+        if "user_context" in kwargs:
+            return {}
+        if user_service is None:
+            return False
         from_user = event.from_user
         if from_user is None:
             return False
