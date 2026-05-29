@@ -12,6 +12,19 @@ from bot.infrastructure.i18n.translator import Translator
 from bot.locales.i18n_keys import I18nKeys
 
 
+LANGUAGE_OPTIONS: list[tuple[str, str]] = [
+    ("tr", "🇹🇷 Türkçe 🇹🇷"),
+    ("en", "🇺🇸 English 🇺🇸"),
+    ("fa", "🇮🇷 فارسی 🇮🇷"),
+    ("ru", "🇷🇺 Русский 🇷🇺"),
+    ("de", "🇩🇪 Deutsch 🇩🇪"),
+    ("fr", "🇫🇷 Français 🇫🇷"),
+    ("ar", "🇸🇦 العربية 🇸🇦"),
+    ("he", "🇮🇱 עברית 🇮🇱"),
+    ("zh", "🇨🇳 中文 🇨🇳"),
+]
+
+
 class KeyboardService:
     def __init__(self, translator: Translator, bot_username: str) -> None:
         self._translator = translator
@@ -116,13 +129,21 @@ class KeyboardService:
         return InlineKeyboardMarkup(inline_keyboard=rows)
 
     def language_switcher(self) -> InlineKeyboardMarkup:
-        return InlineKeyboardMarkup(
-            inline_keyboard=[
-                [InlineKeyboardButton(text="🇹🇷 Türkçe 🇹🇷", callback_data=CallbackService.build_change_lang("tr"))],
-                [InlineKeyboardButton(text="🇺🇸 English 🇺🇸", callback_data=CallbackService.build_change_lang("en"))],
-                [InlineKeyboardButton(text="🇮🇷 فارسی 🇮🇷", callback_data=CallbackService.build_change_lang("fa"))],
-            ]
-        )
+        rows: list[list[InlineKeyboardButton]] = []
+        row: list[InlineKeyboardButton] = []
+        for code, label in LANGUAGE_OPTIONS:
+            row.append(
+                InlineKeyboardButton(
+                    text=label,
+                    callback_data=CallbackService.build_change_lang(code),
+                )
+            )
+            if len(row) == 2:
+                rows.append(row)
+                row = []
+        if row:
+            rows.append(row)
+        return InlineKeyboardMarkup(inline_keyboard=rows)
 
     def make_game_button(self, lang: str, creator_id: int, game_type: GameTypeId) -> InlineKeyboardButton:
         return InlineKeyboardButton(
