@@ -1,6 +1,7 @@
 import os
 
 import django
+import django.apps
 
 
 def setup_django() -> None:
