@@ -22,7 +22,7 @@ class ResolvedUserFilter(BaseFilter):
         **kwargs: Any,
     ) -> bool | dict[str, Any]:
         if "user_context" in kwargs:
-            return {}
+            return True
         if user_service is None:
             return False
         from_user = event.from_user
@@ -47,7 +47,7 @@ class NotBannedFilter(BaseFilter):
             return False
         if user_context.user.is_banned:
             return False
-        return {}
+        return True
 
 
 class BannedUserFilter(BaseFilter):
@@ -80,4 +80,4 @@ class AdminFilter(BaseFilter):
             return False
         if event.from_user.id not in container.bot_config.admin_ids:
             return False
-        return {}
+        return True
