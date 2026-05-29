@@ -13,16 +13,4 @@ server {
         include /etc/nginx/snippets/proxy_params.conf;
         proxy_pass http://api_app;
     }
-
-    location /static/ {
-        alias /bot/src/static/;
-        expires 7d;
-        add_header Cache-Control "public";
-    }
-
-    location /media/ {
-        alias /bot/src/media/;
-        expires 7d;
-        add_header Cache-Control "public";
-    }
 }
