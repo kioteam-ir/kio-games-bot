@@ -1,0 +1,77 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: kio-games-bot\n"
+"Language: fr\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "start"
+msgstr "Bienvenue dans notre bot ✋\nJouons 👾"
+
+msgid "create-game-text"
+msgstr "🕹 Prêt ? Crée une partie 🕹"
+
+msgid "create-game-button"
+msgstr "🕹 Créer une partie 🕹"
+
+msgid "you-are-banned-title"
+msgstr "Vous êtes banni de notre bot !"
+
+msgid "you-are-banned-text"
+msgstr "Vous n'êtes pas autorisé à jouer dans notre bot."
+
+msgid "waiting-for-player"
+msgstr "⏳ En attente d'un joueur... ⏳"
+
+msgid "i-play"
+msgstr "Je joue 🙋"
+
+msgid "cannot-play-with-yourself"
+msgstr "Vous ne pouvez pas jouer contre vous-même 😅"
+
+msgid "not-your-game"
+msgstr "❌ Vous n'êtes pas dans cette partie ❌"
+
+msgid "not-your-turn"
+msgstr "❌ Ce n'est pas votre tour ❌"
+
+msgid "column-full"
+msgstr "❌ Cette colonne est pleine ❌"
+
+msgid "player-game-stats"
+msgstr "📊 Statistiques du joueur 📊\n\n🕹 Toutes les parties [{all_games}] 🕹\n🥇 Victoires [{wins}] 🥇\n🥈 Défaites [{losses}] 🥈\n🟰 Matchs nuls [{draws}] 🟰"
+
+msgid "game-in-progress-text"
+msgstr "🕹 Tour : {name} [{color}]ㅤ                       ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ\n🕹 Faites votre coup 🕹"
+
+msgid "game-ended-text"
+msgstr "🏆 Gagnant : {winner}\n⚔ Total des matchs entre vous : [{total} {game}]\n1️⃣ {p1_name} : {p1_wins}\n2️⃣ {p2_name} : {p2_wins}\n🟰 Matchs nuls : {draws}"
+
+msgid "game-is-draw-text"
+msgstr "Match nul 💢"
+
+msgid "game"
+msgstr "Partie"
+
+msgid "play-with-cool-people-button"
+msgstr "😎 Jouer avec des gens cool 😎"
+
+msgid "play-with-cool-people-text"
+msgstr "😬🎮 Personne n'a voulu jouer 😬\n\nEnvoie-le aux cool, ils diront oui 😒"
+
+msgid "game-stopped"
+msgstr "🎮 La partie a été arrêtée pour inactivité 🎮"
+
+msgid "lang-changed"
+msgstr "Langue changée avec succès ✅"
+
+msgid "change-your-lang"
+msgstr "✅ Changer de langue ✅"
+
+msgid "change-your-lang-text"
+msgstr "✅ Cliquez pour changer de langue ✅"
+
+msgid "join-first"
+msgstr "✅ Rejoignez d'abord nos chaînes ✅"
+
+msgid "sponsors-updated"
+msgstr "Sponsors mis à jour : {count}"
