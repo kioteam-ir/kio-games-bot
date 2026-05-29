@@ -31,9 +31,11 @@ class CreatorMatchFilter(BaseFilter):
     async def __call__(
         self,
         callback: CallbackQuery,
-        callback_data: MakeGameCallback,
         **kwargs: Any,
     ) -> bool | dict[str, Any]:
+        callback_data = kwargs.get("callback_data")
+        if not isinstance(callback_data, MakeGameCallback):
+            return False
         if callback.from_user is None:
             return False
         if callback.from_user.id != callback_data.creator_id:
