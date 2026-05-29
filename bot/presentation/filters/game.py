@@ -20,7 +20,7 @@ class GameSessionFilter(BaseFilter):
         game_id = _extract_game_id(callback_data)
         if game_id is None:
             return False
-        session = session_manager.get(game_id)
+        session = await session_manager.get(game_id)
         if session is None:
             return False
         return {"game_session": session, "game_id": game_id}
