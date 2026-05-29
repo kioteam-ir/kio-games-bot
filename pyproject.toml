@@ -24,6 +24,14 @@ packages = [{ include = "bot" }, { include = "api" }, { include = "tools" }]
 [tool.poetry.scripts]
 bot = "bot.main:main"
 api = "api.main:run"
+migrate-all = "tools.migrate_all:main"
+migrate-users = "tools.migrate_users:main"
+migrate-games = "tools.migrate_games:main"
+migrate-scores = "tools.migrate_scores:main"
+migrate-sponsors = "tools.migrate_sponsors:main"
+migrate-lang-codes = "tools.migrate_lang_codes:main"
+migrate-sequences = "tools.migrate_sequences:main"
+add-sponsors = "tools.add_sponsors:main"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

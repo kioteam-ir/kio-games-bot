@@ -38,10 +38,9 @@ poetry run poe add-sponsors --file sponsors.json
 ## اجرا روی سرور (Docker)
 
 ```bash
-docker compose run --rm --entrypoint="" api poetry run poe migrate-all
+# poe در image production نیست؛ از poetry script استفاده کنید:
+docker compose run --rm --no-deps --entrypoint="" bot poetry run migrate-all
 ```
-
-> برای اتصال از host: `POSTGRES_HOST=localhost` در `.env` یا `src/.env.dev`
 
 ## Dump
 
