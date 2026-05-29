@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from aiogram import Router
-from aiogram.types import CallbackQuery, InlineQuery, Message
+from aiogram.types import CallbackQuery, ChosenInlineResult, InlineQuery, Message
 
 from bot.application.dto.game import (
     JoinGameRequest,
@@ -25,10 +25,12 @@ from bot.infrastructure.callback.payloads import (
     PlayerInfoCallback,
 )
 from bot.infrastructure.i18n.translator import Translator
+from bot.infrastructure.telegram.callbacks import answer_callback
 from bot.infrastructure.telegram.editing import edit_callback_message
 from bot.infrastructure.telegram.keyboards import KeyboardService
 from bot.locales.i18n_keys import I18nKeys
-from bot.presentation.filters.game import CreatorMatchFilter, GameSessionFilter
+from bot.presentation.filters.callback_data import MakeGameCallbackFilter
+from bot.presentation.filters.game import GameSessionFilter
 from bot.presentation.filters.sponsor import SponsorOkFilter, SponsorRequiredFilter
 from bot.presentation.filters.user import BannedUserFilter, NotBannedFilter, ResolvedUserFilter
 
@@ -46,6 +48,7 @@ async def inline_games_handler(
     from bot.application.dto.game import InlineGamesContext
 
     if inline_query.from_user is None:
+        await inline_query.answer([], cache_time=1, is_personal=True)
         return
     context = InlineGamesContext(
         user=user_context.user,
@@ -71,6 +74,7 @@ async def change_lang_handler(
     from bot.application.services.game_flow import ChangeLanguageService
 
     if callback.from_user is None or not isinstance(change_language_service, ChangeLanguageService):
+        await answer_callback(callback)
         return
     result = await change_language_service.change(callback.from_user.id, callback_data.lang)
     await edit_callback_message(callback, text=result.message_text)
@@ -87,6 +91,7 @@ async def player_info_handler(
     from bot.application.services.game_flow import PlayerStatsService
 
     if not isinstance(player_stats_service, PlayerStatsService):
+        await answer_callback(callback)
         return
     result = await player_stats_service.stats(
         callback_data.player_id,
@@ -96,12 +101,14 @@ async def player_info_handler(
     await callback.answer(result.text, show_alert=True)
 
 
+@router.chosen_inline_result()
+async def chosen_inline_result_handler(chosen: ChosenInlineResult) -> None:
+    _ = chosen
+
+
 @router.callback_query(
-    MakeGameCallback.filter(),
+    MakeGameCallbackFilter(),
     ResolvedUserFilter(),
-    NotBannedFilter(),
-    SponsorOkFilter(),
-    CreatorMatchFilter(),
 )
 async def make_game_handler(
     callback: CallbackQuery,
@@ -110,8 +117,34 @@ async def make_game_handler(
     keyboards: KeyboardService,
     translator: Translator,
     user_context: ResolvedUserContext,
+    container: AppContainer,
 ) -> None:
+    lang = user_context.lang
     if callback.from_user is None or callback.inline_message_id is None or callback.bot is None:
+        await answer_callback(callback)
+        return
+    if callback.from_user.id != callback_data.creator_id:
+        await answer_callback(
+            callback,
+            translator.t(I18nKeys.NOT_YOUR_GAME, lang),
+            show_alert=True,
+        )
+        return
+    if user_context.user.is_banned:
+        await answer_callback(
+            callback,
+            translator.t(I18nKeys.YOU_ARE_BANNED_TEXT, lang),
+            show_alert=True,
+        )
+        return
+    if container.sponsor_checker is None or not await container.sponsor_checker.is_member_of_all(
+        callback.from_user.id,
+    ):
+        await answer_callback(
+            callback,
+            translator.t(I18nKeys.JOIN_FIRST, lang),
+            show_alert=True,
+        )
         return
 
     if callback_data.game_type is GameTypeId.MINE and callback_data.mine_count == 0:
@@ -162,6 +195,7 @@ async def join_game_handler(
     game_id: int,
 ) -> None:
     if callback.from_user is None or callback.inline_message_id is None or callback.bot is None:
+        await answer_callback(callback)
         return
     request = JoinGameRequest(
         player=telegram_player_from_user(callback.from_user),
@@ -202,6 +236,7 @@ async def cell_move_handler(
     from bot.domain.entities.game_session import GameSession
 
     if callback.from_user is None or callback.inline_message_id is None or callback.bot is None:
+        await answer_callback(callback)
         return
     prefetched = game_session if isinstance(game_session, GameSession) else None
     request = MoveGameRequest(

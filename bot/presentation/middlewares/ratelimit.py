@@ -7,7 +7,8 @@ from aiogram import BaseMiddleware
 from aiogram.types import CallbackQuery, InlineQuery, Message, TelegramObject
 
 from bot.config.ratelimit import RateLimitConfigClass, RateLimitRule
-from bot.infrastructure.callback.payloads import CellMoveCallback, JoinGameCallback, MakeGameCallback
+from bot.infrastructure.callback.parsing import parse_make_game_callback
+from bot.infrastructure.callback.payloads import CellMoveCallback, JoinGameCallback
 from bot.infrastructure.i18n.translator import Translator
 from bot.infrastructure.ratelimit.service import RateLimitService
 from bot.locales.i18n_keys import I18nKeys
@@ -62,8 +63,9 @@ def _resolve_scope(event: TelegramObject, config: RateLimitConfigClass) -> tuple
 
 
 def _resolve_callback_scope(data: str, config: RateLimitConfigClass) -> tuple[str, RateLimitRule]:
+    if parse_make_game_callback(data) is not None:
+        return "callback:create", config.callback_create
     for callback_type, scope, rule in (
-        (MakeGameCallback, "callback:create", config.callback_create),
         (JoinGameCallback, "callback:join", config.callback_join),
         (CellMoveCallback, "callback:move", config.callback_move),
     ):

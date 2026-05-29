@@ -36,6 +36,15 @@ class CallbackPayloadTests(unittest.TestCase):
         self.assertEqual(restored.game_type, GameTypeId.MINE)
         self.assertEqual(restored.mine_count, 9)
 
+    def test_make_game_legacy_three_part_roundtrip_via_parser(self) -> None:
+        from bot.infrastructure.callback.parsing import parse_make_game_callback
+
+        restored = parse_make_game_callback("mg:42:3")
+        assert restored is not None
+        self.assertEqual(restored.creator_id, 42)
+        self.assertEqual(restored.game_type, GameTypeId.CONNECT_4)
+        self.assertEqual(restored.mine_count, 0)
+
     def test_join_game_roundtrip(self) -> None:
         payload = JoinGameCallback(game_id=999)
         restored = JoinGameCallback.unpack(payload.pack())
