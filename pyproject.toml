@@ -69,10 +69,8 @@ warn_redundant_casts = true
 warn_unused_ignores = true
 packages = ["bot", "api"]
 exclude = [
-  "bot/i18n_bootstrap.py",
-  "bot/infrastructure/i18n/translator.py",
-  "bot/presentation/middlewares/i18n.py",
-  "bot/locales/",
+  "bot/infrastructure/i18n/texts.py",
+  "bot/domain/schemas/texts.py",
 ]
 
 [[tool.mypy.overrides]]

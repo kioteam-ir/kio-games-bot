@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from datetime import UTC, datetime
-
 import pytest
 
 from bot.application.dto.game import JoinGameRequest, MakeGameRequest, MoveGameRequest
@@ -11,9 +9,9 @@ from bot.application.services.session_manager import GameSessionManager, InMemor
 from bot.domain.repositories import GameRepository, UserRepository
 from bot.domain.schemas.game import GameMatchSummary, GameTypeId, HeadToHeadStats, PlayerGameStats
 from bot.domain.schemas.player import TelegramPlayer
-from bot.domain.schemas.texts import CommandKey
 from bot.domain.schemas.user import UserRecord
-from bot.infrastructure.i18n.texts import TextsService
+from bot.infrastructure.i18n.translator import Translator
+from bot.locales.i18n_keys import I18nKeys
 
 
 class FakeUserRepo(UserRepository):
@@ -28,6 +26,8 @@ class FakeUserRepo(UserRepository):
         username: str = "",
         lang_code: str = "fa",
     ) -> UserRecord:
+        from datetime import UTC, datetime
+
         return UserRecord(
             id=user_id,
             is_banned=False,
@@ -60,20 +60,20 @@ class FakeGameRepo(GameRepository):
         )
 
 
-def _flow(texts_service: TextsService) -> GameFlowService:
+def _flow(translator: Translator) -> GameFlowService:
     sessions = GameSessionManager(InMemoryGameSessionStorage(), timeout=3600.0)
     return GameFlowService(
         sessions=sessions,
         catalog=GameCatalogService(),
         game_repo=FakeGameRepo(),
         user_repo=FakeUserRepo(lang="en"),
-        texts=texts_service,
+        translator=translator,
     )
 
 
 @pytest.mark.asyncio
-async def test_create_waiting_message(texts_service: TextsService) -> None:
-    flow = _flow(texts_service)
+async def test_create_waiting_message(translator: Translator) -> None:
+    flow = _flow(translator)
     creator = TelegramPlayer(id=1, first_name="Alice")
     result = await flow.create(
         MakeGameRequest(
@@ -88,8 +88,8 @@ async def test_create_waiting_message(texts_service: TextsService) -> None:
 
 
 @pytest.mark.asyncio
-async def test_join_adds_second_player(texts_service: TextsService) -> None:
-    flow = _flow(texts_service)
+async def test_join_adds_second_player(translator: Translator) -> None:
+    flow = _flow(translator)
     creator = TelegramPlayer(id=1, first_name="Alice")
     created = await flow.create(
         MakeGameRequest(
@@ -110,8 +110,8 @@ async def test_join_adds_second_player(texts_service: TextsService) -> None:
 
 
 @pytest.mark.asyncio
-async def test_move_rejects_wrong_turn(texts_service: TextsService) -> None:
-    flow = _flow(texts_service)
+async def test_move_rejects_wrong_turn(translator: Translator) -> None:
+    flow = _flow(translator)
     created = await flow.create(
         MakeGameRequest(
             creator=TelegramPlayer(id=1, first_name="Alice"),
@@ -128,12 +128,12 @@ async def test_move_rejects_wrong_turn(texts_service: TextsService) -> None:
         )
     )
     err = await flow.move(MoveGameRequest(game_id=created.game_id, player_id=2, row=1, col=1, lang="en"))
-    assert err.message_key == CommandKey.NOT_YOUR_TURN
+    assert err.message_key == I18nKeys.NOT_YOUR_TURN
 
 
 @pytest.mark.asyncio
-async def test_connect_move_updates_board(texts_service: TextsService) -> None:
-    flow = _flow(texts_service)
+async def test_connect_move_updates_board(translator: Translator) -> None:
+    flow = _flow(translator)
     created = await flow.create(
         MakeGameRequest(
             creator=TelegramPlayer(id=1, first_name="Alice"),

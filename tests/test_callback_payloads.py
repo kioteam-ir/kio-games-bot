@@ -13,6 +13,11 @@ from bot.infrastructure.callback.payloads import (
 
 
 class CallbackPayloadTests(unittest.TestCase):
+    def test_change_lang_turkish_roundtrip(self) -> None:
+        payload = ChangeLangCallback(lang="tr")
+        restored = ChangeLangCallback.unpack(payload.pack())
+        self.assertEqual(restored.lang, "tr")
+
     def test_change_lang_roundtrip(self) -> None:
         payload = ChangeLangCallback(lang="en")
         packed = payload.pack()
