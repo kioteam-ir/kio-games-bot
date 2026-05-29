@@ -1,0 +1,28 @@
+upstream django_app {
+    server django:8000;
+}
+
+server {
+    listen 80;
+    server_name ${NGINX_SERVER_NAME};
+
+    gzip on;
+    gzip_types text/plain text/css application/json application/javascript text/xml application/xml;
+
+    location / {
+        include /etc/nginx/snippets/proxy_params.conf;
+        proxy_pass http://django_app;
+    }
+
+    location /static/ {
+        alias /bot/src/static/;
+        expires 7d;
+        add_header Cache-Control "public";
+    }
+
+    location /media/ {
+        alias /bot/src/media/;
+        expires 7d;
+        add_header Cache-Control "public";
+    }
+}
