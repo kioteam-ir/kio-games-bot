@@ -4,6 +4,11 @@ from dataclasses import dataclass
 
 from aiogram import Bot
 
+from api.config.database import DatabaseConfigClass
+from api.infrastructure.database.connection import init_database
+from api.infrastructure.persistence.game_repository import SqlAlchemyGameRepository
+from api.infrastructure.persistence.sponsor_repository import SqlAlchemySponsorRepository
+from api.infrastructure.persistence.user_repository import SqlAlchemyUserRepository
 from bot.application.services.game_catalog import GameCatalogService
 from bot.application.services.game_flow import (
     ChangeLanguageService,
@@ -25,11 +30,6 @@ from bot.domain.repositories import (
     SponsorRepository,
     UserRepository,
 )
-from api.config.database import DatabaseConfigClass
-from api.infrastructure.database.connection import init_database
-from api.infrastructure.persistence.game_repository import SqlAlchemyGameRepository
-from api.infrastructure.persistence.sponsor_repository import SqlAlchemySponsorRepository
-from api.infrastructure.persistence.user_repository import SqlAlchemyUserRepository
 from bot.infrastructure.i18n.texts import TextsService
 from bot.infrastructure.telegram.sponsor_checker import TelegramSponsorMembershipChecker
 
