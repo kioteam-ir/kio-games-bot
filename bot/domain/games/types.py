@@ -1,5 +1,6 @@
-from typing import List, Optional, Protocol, TypeVar
-from enum import StrEnum, IntEnum, auto
+from enum import IntEnum, StrEnum, auto
+from typing import Protocol
+
 
 # ===========================
 # Types
@@ -18,7 +19,7 @@ class Color(StrEnum):
     
 class Symbol(StrEnum):
     X     = "❌"
-    O     = "⭕️"
+    O = "⭕️"  # noqa: E741
     EMPTY = '⬜️'
 
 class Player(IntEnum):
@@ -53,7 +54,7 @@ class Cell(IntEnum):
         return self == Cell.EMPTY
 
     @property
-    def as_player(self) -> Optional[Player]:
+    def as_player(self) -> Player | None:
         return None if self.is_empty else Player(self.value)
     
     @property
@@ -71,7 +72,7 @@ class Cell(IntEnum):
         return player.as_symbol
         
 
-BoardMatrix = List[List[Cell]]
+BoardMatrix = list[list[Cell]]
 
 
 class Listener(Protocol):

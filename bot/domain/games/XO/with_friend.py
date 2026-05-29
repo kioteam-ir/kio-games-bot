@@ -1,13 +1,12 @@
+
 from ..base import GameEngine
-from ..types import Cell, Player
-from typing import Tuple, Optional, Union
 
 
 class VsFriendXO(GameEngine):
     def __init__(self, n: int, connect: int) -> None:
         super().__init__(n, n, connect)
         
-    def make_move(self, move: Union[int, Tuple[int, int]]) -> bool:
+    def make_move(self, move: int | tuple[int, int]) -> bool:
         if isinstance(move, tuple):
             if not self.is_valid_move(move):
                 return False
@@ -20,7 +19,7 @@ class VsFriendXO(GameEngine):
             return True
         raise ValueError("XO only supports tuple moves")
 
-    def is_valid_move(self, move: Tuple[int, int]) -> bool:
+    def is_valid_move(self, move: tuple[int, int]) -> bool:
         for n in move:
             if n >= self.cols or n < 0 or not self.board[move[0]][move[1]].is_empty:
                 return False

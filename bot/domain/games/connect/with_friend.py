@@ -1,6 +1,5 @@
+
 from ..base import GameEngine
-from ..types import Player
-from typing import Union, Tuple
 
 
 class VsFriendEngine(GameEngine):
@@ -10,7 +9,7 @@ class VsFriendEngine(GameEngine):
     - Synchronous moves
     """
 
-    def make_move(self, move: Union[int, Tuple[int, int]]) -> bool:
+    def make_move(self, move: int | tuple[int, int]) -> bool:
         if isinstance(move, int):
             if not self.is_column_playable(move):
                 return False

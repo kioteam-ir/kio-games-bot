@@ -57,7 +57,8 @@ class LocaleTexts(BaseModel):
     join_first: str = Field(alias="join-first")
 
     def get(self, key: CommandKey) -> str:
-        return getattr(self, key.name.lower())
+        value: str = getattr(self, key.name.lower())
+        return value
 
 
 class TextsBundle(RootModel[dict[str, LocaleTexts]]):

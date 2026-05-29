@@ -1,15 +1,10 @@
 from __future__ import annotations
-from abc import ABC, abstractmethod
-from typing import List, Optional, Tuple, Dict, TypeVar, Set, Union, overload
-import copy
 
-from .types import (
-    Player,
-    Event,
-    Cell,
-    BoardMatrix,
-    Listener
-)
+import copy
+from abc import ABC, abstractmethod
+from typing import TypeVar, overload
+
+from .types import BoardMatrix, Cell, Event, Listener, Player
 
 T = TypeVar("T", bound="GameEngine")
 
@@ -26,13 +21,13 @@ class GameEngine(ABC):
         self.connect: int = connect
 
         self.board: BoardMatrix      = [[Cell.EMPTY] * cols for _ in range(rows)]
-        self.column_heights: List[int] = [0] * cols
+        self.column_heights: list[int] = [0] * cols
         self.current_player: Player  = Player.ONE
-        self.winner: Optional[Player] = None
+        self.winner: Player | None = None
         self.ended: bool             = False
         self.move_count: int         = 0
-        self.last_move: Optional[Tuple[int, int, Cell]] = None
-        self._listeners: Dict[Event, List[Listener]] = {}
+        self.last_move: tuple[int, int, Cell] | None = None
+        self._listeners: dict[Event, list[Listener]] = {}
 
         self._add_default_listeners()
 
@@ -90,13 +85,13 @@ class GameEngine(ABC):
     def is_column_playable(self, col: int) -> bool:
         return 0 <= col < self.cols and self.column_heights[col] < self.rows and not self.ended
 
-    def legal_moves(self) -> Set[int]:      # Using hash-table for O(1) optimization
+    def legal_moves(self) -> set[int]:      # Using hash-table for O(1) optimization
         return {c for c in range(self.cols) if self.is_column_playable(c)}
 
     def get_board_snapshot(self) -> BoardMatrix:
         return [row[:] for row in self.board]
 
-    def get_column_fill_counts(self) -> List[int]:
+    def get_column_fill_counts(self) -> list[int]:
         return self.column_heights[:]
 
     def is_draw(self) -> bool:
@@ -105,7 +100,7 @@ class GameEngine(ABC):
     # ---------------------------
     # Piece placement helpers
     # ---------------------------
-    def _get_next_row_for_col(self, col: int) -> Optional[int]:
+    def _get_next_row_for_col(self, col: int) -> int | None:
         h = self.column_heights[col]
         if h >= self.rows:
             return None
@@ -155,10 +150,10 @@ class GameEngine(ABC):
     
     @overload
     @abstractmethod
-    def make_move(self, move: Tuple[int, int]) -> bool: ...
+    def make_move(self, move: tuple[int, int]) -> bool: ...
 
     @abstractmethod
-    def make_move(self, move: Union[int, Tuple[int, int]]) -> bool:
+    def make_move(self, move: int | tuple[int, int]) -> bool:
         """Only implementation placeholder"""
         raise NotImplementedError
 

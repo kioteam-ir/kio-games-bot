@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 
 from bot.domain.games.connect.with_friend import VsFriendEngine
 from bot.domain.games.XO.with_friend import VsFriendXO
@@ -10,7 +10,7 @@ from bot.domain.schemas.player import TelegramPlayer
 if TYPE_CHECKING:
     from bot.domain.games.base import GameEngine
 
-GameEngineType = Union[VsFriendXO, VsFriendEngine]
+GameEngineType = VsFriendXO | VsFriendEngine
 
 
 class GameSession:
