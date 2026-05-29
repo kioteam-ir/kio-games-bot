@@ -1,10 +1,14 @@
 from __future__ import annotations
 
+import os
 import subprocess
 from datetime import UTC, datetime
 
 import pytest
 from aiogram.utils.i18n import I18n
+
+# BotConfig loads at import time; tests must not require a real .env or secrets.
+os.environ.setdefault("TOKEN", "ci-test-token")
 
 import bot.i18n_bootstrap  # noqa: F401
 from bot.config.i18n import I18nConfigClass
