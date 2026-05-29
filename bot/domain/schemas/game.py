@@ -1,6 +1,12 @@
+from __future__ import annotations
+
 from enum import IntEnum, StrEnum
+from typing import TYPE_CHECKING
 
 from pydantic import BaseModel, ConfigDict, Field
+
+if TYPE_CHECKING:
+    from bot.domain.games.ports import GameFamily
 
 
 class GameTypeId(IntEnum):
@@ -53,5 +59,14 @@ class GameCatalogEntry(BaseModel):
     connect: int
 
     @property
+    def family(self) -> GameFamily:
+        from bot.domain.games.registry import family_for
+
+        return family_for(self.game_type_id)
+
+    @property
     def is_xo(self) -> bool:
-        return self.game_type_id == GameTypeId.XO
+        """Deprecated: use family == GameFamily.GRID_MARK."""
+        from bot.domain.games.ports import GameFamily as GF
+
+        return self.family is GF.GRID_MARK
