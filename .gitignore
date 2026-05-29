@@ -189,3 +189,5 @@ debug.*
 *.session-shm
 *.session-wal
 *.save
+
+kio-bot.sql
