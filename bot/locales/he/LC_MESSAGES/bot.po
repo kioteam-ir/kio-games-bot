@@ -1,0 +1,77 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: kio-games-bot\n"
+"Language: he\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "start"
+msgstr "ברוכים הבאים לבוט שלנו ✋\nבואו נשחק 👾"
+
+msgid "create-game-text"
+msgstr "🕹 מוכנים? צרו משחק 🕹"
+
+msgid "create-game-button"
+msgstr "🕹 צור משחק 🕹"
+
+msgid "you-are-banned-title"
+msgstr "נחסמתם מהבוט שלנו!"
+
+msgid "you-are-banned-text"
+msgstr "אינכם רשאים לשחק בבוט שלנו."
+
+msgid "waiting-for-player"
+msgstr "⏳ ממתינים לשחקן... ⏳"
+
+msgid "i-play"
+msgstr "אני משחק 🙋"
+
+msgid "cannot-play-with-yourself"
+msgstr "אי אפשר לשחק נגד עצמך 😅"
+
+msgid "not-your-game"
+msgstr "❌ אתה לא במשחק הזה ❌"
+
+msgid "not-your-turn"
+msgstr "❌ זה לא התור שלך ❌"
+
+msgid "column-full"
+msgstr "❌ העמודה מלאה ❌"
+
+msgid "player-game-stats"
+msgstr "📊 סטטיסטיקות שחקן 📊\n\n🕹 כל המשחקים [{all_games}] 🕹\n🥇 ניצחונות [{wins}] 🥇\n🥈 הפסדים [{losses}] 🥈\n🟰 תיקו [{draws}] 🟰"
+
+msgid "game-in-progress-text"
+msgstr "🕹 תור: {name} [{color}]ㅤ                       ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ\n🕹 בצע מהלך 🕹"
+
+msgid "game-ended-text"
+msgstr "🏆 המנצח: {winner}\n⚔ סך המשחקים ביניכם: [{total} {game}]\n1️⃣ {p1_name}: {p1_wins}\n2️⃣ {p2_name}: {p2_wins}\n🟰 תיקו: {draws}"
+
+msgid "game-is-draw-text"
+msgstr "תיקו 💢"
+
+msgid "game"
+msgstr "משחק"
+
+msgid "play-with-cool-people-button"
+msgstr "😎 שחק עם אנשים מגניבים 😎"
+
+msgid "play-with-cool-people-text"
+msgstr "😬🎮 אף אחד לא רצה לשחק 😬\n\nשלח לאנשים המגניבים — הם לא יסרבו 😒"
+
+msgid "game-stopped"
+msgstr "🎮 המשחק הופסק בגלל חוסר פעילות 🎮"
+
+msgid "lang-changed"
+msgstr "השפה שונתה בהצלחה ✅"
+
+msgid "change-your-lang"
+msgstr "✅ שנה שפה ✅"
+
+msgid "change-your-lang-text"
+msgstr "✅ לחץ כדי לשנות שפה ✅"
+
+msgid "join-first"
+msgstr "✅ הצטרף קודם לערוצים שלנו ✅"
+
+msgid "sponsors-updated"
+msgstr "רשימת הספונסרים עודכנה: {count}"
