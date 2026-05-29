@@ -1,0 +1,77 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: kio-games-bot\n"
+"Language: ar\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "start"
+msgstr "مرحباً بك في بوتنا ✋\nلنلعب 👾"
+
+msgid "create-game-text"
+msgstr "🕹 جاهز؟ أنشئ لعبة 🕹"
+
+msgid "create-game-button"
+msgstr "🕹 إنشاء لعبة 🕹"
+
+msgid "you-are-banned-title"
+msgstr "أنت محظور من بوتنا!"
+
+msgid "you-are-banned-text"
+msgstr "لا يُسمح لك باللعب في بوتنا."
+
+msgid "waiting-for-player"
+msgstr "⏳ في انتظار لاعب... ⏳"
+
+msgid "i-play"
+msgstr "سألعب 🙋"
+
+msgid "cannot-play-with-yourself"
+msgstr "لا يمكنك اللعب مع نفسك 😅"
+
+msgid "not-your-game"
+msgstr "❌ أنت لست في هذه اللعبة ❌"
+
+msgid "not-your-turn"
+msgstr "❌ ليس دورك ❌"
+
+msgid "column-full"
+msgstr "❌ هذا العمود ممتلئ ❌"
+
+msgid "player-game-stats"
+msgstr "📊 إحصائيات اللاعب 📊\n\n🕹 كل الألعاب [{all_games}] 🕹\n🥇 انتصارات [{wins}] 🥇\n🥈 خسائر [{losses}] 🥈\n🟰 تعادلات [{draws}] 🟰"
+
+msgid "game-in-progress-text"
+msgstr "🕹 الدور: {name} [{color}]ㅤ                       ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ\n🕹 قم بحركتك 🕹"
+
+msgid "game-ended-text"
+msgstr "🏆 الفائز: {winner}\n⚔ إجمالي المباريات بينكما: [{total} {game}]\n1️⃣ {p1_name}: {p1_wins}\n2️⃣ {p2_name}: {p2_wins}\n🟰 تعادلات: {draws}"
+
+msgid "game-is-draw-text"
+msgstr "تعادل 💢"
+
+msgid "game"
+msgstr "لعبة"
+
+msgid "play-with-cool-people-button"
+msgstr "😎 العب مع أشخاص رائعين 😎"
+
+msgid "play-with-cool-people-text"
+msgstr "😬🎮 لم يرغب أحد باللعب 😬\n\nأرسلها للرائعين، لن يرفضوا 😒"
+
+msgid "game-stopped"
+msgstr "🎮 توقفت اللعبة بسبب عدم النشاط 🎮"
+
+msgid "lang-changed"
+msgstr "تم تغيير اللغة بنجاح ✅"
+
+msgid "change-your-lang"
+msgstr "✅ تغيير اللغة ✅"
+
+msgid "change-your-lang-text"
+msgstr "✅ اضغط لتغيير اللغة ✅"
+
+msgid "join-first"
+msgstr "✅ يرجى الانضمام إلى قنواتنا أولاً ✅"
+
+msgid "sponsors-updated"
+msgstr "تم تحديث الرعاة: {count}"
