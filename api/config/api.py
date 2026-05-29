@@ -1,25 +1,17 @@
-from pydantic import Field, field_validator
+from pydantic import Field, computed_field
 
 from api.config.base import BaseConfig
+from bot.config.bot import parse_admin_ids
 
 
 class ApiConfigClass(BaseConfig):
     api_admin_token: str | None = Field(default=None, alias="API_ADMIN_TOKEN")
-    admin_ids: list[int] = Field(default_factory=list, alias="ADMIN_IDS")
+    admin_ids_env: str = Field(default="", alias="ADMIN_IDS")
 
-    @field_validator("admin_ids", mode="before")
-    @classmethod
-    def parse_admin_ids(cls, value: object) -> list[int]:
-        if value is None or value == "":
-            return [262253630]
-        if isinstance(value, int):
-            return [value]
-        if isinstance(value, str):
-            return [int(part.strip()) for part in value.split(",") if part.strip()]
-        if isinstance(value, list):
-            return [int(item) for item in value]
-        msg = f"Unsupported ADMIN_IDS value: {value!r}"
-        raise TypeError(msg)
+    @computed_field  # type: ignore[prop-decorator]
+    @property
+    def admin_ids(self) -> list[int]:
+        return parse_admin_ids(self.admin_ids_env)
 
     def valid_admin_tokens(self) -> set[str]:
         tokens = {str(admin_id) for admin_id in self.admin_ids}
