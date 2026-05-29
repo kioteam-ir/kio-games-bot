@@ -1,5 +1,5 @@
-upstream django_app {
-    server django:8000;
+upstream api_app {
+    server api:8000;
 }
 
 server {
@@ -11,18 +11,6 @@ server {
 
     location / {
         include /etc/nginx/snippets/proxy_params.conf;
-        proxy_pass http://django_app;
-    }
-
-    location /static/ {
-        alias /bot/src/static/;
-        expires 7d;
-        add_header Cache-Control "public";
-    }
-
-    location /media/ {
-        alias /bot/src/media/;
-        expires 7d;
-        add_header Cache-Control "public";
+        proxy_pass http://api_app;
     }
 }

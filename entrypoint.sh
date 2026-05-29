@@ -8,19 +8,20 @@ until nc -z db 5432; do
 done
 echo "Postgres is up!"
 
-if [ "$1" = "django" ]; then
-    echo "Apply makemigrations"
-    python src/manage.py makemigrations --noinput
-    echo "Applying migrations..."
-    python src/manage.py migrate --noinput
-    echo "run collectstatic"
-    python src/manage.py collectstatic --noinput
-    echo "Starting Django with Gunicorn..."
-    exec gunicorn --chdir src config.wsgi:application --bind 0.0.0.0:8000 --workers 3
+compile_locales() {
+    echo "Compiling locales..."
+    poetry run pybabel compile -d bot/locales -D bot
+}
+
+if [ "$1" = "api" ]; then
+    compile_locales
+    echo "Starting API with Uvicorn..."
+    exec poetry run api
 
 elif [ "$1" = "bot" ]; then
+    compile_locales
     echo "Starting Bot..."
-    exec python src
+    exec poetry run bot
 
 else
     exec "$@"

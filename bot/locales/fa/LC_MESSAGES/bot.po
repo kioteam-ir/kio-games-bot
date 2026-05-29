@@ -1,0 +1,77 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: kio-games-bot\n"
+"Language: fa\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "start"
+msgstr "سلام به ربات ما خوش اومدید ✋\nبزن بریم بازی کنیم 👾"
+
+msgid "create-game-text"
+msgstr "🕹 اوکیه؟ پس بزن ساخت بازی 🕹"
+
+msgid "create-game-button"
+msgstr "🕹 ساخت بازی 🕹"
+
+msgid "you-are-banned-title"
+msgstr "شما ربات ما مسدود شده‌اید!"
+
+msgid "you-are-banned-text"
+msgstr "شما از بازی کردن در ربات ما مسدود شده‌اید"
+
+msgid "waiting-for-player"
+msgstr "⏳ در انتظار بازیکن... ⏳"
+
+msgid "i-play"
+msgstr "بازی میکنم 🙋"
+
+msgid "cannot-play-with-yourself"
+msgstr "نمیتوانید با خودتان بازی کنید 😅"
+
+msgid "not-your-game"
+msgstr "❌ شما در این بازی نیستید ❌"
+
+msgid "not-your-turn"
+msgstr "❌ نوبت شما نیست ❌"
+
+msgid "column-full"
+msgstr "❌ ستون پر شده است ❌"
+
+msgid "player-game-stats"
+msgstr "📊 اطلاعات بازی کاربر 📊\n\n🕹 همه بازی‌ها [{all_games}] 🕹\n🥇 بردها [{wins}] 🥇\n🥈 باخت‌ها [{losses}] 🥈\n🟰 تساوی‌ها [{draws}] 🟰"
+
+msgid "game-in-progress-text"
+msgstr "🕹 نوبت : {name} [{color}]ㅤ                       ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ\n🕹 بازی کنید 🕹"
+
+msgid "game-ended-text"
+msgstr "🏆 برنده بازی : {winner}\n⚔ نتایج کل مسابقات بین شما دو نفر: [{total} {game}]\n1️⃣ {p1_name} : {p1_wins}\n2️⃣ {p2_name} : {p2_wins}\n🟰 تساوی‌ها : {draws}"
+
+msgid "game-is-draw-text"
+msgstr "بدون برنده 💢"
+
+msgid "game"
+msgstr "بازی"
+
+msgid "play-with-cool-people-button"
+msgstr "😎 بازی با آدم باحالا 😎"
+
+msgid "play-with-cool-people-text"
+msgstr "😬🎮 هیچکسی مایل به بازی کردن نبود 😬\n\nپیش آدم باحالا بفرست اینا که نمیان بازی 😒"
+
+msgid "game-stopped"
+msgstr "🎮 بازی به دلیل وقفه زیاد، متوقف شد 🎮"
+
+msgid "lang-changed"
+msgstr "زبان با موفقیت تغییر کرد ✅"
+
+msgid "change-your-lang"
+msgstr "✅ تغییر زبان ✅"
+
+msgid "change-your-lang-text"
+msgstr "✅ برای تغییر زبان کلیک کنید ✅"
+
+msgid "join-first"
+msgstr "✅ ابتدا در کانال های ما عضو شوید ✅"
+
+msgid "sponsors-updated"
+msgstr "لیست اسپانسرها به‌روزرسانی شد: {count}"

@@ -1,0 +1,28 @@
+from enum import StrEnum
+
+
+class I18nKeys(StrEnum):
+    START = "start"
+    CREATE_GAME_TEXT = "create-game-text"
+    CREATE_GAME_BUTTON = "create-game-button"
+    YOU_ARE_BANNED_TITLE = "you-are-banned-title"
+    YOU_ARE_BANNED_TEXT = "you-are-banned-text"
+    WAITING_FOR_PLAYER = "waiting-for-player"
+    IPLAY = "i-play"
+    CANNOT_PLAY_WITH_YOURSELF = "cannot-play-with-yourself"
+    NOT_YOUR_GAME = "not-your-game"
+    NOT_YOUR_TURN = "not-your-turn"
+    COLUMN_FULL = "column-full"
+    PLAYER_GAME_STATS = "player-game-stats"
+    GAME_IN_PROGRESS_TEXT = "game-in-progress-text"
+    GAME_ENDED_TEXT = "game-ended-text"
+    GAME_IS_DRAW_TEXT = "game-is-draw-text"
+    GAME = "game"
+    PLAY_WITH_COOL_PEOPLE_BUTTON = "play-with-cool-people-button"
+    PLAY_WITH_COOL_PEOPLE_TEXT = "play-with-cool-people-text"
+    GAME_STOPPED = "game-stopped"
+    LANG_CHANGED = "lang-changed"
+    CHANGE_YOUR_LANG = "change-your-lang"
+    CHANGE_YOUR_LANG_TEXT = "change-your-lang-text"
+    JOIN_FIRST = "join-first"
+    SPONSORS_UPDATED = "sponsors-updated"

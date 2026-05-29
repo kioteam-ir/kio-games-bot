@@ -1,0 +1,77 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: kio-games-bot\n"
+"Language: en\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "start"
+msgstr "Welcome to our bot ✋\nLet's play a game 👾"
+
+msgid "create-game-text"
+msgstr "🕹 Ready? Then create a game 🕹"
+
+msgid "create-game-button"
+msgstr "🕹 Create Game 🕹"
+
+msgid "you-are-banned-title"
+msgstr "You are banned from our bot!"
+
+msgid "you-are-banned-text"
+msgstr "You are banned from playing in our bot."
+
+msgid "waiting-for-player"
+msgstr "⏳ Waiting for a player... ⏳"
+
+msgid "i-play"
+msgstr "I'll play 🙋"
+
+msgid "cannot-play-with-yourself"
+msgstr "You cannot play with yourself 😅"
+
+msgid "not-your-game"
+msgstr "❌ You are not in this game ❌"
+
+msgid "not-your-turn"
+msgstr "❌ It's not your turn ❌"
+
+msgid "column-full"
+msgstr "❌ This column is full ❌"
+
+msgid "player-game-stats"
+msgstr "📊 Player Stats 📊\n\n🕹 All games [{all_games}] 🕹\n🥇 Wins [{wins}] 🥇\n🥈 Losses [{losses}] 🥈\n🟰 Draws [{draws}] 🟰"
+
+msgid "game-in-progress-text"
+msgstr "🕹 Turn: {name} [{color}]ㅤ                       ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ\n🕹 Make your move 🕹"
+
+msgid "game-ended-text"
+msgstr "🏆 Winner of the game: {winner}\n⚔ Total matches played between you two: [{total} {game}]\n1️⃣ {p1_name}: {p1_wins}\n2️⃣ {p2_name}: {p2_wins}\n🟰 Draws: {draws}"
+
+msgid "game-is-draw-text"
+msgstr "No winner 💢"
+
+msgid "game"
+msgstr "Game"
+
+msgid "play-with-cool-people-button"
+msgstr "😎 Play with cool people 😎"
+
+msgid "play-with-cool-people-text"
+msgstr "😬🎮 Nobody wanted to play 😬\n\nSend it to the cool ones, they won't say no 😒"
+
+msgid "game-stopped"
+msgstr "🎮 The game was stopped due to inactivity 🎮"
+
+msgid "lang-changed"
+msgstr "Language changed successfully ✅"
+
+msgid "change-your-lang"
+msgstr "✅ Change Language ✅"
+
+msgid "change-your-lang-text"
+msgstr "✅ Click to change language ✅"
+
+msgid "join-first"
+msgstr "✅ Please join our channels first ✅"
+
+msgid "sponsors-updated"
+msgstr "Sponsors updated: {count}"
