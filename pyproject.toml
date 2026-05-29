@@ -9,19 +9,21 @@ dependencies = [
   "aiogram[i18n]>=3.22.0",
   "pydantic>=2.12.0,<3.0.0",
   "pydantic-settings>=2.2.1",
-  "django>=4.2,<5.0",
-  "psycopg2-binary>=2.9.10,<3.0.0",
-  "asgiref>=3.9.0,<4.0.0",
-  "gunicorn>=23.0.0,<24.0.0",
+  "fastapi>=0.115.0,<1.0.0",
+  "uvicorn[standard]>=0.32.0,<1.0.0",
+  "sqlalchemy[asyncio]>=2.0.36,<3.0.0",
+  "asyncpg>=0.30.0,<1.0.0",
+  "babel>=2.16.0,<3.0.0",
   "typing-extensions>=4.15.0",
 ]
 
 [tool.poetry]
 package-mode = true
-packages = [{ include = "bot" }]
+packages = [{ include = "bot" }, { include = "api" }]
 
 [tool.poetry.scripts]
 bot = "bot.main:main"
+api = "api.main:run"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
@@ -34,14 +36,14 @@ dev = [
   "mypy>=1.18.0,<2.0.0",
   "pytest>=8.2.0,<9.0.0",
   "pytest-asyncio>=0.25.0,<1.0.0",
-  "types-psycopg2>=2.9.21.20251009",
 ]
 
 [tool.poe.tasks]
 test = "pytest tests/ -v"
-mypy = "mypy bot/"
-ruff-lint = "ruff check bot/ tests/"
-ruff-format = "ruff format bot/ tests/"
+mypy = ["mypy bot/", "mypy api/"]
+ruff-lint = "ruff check bot/ api/ tests/"
+ruff-format = "ruff format bot/ api/ tests/"
+compile = "pybabel compile -d bot/locales -D bot"
 lint = ["ruff-lint", "mypy"]
 
 [tool.ruff]
@@ -65,10 +67,10 @@ check_untyped_defs = true
 no_implicit_optional = true
 warn_redundant_casts = true
 warn_unused_ignores = true
-packages = ["bot"]
+packages = ["bot", "api"]
 
 [[tool.mypy.overrides]]
-module = ["django.*", "app.*", "bot.domain.games.*"]
+module = ["bot.domain.games.*"]
 ignore_missing_imports = true
 disallow_untyped_defs = false
 check_untyped_defs = false
