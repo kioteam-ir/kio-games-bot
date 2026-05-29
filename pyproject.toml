@@ -68,6 +68,22 @@ no_implicit_optional = true
 warn_redundant_casts = true
 warn_unused_ignores = true
 packages = ["bot", "api"]
+exclude = [
+  "bot/i18n_bootstrap.py",
+  "bot/infrastructure/i18n/translator.py",
+  "bot/presentation/middlewares/i18n.py",
+  "bot/locales/",
+]
+
+[[tool.mypy.overrides]]
+module = [
+    "bot.infrastructure.persistence.django_setup",
+    "bot.infrastructure.persistence.user_repository",
+    "bot.infrastructure.persistence.game_repository",
+    "bot.infrastructure.persistence.sponsor_repository",
+]
+ignore_missing_imports = true
+disable_error_code = ["import-untyped", "import-not-found"]
 
 [[tool.mypy.overrides]]
 module = ["bot.domain.games.*"]
