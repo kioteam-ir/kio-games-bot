@@ -7,11 +7,30 @@ from aiogram.utils.i18n import gettext as _
 
 from bot.application.dto.game import ResolvedUserContext
 from bot.core.container import AppContainer
+from bot.infrastructure.telegram.keyboards import KeyboardService
 from bot.locales.i18n_keys import I18nKeys
-from bot.presentation.filters.sponsor import SponsorOkFilter
+from bot.presentation.filters.sponsor import SponsorOkFilter, SponsorRequiredFilter
 from bot.presentation.filters.user import NotBannedFilter, ResolvedUserFilter
 
 router = Router(name="start")
+
+
+@router.message(CommandStart(), ResolvedUserFilter(), NotBannedFilter(), SponsorRequiredFilter())
+async def start_sponsor_gate_handler(
+    message: Message,
+    join_message: str | None = None,
+    sponsors: list[object] | None = None,
+    keyboards: KeyboardService | None = None,
+) -> None:
+    from bot.domain.schemas.sponsor import SponsorRecord
+
+    if join_message is None or keyboards is None:
+        return
+    sponsor_rows = [s for s in (sponsors or []) if isinstance(s, SponsorRecord)]
+    await message.answer(
+        join_message,
+        reply_markup=keyboards.sponsor_keyboard(sponsor_rows),
+    )
 
 
 @router.message(CommandStart(), ResolvedUserFilter(), NotBannedFilter(), SponsorOkFilter())

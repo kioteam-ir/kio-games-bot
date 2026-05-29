@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from aiogram import Bot
+from aiogram.enums import ChatMemberStatus
 
 from bot.domain.repositories import SponsorMembershipChecker, SponsorRepository
 
@@ -12,9 +13,13 @@ class TelegramSponsorMembershipChecker(SponsorMembershipChecker):
 
     async def is_member_of_all(self, user_id: int) -> bool:
         sponsors = await self._sponsor_repo.list_active()
+        if not sponsors:
+            return True
         for sponsor in sponsors:
             try:
-                await self._bot.get_chat_member(sponsor.id, user_id)
+                member = await self._bot.get_chat_member(sponsor.id, user_id)
             except Exception:
+                return False
+            if member.status in {ChatMemberStatus.LEFT, ChatMemberStatus.KICKED}:
                 return False
         return True
