@@ -12,6 +12,9 @@ rsync -avz --delete \
   --exclude '.venv/' \
   --exclude 'venv/' \
   --exclude '.cursor/' \
+  --exclude '.mypy_cache/' \
+  --exclude '.pytest_cache/' \
+  --exclude '.ruff_cache/' \
   "${ROOT_DIR}/" \
   "${REMOTE}:${REMOTE_DIR}/"
 
@@ -21,11 +24,11 @@ cd "${REMOTE_DIR}"
 
 docker compose up -d db
 for i in \$(seq 1 60); do
-  docker compose exec -T db pg_isready -U postgres >/dev/null 2>&1 && break
+  docker compose exec -T db pg_isready -U postgres </dev/null >/dev/null 2>&1 && break
   sleep 2
 done
 
-if ! docker compose exec -T db psql -U postgres -d 4fall_bot -tAc "SELECT 1 FROM app_user LIMIT 1" >/dev/null 2>&1; then
+if ! docker compose exec -T db psql -U postgres -d 4fall_bot -tAc "SELECT 1 FROM app_user LIMIT 1" </dev/null >/dev/null 2>&1; then
   docker compose exec -T db psql -U postgres -d 4fall_bot -v ON_ERROR_STOP=1 < kio-bot.sql
 fi
 
