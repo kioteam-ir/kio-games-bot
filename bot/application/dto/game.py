@@ -1,6 +1,6 @@
 from pydantic import BaseModel, ConfigDict
 
-from bot.domain.entities.game_session import GameSession
+from bot.application.dto.board import BoardState
 from bot.domain.schemas.game import GameCatalogEntry, GameMatchSummary, GameTypeId
 from bot.domain.schemas.player import TelegramPlayer
 from bot.domain.schemas.user import UserRecord
@@ -15,20 +15,19 @@ class UseCaseError(BaseModel):
 
 
 class GameBoardView(BaseModel):
-    model_config = ConfigDict(frozen=True, arbitrary_types_allowed=True)
+    model_config = ConfigDict(frozen=True)
 
     text: str
     game_id: int
     game_over: bool
-    session: GameSession
+    board: BoardState
 
 
 class CreateGameResult(BaseModel):
-    model_config = ConfigDict(frozen=True, arbitrary_types_allowed=True)
+    model_config = ConfigDict(frozen=True)
 
     text: str
     game_id: int
-    session: GameSession
 
 
 class JoinGameResult(BaseModel):
@@ -58,13 +57,14 @@ class ChangeLangResult(BaseModel):
 
 
 class SessionTimeoutResult(BaseModel):
-    model_config = ConfigDict(frozen=True, arbitrary_types_allowed=True)
+    model_config = ConfigDict(frozen=True)
 
     inline_message_id: str
     text: str
     game_id: int
     game_over: bool
-    session: GameSession
+    lang: str
+    board: BoardState | None = None
 
 
 class InlineGamesContext(BaseModel):

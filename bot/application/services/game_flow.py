@@ -15,11 +15,11 @@ from bot.application.dto.game import (
     SessionTimeoutResult,
     UseCaseError,
 )
+from bot.application.services.board_state import BoardStateBuilder
 from bot.application.services.game_catalog import GameCatalogService
 from bot.application.services.session_manager import GameSessionManager
 from bot.domain.entities.game_session import GameSession
-from bot.domain.games.connect.with_friend import VsFriendEngine
-from bot.domain.games.XO.with_friend import VsFriendXO
+from bot.domain.games.registry import create_engine, get_game_module
 from bot.domain.repositories import GameRepository, UserRepository, telegram_player_from_user
 from bot.domain.schemas.game import GameMatchSummary, GameResultKind, GameTypeId, PlayerGameStats
 from bot.infrastructure.i18n.translator import Translator
@@ -114,34 +114,24 @@ class GameFlowService:
         self._users = user_repo
         self._translator = translator
 
-    def _create_engine(self, entry: object, is_xo: bool) -> VsFriendXO | VsFriendEngine:
-        from bot.domain.schemas.game import GameCatalogEntry
-
-        if not isinstance(entry, GameCatalogEntry):
-            msg = "Expected GameCatalogEntry"
-            raise TypeError(msg)
-        if is_xo:
-            return VsFriendXO(entry.rows, entry.connect)
-        return VsFriendEngine(entry.rows, entry.cols, entry.connect)
-
     async def create(self, request: MakeGameRequest) -> CreateGameResult | UseCaseError:
         entry = self._catalog.get(request.lang, request.game_type)
-        engine = self._create_engine(entry, entry.is_xo)
+        engine = create_engine(entry)
         session = GameSession(
             game_engine=engine,
             inline_message_id=request.inline_message_id,
             current_player=request.creator,
             players=[request.creator],
-            is_xo=entry.is_xo,
             game_type=request.game_type,
+            lang=request.lang,
         )
-        game_id = self._sessions.push(session)
+        game_id = await self._sessions.push(session)
         waiting = self._translator.t(I18nKeys.WAITING_FOR_PLAYER, request.lang)
         text = f"{waiting}\n{entry.description}"
-        return CreateGameResult(text=text, game_id=game_id, session=session)
+        return CreateGameResult(text=text, game_id=game_id)
 
     async def join(self, request: JoinGameRequest) -> JoinGameResult | UseCaseError:
-        session = self._sessions.get(request.game_id)
+        session = await self._sessions.get(request.game_id)
         if session is None:
             return UseCaseError(message_key=I18nKeys.NOT_YOUR_GAME)
         if request.player.id in {p.id for p in session.players}:
@@ -153,12 +143,13 @@ class GameFlowService:
             lang_code=self._translator.resolve_lang(request.player.lang_code),
         )
         session.players.append(request.player)
+        await self._sessions.save(request.game_id, session)
         creator = await self._users.get_or_create(session.players[0].id)
         view = self._build_board_view(session, request.game_id, creator.lang_code, game_over=False)
         return JoinGameResult(view=view)
 
     async def move(self, request: MoveGameRequest) -> MoveGameResult | UseCaseError:
-        session = self._sessions.get(request.game_id)
+        session = await self._sessions.get(request.game_id)
         if session is None:
             return UseCaseError(message_key=I18nKeys.NOT_YOUR_GAME)
         if request.player_id not in {p.id for p in session.players}:
@@ -166,19 +157,10 @@ class GameFlowService:
         if session.current_player.id != request.player_id:
             return UseCaseError(message_key=I18nKeys.NOT_YOUR_TURN)
 
-        row = request.row - 1
-        col = request.col - 1
         engine = session.game_engine
-        if session.is_xo:
-            if not isinstance(engine, VsFriendXO):
-                return UseCaseError(message_key=I18nKeys.COLUMN_FULL)
-            if not engine.is_valid_move((row, col)):
-                return UseCaseError(message_key=I18nKeys.COLUMN_FULL)
-            engine.make_move((row, col))
-        else:
-            if not engine.is_column_playable(col):
-                return UseCaseError(message_key=I18nKeys.COLUMN_FULL)
-            engine.make_move(col)
+        module = get_game_module(session.game_type)
+        if not module.apply_ui_move(engine, row=request.row, col=request.col):
+            return UseCaseError(message_key=I18nKeys.COLUMN_FULL)
 
         new_player = (
             session.players[0]
@@ -186,6 +168,7 @@ class GameFlowService:
             else session.players[1]
         )
         session.current_player = new_player
+        await self._sessions.save(request.game_id, session)
 
         creator = await self._users.get_or_create(session.players[0].id)
         game_lang = creator.lang_code
@@ -216,6 +199,14 @@ class GameFlowService:
             match_summary=match_summary,
             should_delete_session=game_over,
         )
+
+    async def get_state(self, game_id: int) -> GameBoardView | UseCaseError:
+        session = await self._sessions.get(game_id)
+        if session is None:
+            return UseCaseError(message_key=I18nKeys.NOT_YOUR_GAME)
+        creator = await self._users.get_or_create(session.players[0].id)
+        game_over = session.game_engine.ended or session.game_engine.is_draw()
+        return self._build_board_view(session, game_id, creator.lang_code, game_over=game_over)
 
     async def handle_timeout(
         self,
@@ -251,12 +242,14 @@ class GameFlowService:
             )
             stopped = self._translator.t(I18nKeys.GAME_STOPPED, lang)
             text = f"{stopped}\n\n{ended}"
+            board = BoardStateBuilder.build(session, game_id, game_over=True)
             return SessionTimeoutResult(
                 inline_message_id=session.inline_message_id,
                 text=text,
                 game_id=game_id,
                 game_over=True,
-                session=session,
+                lang=lang,
+                board=board,
             )
         text = self._translator.t(I18nKeys.PLAY_WITH_COOL_PEOPLE_TEXT, lang)
         return SessionTimeoutResult(
@@ -264,7 +257,8 @@ class GameFlowService:
             text=text,
             game_id=game_id,
             game_over=True,
-            session=session,
+            lang=lang,
+            board=None,
         )
 
     def _build_board_view(
@@ -305,4 +299,5 @@ class GameFlowService:
                 name=session.current_player.first_name,
                 color=engine.current_player.as_color,
             )
-        return GameBoardView(text=text, game_id=game_id, game_over=game_over, session=session)
+        board = BoardStateBuilder.build(session, game_id, game_over=game_over)
+        return GameBoardView(text=text, game_id=game_id, game_over=game_over, board=board)
