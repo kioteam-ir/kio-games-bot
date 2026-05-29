@@ -37,7 +37,10 @@ class BotApplication:
     async def start(self) -> None:
         await self.setup()
         asyncio.create_task(self.container.session_manager.start_cleanup_loop())
-        await self.dispatcher.start_polling(self.bot, polling_timeout=15)
+        try:
+            await self.dispatcher.start_polling(self.bot, polling_timeout=15)
+        finally:
+            await self.container.close()
 
     def _register_middlewares(self) -> None:
         i18n = I18n.get_current()
@@ -75,9 +78,8 @@ class BotApplication:
             self.container.translator,
             self.container.bot_config.bot_username,
         )
-        if len(result.session.players) == 1:
-            creator = await self.container.user_repo.get_or_create(result.session.players[0].id)
-            markup = keyboards.timeout_keyboard(creator.lang_code)
+        if result.board is None:
+            markup = keyboards.timeout_keyboard(result.lang)
         else:
             from bot.application.dto.game import GameBoardView
 
@@ -85,7 +87,7 @@ class BotApplication:
                 text=result.text,
                 game_id=result.game_id,
                 game_over=True,
-                session=result.session,
+                board=result.board,
             )
             markup = keyboards.game_board(view)
 
