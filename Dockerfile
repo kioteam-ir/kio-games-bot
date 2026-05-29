@@ -16,6 +16,7 @@ WORKDIR /bot
 COPY pyproject.toml poetry.lock README.md ./
 COPY bot ./bot
 COPY api ./api
+COPY tools ./tools
 RUN poetry install --only main \
     && poetry run pybabel compile -d bot/locales -D bot
 
