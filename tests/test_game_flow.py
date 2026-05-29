@@ -265,3 +265,20 @@ async def test_try_join_reports_missing_session(translator: Translator) -> None:
     flow = _flow(translator)
     outcome = await flow._sessions.try_join(999, TelegramPlayer(id=2, first_name="Bob"))
     assert outcome.error == JoinSessionError.NOT_FOUND
+
+
+@pytest.mark.asyncio
+async def test_create_mines_waiting_message(translator: Translator) -> None:
+    flow = _flow(translator)
+    creator = TelegramPlayer(id=1, first_name="Alice")
+    result = await flow.create(
+        MakeGameRequest(
+            creator=creator,
+            game_type=GameTypeId.MINE,
+            inline_message_id="inline-mine",
+            lang="en",
+            mine_count=9,
+        )
+    )
+    assert result.game_id > 0
+    assert "Waiting" in result.text

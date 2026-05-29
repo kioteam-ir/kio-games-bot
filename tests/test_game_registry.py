@@ -23,6 +23,7 @@ def test_all_catalog_games_are_registered() -> None:
 def test_family_mapping() -> None:
     assert family_for(GameTypeId.XO) is GameFamily.GRID_MARK
     assert family_for(GameTypeId.CONNECT_4) is GameFamily.CONNECT_DROP
+    assert family_for(GameTypeId.MINE) is GameFamily.MINES
 
 
 def test_create_connect_engine() -> None:

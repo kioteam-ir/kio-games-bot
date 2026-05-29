@@ -87,3 +87,6 @@ msgstr "✅ يرجى الانضمام إلى قنواتنا أولاً ✅"
 
 msgid "sponsors-updated"
 msgstr "تم تحديث الرعاة: {count}"
+
+msgid "choose-number-of-mines"
+msgstr "💣 Choose the number of mines 💣"

@@ -90,3 +90,6 @@ msgstr "✅ ابتدا در کانال های ما عضو شوید ✅"
 
 msgid "sponsors-updated"
 msgstr "لیست اسپانسرها به‌روزرسانی شد: {count}"
+
+msgid "choose-number-of-mines"
+msgstr "💣 تعداد مین‌ها را انتخاب کنید 💣"

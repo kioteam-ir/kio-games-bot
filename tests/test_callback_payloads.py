@@ -28,6 +28,13 @@ class CallbackPayloadTests(unittest.TestCase):
         restored = MakeGameCallback.unpack(payload.pack())
         self.assertEqual(restored.creator_id, 42)
         self.assertEqual(restored.game_type, GameTypeId.CONNECT_4)
+        self.assertEqual(restored.mine_count, 0)
+
+    def test_make_game_mine_count_roundtrip(self) -> None:
+        payload = MakeGameCallback(creator_id=42, game_type=GameTypeId.MINE, mine_count=9)
+        restored = MakeGameCallback.unpack(payload.pack())
+        self.assertEqual(restored.game_type, GameTypeId.MINE)
+        self.assertEqual(restored.mine_count, 9)
 
     def test_join_game_roundtrip(self) -> None:
         payload = JoinGameCallback(game_id=999)

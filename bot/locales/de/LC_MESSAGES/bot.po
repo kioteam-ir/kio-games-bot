@@ -87,3 +87,6 @@ msgstr "✅ Bitte tritt zuerst unseren Kanälen bei ✅"
 
 msgid "sponsors-updated"
 msgstr "Sponsoren aktualisiert: {count}"
+
+msgid "choose-number-of-mines"
+msgstr "💣 Choose the number of mines 💣"

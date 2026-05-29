@@ -90,3 +90,6 @@ msgstr "✅ Ji kerema xwe pêşî beşdarî kanalên me bibe ✅"
 
 msgid "sponsors-updated"
 msgstr "Sponsor hatin nûkirin: {count}"
+
+msgid "choose-number-of-mines"
+msgstr "💣 Choose the number of mines 💣"

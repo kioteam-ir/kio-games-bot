@@ -14,6 +14,7 @@ class GameTypeId(IntEnum):
     CONNECT_3 = 2
     CONNECT_4 = 3
     CONNECT_5 = 4
+    MINE = 5
 
 
 class GameResultKind(StrEnum):

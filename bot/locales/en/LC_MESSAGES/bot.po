@@ -90,3 +90,6 @@ msgstr "✅ Please join our channels first ✅"
 
 msgid "sponsors-updated"
 msgstr "Sponsors updated: {count}"
+
+msgid "choose-number-of-mines"
+msgstr "💣 Choose the number of mines 💣"

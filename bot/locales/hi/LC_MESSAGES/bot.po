@@ -90,3 +90,6 @@ msgstr "✅ कृपया पहले हमारे चैनलों स�
 
 msgid "sponsors-updated"
 msgstr "प्रायोजक अपडेट किए गए: {count}"
+
+msgid "choose-number-of-mines"
+msgstr "💣 Choose the number of mines 💣"

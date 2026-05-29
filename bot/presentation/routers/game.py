@@ -16,6 +16,7 @@ from bot.application.services.session_manager import GameSessionManager
 from bot.config.session import SessionConfigClass
 from bot.core.container import AppContainer
 from bot.domain.repositories import telegram_player_from_user
+from bot.domain.schemas.game import GameTypeId
 from bot.infrastructure.callback.payloads import (
     CellMoveCallback,
     ChangeLangCallback,
@@ -112,11 +113,22 @@ async def make_game_handler(
 ) -> None:
     if callback.from_user is None or callback.inline_message_id is None or callback.bot is None:
         return
+
+    if callback_data.game_type is GameTypeId.MINE and callback_data.mine_count == 0:
+        await callback.bot.edit_message_text(
+            inline_message_id=callback.inline_message_id,
+            text=translator.t(I18nKeys.CHOOSE_NUMBER_OF_MINES, user_context.lang),
+            reply_markup=keyboards.mine_count_picker(user_context.lang, callback_data.creator_id),
+        )
+        await callback.answer()
+        return
+
     request = MakeGameRequest(
         creator=telegram_player_from_user(callback.from_user),
         game_type=callback_data.game_type,
         inline_message_id=callback.inline_message_id,
         lang=user_context.lang,
+        mine_count=callback_data.mine_count,
     )
     result = await game_flow_service.create(request)
     if isinstance(result, UseCaseError):

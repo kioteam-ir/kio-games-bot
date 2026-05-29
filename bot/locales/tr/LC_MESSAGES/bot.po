@@ -87,3 +87,6 @@ msgstr "✅ Lütfen önce kanallarımıza katılın ✅"
 
 msgid "sponsors-updated"
 msgstr "Sponsorlar güncellendi: {count}"
+
+msgid "choose-number-of-mines"
+msgstr "💣 Mayın sayısını seçin 💣"

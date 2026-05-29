@@ -31,3 +31,4 @@ class I18nKeys(StrEnum):
     CHANGE_YOUR_LANG_TEXT = "change-your-lang-text"
     JOIN_FIRST = "join-first"
     SPONSORS_UPDATED = "sponsors-updated"
+    CHOOSE_NUMBER_OF_MINES = "choose-number-of-mines"

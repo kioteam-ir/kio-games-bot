@@ -43,3 +43,26 @@ def test_stored_session_json_roundtrip() -> None:
     loaded = from_stored_session(stored, entry)
     assert isinstance(loaded, GameSession)
     assert loaded.game_type is GameTypeId.XO
+
+
+def test_mines_session_json_roundtrip() -> None:
+    catalog = GameCatalogService()
+    entry = catalog.get("en", GameTypeId.MINE)
+    engine = create_engine(entry, mine_count=9)
+    engine.apply_ui_move(row=1, col=1)
+    session = GameSession(
+        game_engine=engine,
+        inline_message_id="inline-mine",
+        current_player=TelegramPlayer(id=1, first_name="Alice"),
+        players=[
+            TelegramPlayer(id=1, first_name="Alice"),
+            TelegramPlayer(id=2, first_name="Bob"),
+        ],
+        game_type=GameTypeId.MINE,
+        lang="en",
+    )
+    stored = to_stored_session(session, game_id=55)
+    stored = StoredGameSession.model_validate_json(stored.model_dump_json())
+    loaded = from_stored_session(stored, entry)
+    assert isinstance(loaded, GameSession)
+    assert loaded.game_engine.revealed_count == engine.revealed_count

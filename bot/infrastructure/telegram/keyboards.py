@@ -55,6 +55,34 @@ class KeyboardService:
             ]
         )
 
+    def mine_count_picker(self, lang: str, creator_id: int) -> InlineKeyboardMarkup:
+        del lang
+        rows: list[list[InlineKeyboardButton]] = [
+            [
+                InlineKeyboardButton(
+                    text="9",
+                    callback_data=CallbackService.build_make_game(
+                        creator_id, int(GameTypeId.MINE), mine_count=9
+                    ),
+                ),
+                InlineKeyboardButton(
+                    text="15",
+                    callback_data=CallbackService.build_make_game(
+                        creator_id, int(GameTypeId.MINE), mine_count=15
+                    ),
+                ),
+            ],
+            [
+                InlineKeyboardButton(
+                    text="5",
+                    callback_data=CallbackService.build_make_game(
+                        creator_id, int(GameTypeId.MINE), mine_count=5
+                    ),
+                ),
+            ],
+        ]
+        return InlineKeyboardMarkup(inline_keyboard=rows)
+
     def timeout_keyboard(self, lang: str) -> InlineKeyboardMarkup:
         return InlineKeyboardMarkup(
             inline_keyboard=[

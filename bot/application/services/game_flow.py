@@ -20,7 +20,8 @@ from bot.application.services.board_state import BoardStateBuilder
 from bot.application.services.game_catalog import GameCatalogService
 from bot.application.services.session_manager import GameSessionManager
 from bot.domain.entities.game_session import GameSession
-from bot.domain.games.registry import create_engine, get_game_module
+from bot.domain.games.ports import GameFamily
+from bot.domain.games.registry import create_engine, family_for, get_game_module
 from bot.domain.repositories import GameRepository, UserRepository, telegram_player_from_user
 from bot.domain.schemas.game import GameMatchSummary, GameResultKind, GameTypeId, PlayerGameStats
 from bot.infrastructure.i18n.translator import Translator
@@ -133,7 +134,8 @@ class GameFlowService:
                 )
 
         entry = self._catalog.get(request.lang, request.game_type)
-        engine = create_engine(entry)
+        mine_count = request.mine_count if request.mine_count > 0 else None
+        engine = create_engine(entry, mine_count=mine_count)
         session = GameSession(
             game_engine=engine,
             inline_message_id=request.inline_message_id,
@@ -193,8 +195,13 @@ class GameFlowService:
         if not module.apply_ui_move(engine, row=request.row, col=request.col):
             return UseCaseError(message_key=I18nKeys.COLUMN_FULL)
 
-        new_player = session.players[0] if session.current_player.id != session.players[0].id else session.players[1]
-        session.current_player = new_player
+        if family_for(session.game_type) is GameFamily.MINES:
+            session.current_player = session.players[engine.current_player.value - 1]
+        else:
+            new_player = (
+                session.players[0] if session.current_player.id != session.players[0].id else session.players[1]
+            )
+            session.current_player = new_player
         await self._sessions.save(request.game_id, session)
 
         game_lang = session.lang

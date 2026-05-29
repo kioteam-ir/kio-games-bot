@@ -39,6 +39,15 @@ GAME_CATALOG: dict[str, dict[GameTypeId, GameCatalogEntry]] = {
             cols=8,
             connect=5,
         ),
+        GameTypeId.MINE: GameCatalogEntry(
+            title="MINEROB | مین‌روب",
+            id=GameTypeId.MINE,
+            description="💣 بازی مین‌روب نوبتی دو نفره — خانه‌ها را باز کن و امتیاز جمع کن! 💣",
+            thumb_url="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Minesweeper_64x64.png/240px-Minesweeper_64x64.png",
+            rows=8,
+            cols=7,
+            connect=9,
+        ),
     },
     "en": {
         GameTypeId.XO: GameCatalogEntry(
@@ -77,6 +86,15 @@ GAME_CATALOG: dict[str, dict[GameTypeId, GameCatalogEntry]] = {
             cols=8,
             connect=5,
         ),
+        GameTypeId.MINE: GameCatalogEntry(
+            title="MINEROB | MINESWEEPER",
+            id=GameTypeId.MINE,
+            description="💣 Turn-based two-player minesweeper — reveal cells and collect points! 💣",
+            thumb_url="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Minesweeper_64x64.png/240px-Minesweeper_64x64.png",
+            rows=8,
+            cols=7,
+            connect=9,
+        ),
     },
     "tr": {
         GameTypeId.XO: GameCatalogEntry(
@@ -114,6 +132,15 @@ GAME_CATALOG: dict[str, dict[GameTypeId, GameCatalogEntry]] = {
             rows=8,
             cols=8,
             connect=5,
+        ),
+        GameTypeId.MINE: GameCatalogEntry(
+            title="MINEROB | MAYIN TARA",
+            id=GameTypeId.MINE,
+            description="💣 İki kişilik sıra tabanlı mayın tarlası — hücreleri aç, puan topla! 💣",
+            thumb_url="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Minesweeper_64x64.png/240px-Minesweeper_64x64.png",
+            rows=8,
+            cols=7,
+            connect=9,
         ),
     },
 }

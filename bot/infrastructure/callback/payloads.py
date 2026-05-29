@@ -23,6 +23,7 @@ class PlayerInfoCallback(CallbackData, prefix="pi"):
 class MakeGameCallback(CallbackData, prefix="mg"):
     creator_id: int
     game_type: GameTypeId
+    mine_count: int = 0
 
 
 class JoinGameCallback(CallbackData, prefix="jp"):

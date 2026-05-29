@@ -87,3 +87,6 @@ msgstr "✅ הצטרף קודם לערוצים שלנו ✅"
 
 msgid "sponsors-updated"
 msgstr "רשימת הספונסרים עודכנה: {count}"
+
+msgid "choose-number-of-mines"
+msgstr "💣 Choose the number of mines 💣"

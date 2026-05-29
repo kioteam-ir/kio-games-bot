@@ -12,6 +12,7 @@ class GameFamily(StrEnum):
 
     CONNECT_DROP = "connect_drop"
     GRID_MARK = "grid_mark"
+    MINES = "mines"
 
 
 class GameEngineFactory(Protocol):
@@ -27,7 +28,7 @@ class GameModule(Protocol):
     @property
     def family(self) -> GameFamily: ...
 
-    def create_engine(self, entry: GameCatalogEntry) -> GameEngine: ...
+    def create_engine(self, entry: GameCatalogEntry, *, mine_count: int | None = None) -> GameEngine: ...
 
     def apply_ui_move(self, engine: GameEngine, *, row: int, col: int) -> bool:
         """Apply a 1-indexed Telegram grid callback. Return False when illegal."""

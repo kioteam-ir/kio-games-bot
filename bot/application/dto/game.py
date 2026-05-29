@@ -91,6 +91,7 @@ class MakeGameRequest(BaseModel):
     game_type: GameTypeId
     inline_message_id: str
     lang: str
+    mine_count: int = 0
 
 
 class JoinGameRequest(BaseModel):

@@ -45,12 +45,13 @@ class CallbackService:
         ).pack()
 
     @staticmethod
-    def build_make_game(creator_id: int, game_type: int) -> str:
+    def build_make_game(creator_id: int, game_type: int, *, mine_count: int = 0) -> str:
         from bot.domain.schemas.game import GameTypeId
 
         return MakeGameCallback(
             creator_id=creator_id,
             game_type=GameTypeId(game_type),
+            mine_count=mine_count,
         ).pack()
 
     @staticmethod

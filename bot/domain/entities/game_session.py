@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from bot.domain.games.base import GameEngine
+from bot.domain.games.mines.with_friend import TurnBasedMinesEngine
 from bot.domain.schemas.game import GameTypeId
 from bot.domain.schemas.player import TelegramPlayer
 
@@ -19,7 +20,7 @@ class GameSession:
 
     def __init__(
         self,
-        game_engine: GameEngine,
+        game_engine: GameEngine | TurnBasedMinesEngine,
         inline_message_id: str,
         current_player: TelegramPlayer,
         players: list[TelegramPlayer],
@@ -34,5 +35,5 @@ class GameSession:
         self.lang = lang
 
     @property
-    def engine(self) -> GameEngine:
+    def engine(self) -> GameEngine | TurnBasedMinesEngine:
         return self.game_engine

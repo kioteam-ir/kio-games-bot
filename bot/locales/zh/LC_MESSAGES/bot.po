@@ -87,3 +87,6 @@ msgstr "✅ 请先加入我们的频道 ✅"
 
 msgid "sponsors-updated"
 msgstr "赞助商已更新：{count}"
+
+msgid "choose-number-of-mines"
+msgstr "💣 Choose the number of mines 💣"
