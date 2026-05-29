@@ -19,11 +19,18 @@ from bot.application.services.session_manager import (
 from bot.config.bot import BotConfigClass
 from bot.config.i18n import I18nConfigClass
 from bot.config.session import SessionConfigClass
-from bot.domain.repositories import SponsorMembershipChecker
+from bot.domain.repositories import (
+    GameRepository,
+    SponsorMembershipChecker,
+    SponsorRepository,
+    UserRepository,
+)
+from api.config.database import DatabaseConfigClass
+from api.infrastructure.database.connection import init_database
+from api.infrastructure.persistence.game_repository import SqlAlchemyGameRepository
+from api.infrastructure.persistence.sponsor_repository import SqlAlchemySponsorRepository
+from api.infrastructure.persistence.user_repository import SqlAlchemyUserRepository
 from bot.infrastructure.i18n.texts import TextsService
-from bot.infrastructure.persistence.game_repository import DjangoGameRepository
-from bot.infrastructure.persistence.sponsor_repository import DjangoSponsorRepository
-from bot.infrastructure.persistence.user_repository import DjangoUserRepository
 from bot.infrastructure.telegram.sponsor_checker import TelegramSponsorMembershipChecker
 
 
@@ -33,9 +40,9 @@ class AppContainer:
     session_config: SessionConfigClass
     texts: TextsService
     catalog: GameCatalogService
-    user_repo: DjangoUserRepository
-    game_repo: DjangoGameRepository
-    sponsor_repo: DjangoSponsorRepository
+    user_repo: UserRepository
+    game_repo: GameRepository
+    sponsor_repo: SponsorRepository
     session_manager: GameSessionManager
     user_service: UserService
     inline_games_service: InlineGamesService
@@ -51,9 +58,10 @@ class AppContainer:
         i18n_cfg = I18nConfigClass()
         texts = TextsService(i18n_cfg)
         catalog = GameCatalogService()
-        user_repo = DjangoUserRepository()
-        game_repo = DjangoGameRepository()
-        sponsor_repo = DjangoSponsorRepository()
+        init_database(DatabaseConfigClass())
+        user_repo = SqlAlchemyUserRepository()
+        game_repo = SqlAlchemyGameRepository()
+        sponsor_repo = SqlAlchemySponsorRepository()
         session_manager = GameSessionManager(
             storage=InMemoryGameSessionStorage(),
             timeout=session_cfg.game_session_timeout_seconds,
