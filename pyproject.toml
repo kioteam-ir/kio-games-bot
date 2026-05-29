@@ -19,7 +19,7 @@ dependencies = [
 
 [tool.poetry]
 package-mode = true
-packages = [{ include = "bot" }, { include = "api" }]
+packages = [{ include = "bot" }, { include = "api" }, { include = "tools" }]
 
 [tool.poetry.scripts]
 bot = "bot.main:main"
@@ -40,11 +40,19 @@ dev = [
 
 [tool.poe.tasks]
 test = "pytest tests/ -v"
-mypy = ["mypy bot/", "mypy api/"]
-ruff-lint = "ruff check bot/ api/ tests/"
-ruff-format = "ruff format bot/ api/ tests/"
+mypy = ["mypy bot/", "mypy api/", "mypy tools/"]
+ruff-lint = "ruff check bot/ api/ tests/ tools/"
+ruff-format = "ruff format bot/ api/ tests/ tools/"
 compile = "pybabel compile -d bot/locales -D bot"
 lint = ["ruff-lint", "mypy"]
+migrate-users = "python tools/migrate_users.py"
+migrate-games = "python tools/migrate_games.py"
+migrate-scores = "python tools/migrate_scores.py"
+migrate-sponsors = "python tools/migrate_sponsors.py"
+migrate-lang-codes = "python tools/migrate_lang_codes.py"
+migrate-sequences = "python tools/migrate_sequences.py"
+migrate-all = "python tools/migrate_all.py"
+add-sponsors = "python tools/add_sponsors.py"
 
 [tool.ruff]
 target-version = "py313"
@@ -67,7 +75,7 @@ check_untyped_defs = true
 no_implicit_optional = true
 warn_redundant_casts = true
 warn_unused_ignores = true
-packages = ["bot", "api"]
+packages = ["bot", "api", "tools"]
 exclude = [
   "bot/infrastructure/i18n/texts.py",
   "bot/domain/schemas/texts.py",
