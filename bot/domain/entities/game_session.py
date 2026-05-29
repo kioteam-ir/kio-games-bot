@@ -1,16 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
-from bot.domain.games.connect.with_friend import VsFriendEngine
-from bot.domain.games.XO.with_friend import VsFriendXO
+from bot.domain.games.base import GameEngine
 from bot.domain.schemas.game import GameTypeId
 from bot.domain.schemas.player import TelegramPlayer
-
-if TYPE_CHECKING:
-    from bot.domain.games.base import GameEngine
-
-GameEngineType = VsFriendXO | VsFriendEngine
 
 
 class GameSession:
@@ -21,25 +13,25 @@ class GameSession:
         "inline_message_id",
         "current_player",
         "players",
-        "is_xo",
         "game_type",
+        "lang",
     )
 
     def __init__(
         self,
-        game_engine: GameEngineType,
+        game_engine: GameEngine,
         inline_message_id: str,
         current_player: TelegramPlayer,
         players: list[TelegramPlayer],
-        is_xo: bool,
         game_type: GameTypeId,
+        lang: str,
     ) -> None:
         self.game_engine = game_engine
         self.inline_message_id = inline_message_id
         self.current_player = current_player
         self.players = players
-        self.is_xo = is_xo
         self.game_type = game_type
+        self.lang = lang
 
     @property
     def engine(self) -> GameEngine:
