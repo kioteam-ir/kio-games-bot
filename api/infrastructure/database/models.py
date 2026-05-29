@@ -10,6 +10,19 @@ class Base(DeclarativeBase):
     pass
 
 
+class AppScore(Base):
+    __tablename__ = "app_score"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    user_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("app_user.id"))
+    games: Mapped[int] = mapped_column(Integer, default=0)
+    wins: Mapped[int] = mapped_column(Integer, default=0)
+    losses: Mapped[int] = mapped_column(Integer, default=0)
+    game_type: Mapped[int] = mapped_column(Integer, default=1)
+
+    user: Mapped[AppUser] = relationship(back_populates="scores")
+
+
 class AppUser(Base):
     __tablename__ = "app_user"
 
@@ -21,7 +34,7 @@ class AppUser(Base):
     is_banned: Mapped[bool] = mapped_column(Boolean, default=False)
     lang_code: Mapped[str] = mapped_column(String(2), default="fa")
 
-    scores: Mapped[list["AppScore"]] = relationship(back_populates="user")
+    scores: Mapped[list[AppScore]] = relationship(back_populates="user")
 
 
 class AppGame(Base):
@@ -45,19 +58,6 @@ class AppGame(Base):
 
     player_1: Mapped[AppUser | None] = relationship(foreign_keys=[player_1_id])
     player_2: Mapped[AppUser | None] = relationship(foreign_keys=[player_2_id])
-
-
-class AppScore(Base):
-    __tablename__ = "app_score"
-
-    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
-    user_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("app_user.id"))
-    games: Mapped[int] = mapped_column(Integer, default=0)
-    wins: Mapped[int] = mapped_column(Integer, default=0)
-    losses: Mapped[int] = mapped_column(Integer, default=0)
-    game_type: Mapped[int] = mapped_column(Integer, default=1)
-
-    user: Mapped[AppUser] = relationship(back_populates="scores")
 
 
 class AppSponser(Base):

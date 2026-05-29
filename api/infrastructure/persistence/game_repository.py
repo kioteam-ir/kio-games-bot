@@ -63,16 +63,6 @@ async def _update_scores(
         await _apply_draw(session, player_2_id, game_type)
 
 
-def _head_to_head_filters(game: AppGame, player_1_id: int, player_2_id: int) -> list[object]:
-    return [
-        AppGame.type == game.type,
-        or_(
-            and_(AppGame.player_1_id == player_1_id, AppGame.player_2_id == player_2_id),
-            and_(AppGame.player_1_id == player_2_id, AppGame.player_2_id == player_1_id),
-        ),
-    ]
-
-
 async def _shared_game(
     session: AsyncSession,
     game: AppGame,
@@ -82,39 +72,36 @@ async def _shared_game(
     if player_1_id is None or player_2_id is None:
         return HeadToHeadStats(total=0, p1_wins=0, p2_wins=0, draws=0)
 
-    base_filters = _head_to_head_filters(game, player_1_id, player_2_id)
-
-    total = await session.scalar(select(func.count()).select_from(AppGame).where(*base_filters))
-
-    p1_wins = await session.scalar(
-        select(func.count())
-        .select_from(AppGame)
-        .where(
-            *base_filters,
-            or_(
-                and_(AppGame.player_1_id == player_1_id, AppGame.result == "player_1"),
-                and_(AppGame.player_2_id == player_1_id, AppGame.result == "player_2"),
-            ),
-        )
+    pair_filter = and_(
+        AppGame.type == game.type,
+        or_(
+            and_(AppGame.player_1_id == player_1_id, AppGame.player_2_id == player_2_id),
+            and_(AppGame.player_1_id == player_2_id, AppGame.player_2_id == player_1_id),
+        ),
     )
 
-    p2_wins = await session.scalar(
-        select(func.count())
-        .select_from(AppGame)
-        .where(
-            *base_filters,
-            or_(
-                and_(AppGame.player_1_id == player_2_id, AppGame.result == "player_1"),
-                and_(AppGame.player_2_id == player_2_id, AppGame.result == "player_2"),
-            ),
-        )
-    )
+    total = await session.scalar(select(func.count()).select_from(AppGame).where(pair_filter))
 
-    draws = await session.scalar(
-        select(func.count())
-        .select_from(AppGame)
-        .where(*base_filters, AppGame.result == "draw")
+    p1_win_filter = and_(
+        pair_filter,
+        or_(
+            and_(AppGame.player_1_id == player_1_id, AppGame.result == "player_1"),
+            and_(AppGame.player_2_id == player_1_id, AppGame.result == "player_2"),
+        ),
     )
+    p1_wins = await session.scalar(select(func.count()).select_from(AppGame).where(p1_win_filter))
+
+    p2_win_filter = and_(
+        pair_filter,
+        or_(
+            and_(AppGame.player_1_id == player_2_id, AppGame.result == "player_1"),
+            and_(AppGame.player_2_id == player_2_id, AppGame.result == "player_2"),
+        ),
+    )
+    p2_wins = await session.scalar(select(func.count()).select_from(AppGame).where(p2_win_filter))
+
+    draw_filter = and_(pair_filter, AppGame.result == "draw")
+    draws = await session.scalar(select(func.count()).select_from(AppGame).where(draw_filter))
 
     return HeadToHeadStats(
         total=int(total or 0),
