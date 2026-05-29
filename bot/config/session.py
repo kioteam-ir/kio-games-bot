@@ -12,7 +12,8 @@ class SessionConfigClass(BaseConfig):
         default=300.0,
         alias="GAME_SESSION_TIMEOUT",
     )
-    inline_query_cache_time: int = Field(default=0, alias="INLINE_QUERY_CACHE_TIME")
+    inline_query_cache_time: int = Field(default=30, alias="INLINE_QUERY_CACHE_TIME")
+    callback_idempotency_ttl_seconds: int = Field(default=300, alias="CALLBACK_IDEMPOTENCY_TTL")
     session_backend: Literal["memory", "redis"] = Field(default="redis", alias="SESSION_BACKEND")
 
 

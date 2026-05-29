@@ -10,8 +10,10 @@ from aiogram.utils.i18n import I18n
 from bot.application.dto.game import SessionTimeoutResult
 from bot.core.container import AppContainer
 from bot.infrastructure.telegram.keyboards import KeyboardService
+from bot.presentation.middlewares.idempotency import CallbackIdempotencyMiddleware
 from bot.presentation.middlewares.container import ContainerMiddleware
 from bot.presentation.middlewares.i18n import KioI18nMiddleware, UserLocaleMiddleware
+from bot.presentation.middlewares.ratelimit import RateLimitMiddleware
 from bot.presentation.middlewares.services import ServicesMiddleware
 from bot.presentation.routers.game import router as game_router
 from bot.presentation.routers.start import router as start_router
@@ -52,8 +54,17 @@ class BotApplication:
         self.dispatcher.update.middleware.register(
             UserLocaleMiddleware(self.container.user_service, self.container.i18n_config),
         )
+        self.dispatcher.update.middleware.register(
+            RateLimitMiddleware(self.container.rate_limit_service, self.container.rate_limit_config),
+        )
         self.dispatcher.update.middleware.register(KioI18nMiddleware(i18n=i18n))
         self.dispatcher.update.middleware.register(ServicesMiddleware(self.container))
+        self.dispatcher.callback_query.middleware.register(
+            CallbackIdempotencyMiddleware(
+                self.container.idempotency_store,
+                ttl_seconds=int(self.container.session_config.callback_idempotency_ttl_seconds),
+            ),
+        )
 
     def _register_routers(self) -> None:
         self.root_router.include_router(start_router)
