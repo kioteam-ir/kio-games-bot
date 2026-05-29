@@ -5,7 +5,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
-      - ./src/.env.dev
+      - ./config/.env.dev
     networks:
       - backend
     healthcheck:
@@ -15,15 +15,27 @@ services:
       retries: 5
       start_period: 10s
 
+  redis:
+    image: redis:7.4-alpine
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
   api:
     build: .
     command: ["sh", "-c", "/bot/entrypoint.sh api"]
     expose:
       - 8000
     env_file:
-      - ./src/.env.dev
+      - ./config/.env.dev
     depends_on:
       db:
+        condition: service_healthy
+      redis:
         condition: service_healthy
     networks:
       - backend
@@ -41,8 +53,6 @@ services:
   nginx:
     image: nginx:1.25-alpine
     volumes:
-      - static_volume:/bot/src/static:ro
-      - media_volume:/bot/src/media:ro
       - ./docker/nginx/templates:/etc/nginx/templates:ro
       - ./docker/nginx/snippets:/etc/nginx/snippets:ro
     ports:
@@ -67,9 +77,11 @@ services:
     volumes:
       - .:/bot
     env_file:
-      - ./src/.env.dev
+      - ./config/.env.dev
     depends_on:
       db:
+        condition: service_healthy
+      redis:
         condition: service_healthy
       api:
         condition: service_healthy
@@ -78,8 +90,6 @@ services:
 
 volumes:
   postgres_data:
-  static_volume:
-  media_volume:
 
 networks:
   backend:
