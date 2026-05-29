@@ -20,7 +20,7 @@ if [ "$1" = "django" ]; then
 
 elif [ "$1" = "bot" ]; then
     echo "Starting Bot..."
-    exec python src
+    exec poetry run bot
 
 else
     exec "$@"
