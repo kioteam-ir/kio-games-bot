@@ -1,0 +1,77 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: kio-games-bot\n"
+"Language: ru\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "start"
+msgstr "Добро пожаловать в наш бот ✋\nДавайте поиграем 👾"
+
+msgid "create-game-text"
+msgstr "🕹 Готовы? Тогда создайте игру 🕹"
+
+msgid "create-game-button"
+msgstr "🕹 Создать игру 🕹"
+
+msgid "you-are-banned-title"
+msgstr "Вы заблокированы в нашем боте!"
+
+msgid "you-are-banned-text"
+msgstr "Вам запрещено играть в нашем боте."
+
+msgid "waiting-for-player"
+msgstr "⏳ Ожидание игрока... ⏳"
+
+msgid "i-play"
+msgstr "Я играю 🙋"
+
+msgid "cannot-play-with-yourself"
+msgstr "Вы не можете играть сами с собой 😅"
+
+msgid "not-your-game"
+msgstr "❌ Вы не участвуете в этой игре ❌"
+
+msgid "not-your-turn"
+msgstr "❌ Сейчас не ваш ход ❌"
+
+msgid "column-full"
+msgstr "❌ Этот столбец заполнен ❌"
+
+msgid "player-game-stats"
+msgstr "📊 Статистика игрока 📊\n\n🕹 Всего игр [{all_games}] 🕹\n🥇 Побед [{wins}] 🥇\n🥈 Поражений [{losses}] 🥈\n🟰 Ничьих [{draws}] 🟰"
+
+msgid "game-in-progress-text"
+msgstr "🕹 Ход: {name} [{color}]ㅤ                       ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ\n🕹 Сделайте ход 🕹"
+
+msgid "game-ended-text"
+msgstr "🏆 Победитель: {winner}\n⚔ Всего матчей между вами: [{total} {game}]\n1️⃣ {p1_name}: {p1_wins}\n2️⃣ {p2_name}: {p2_wins}\n🟰 Ничьих: {draws}"
+
+msgid "game-is-draw-text"
+msgstr "Ничья 💢"
+
+msgid "game"
+msgstr "Игра"
+
+msgid "play-with-cool-people-button"
+msgstr "😎 Играть с крутыми людьми 😎"
+
+msgid "play-with-cool-people-text"
+msgstr "😬🎮 Никто не захотел играть 😬\n\nОтправьте крутым — они не откажут 😒"
+
+msgid "game-stopped"
+msgstr "🎮 Игра остановлена из-за бездействия 🎮"
+
+msgid "lang-changed"
+msgstr "Язык успешно изменён ✅"
+
+msgid "change-your-lang"
+msgstr "✅ Сменить язык ✅"
+
+msgid "change-your-lang-text"
+msgstr "✅ Нажмите, чтобы сменить язык ✅"
+
+msgid "join-first"
+msgstr "✅ Сначала подпишитесь на наши каналы ✅"
+
+msgid "sponsors-updated"
+msgstr "Список спонсоров обновлён: {count}"
