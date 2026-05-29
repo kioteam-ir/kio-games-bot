@@ -45,3 +45,16 @@ Static and media files are served by Nginx from shared volumes mounted at `/bot/
 | `django` | Gunicorn + Django admin |
 | `nginx` | Reverse proxy and static/media |
 | `bot` | Telegram bot process |
+
+## Deploy (remote server)
+
+1. Copy secrets locally: `.env`, `src/.env.dev`, and `src/config/local_settings.py` (see `local_settings.example.py`).
+2. Sync and deploy with rsync:
+
+```bash
+./scripts/deploy.sh pacman /root/4fall-game-tgbot
+```
+
+On hosts with Docker Compose \< 2.29 (older buildx), the script uses `DOCKER_BUILDKIT=0` automatically.
+
+First deploy imports `kio-bot.sql` into Postgres if the database is empty.
