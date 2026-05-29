@@ -14,7 +14,7 @@ RUN apk add --no-cache build-base libffi-dev openssl-dev postgresql-dev \
 
 WORKDIR /bot
 COPY pyproject.toml poetry.lock ./
-RUN poetry install --only main --no-root
+RUN poetry install --only main
 
 FROM python:3.13-alpine AS runtime
 
