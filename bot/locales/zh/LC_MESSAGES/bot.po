@@ -1,0 +1,77 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: kio-games-bot\n"
+"Language: zh\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "start"
+msgstr "欢迎使用我们的机器人 ✋\n来玩游戏吧 👾"
+
+msgid "create-game-text"
+msgstr "🕹 准备好了吗？创建游戏 🕹"
+
+msgid "create-game-button"
+msgstr "🕹 创建游戏 🕹"
+
+msgid "you-are-banned-title"
+msgstr "你已被封禁！"
+
+msgid "you-are-banned-text"
+msgstr "你已被禁止在本机器人中游戏。"
+
+msgid "waiting-for-player"
+msgstr "⏳ 等待玩家加入... ⏳"
+
+msgid "i-play"
+msgstr "我来玩 🙋"
+
+msgid "cannot-play-with-yourself"
+msgstr "你不能和自己对战 😅"
+
+msgid "not-your-game"
+msgstr "❌ 你不在这局游戏中 ❌"
+
+msgid "not-your-turn"
+msgstr "❌ 还没轮到你 ❌"
+
+msgid "column-full"
+msgstr "❌ 这一列已满 ❌"
+
+msgid "player-game-stats"
+msgstr "📊 玩家统计 📊\n\n🕹 总场次 [{all_games}] 🕹\n🥇 胜场 [{wins}] 🥇\n🥈 负场 [{losses}] 🥈\n🟰 平局 [{draws}] 🟰"
+
+msgid "game-in-progress-text"
+msgstr "🕹 轮到：{name} [{color}]ㅤ                       ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ\n🕹 请落子 🕹"
+
+msgid "game-ended-text"
+msgstr "🏆 获胜者：{winner}\n⚔ 你们之间的总对局：[{total} {game}]\n1️⃣ {p1_name}：{p1_wins}\n2️⃣ {p2_name}：{p2_wins}\n🟰 平局：{draws}"
+
+msgid "game-is-draw-text"
+msgstr "平局 💢"
+
+msgid "game"
+msgstr "游戏"
+
+msgid "play-with-cool-people-button"
+msgstr "😎 和酷的人一起玩 😎"
+
+msgid "play-with-cool-people-text"
+msgstr "😬🎮 没人想玩 😬\n\n发给酷的朋友们，他们不会拒绝 😒"
+
+msgid "game-stopped"
+msgstr "🎮 由于长时间无操作，游戏已停止 🎮"
+
+msgid "lang-changed"
+msgstr "语言已成功更改 ✅"
+
+msgid "change-your-lang"
+msgstr "✅ 更改语言 ✅"
+
+msgid "change-your-lang-text"
+msgstr "✅ 点击更改语言 ✅"
+
+msgid "join-first"
+msgstr "✅ 请先加入我们的频道 ✅"
+
+msgid "sponsors-updated"
+msgstr "赞助商已更新：{count}"
