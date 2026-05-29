@@ -15,6 +15,9 @@ rsync -avz --delete \
   --exclude '.mypy_cache/' \
   --exclude '.pytest_cache/' \
   --exclude '.ruff_cache/' \
+  --exclude '*.session' \
+  --exclude '*.session-shm' \
+  --exclude '*.session-wal' \
   "${ROOT_DIR}/" \
   "${REMOTE}:${REMOTE_DIR}/"
 
@@ -33,5 +36,6 @@ if ! docker compose exec -T db psql -U postgres -d 4fall_bot -tAc "SELECT 1 FROM
 fi
 
 DOCKER_BUILDKIT=0 COMPOSE_DOCKER_CLI_BUILD=0 docker compose up -d --build
+docker compose up -d --force-recreate --no-deps bot
 docker compose ps
 EOF
