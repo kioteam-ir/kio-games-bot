@@ -1,0 +1,92 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: kio-games-bot\n"
+"Language: ps\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "start"
+msgstr "زموږ بوټ ته ښه راغلاست ✋\nراځئ ولوبو 👾"
+
+msgid "create-game-text"
+msgstr "🕹 چمتو یې؟ یوه لوبه جوړه کړه 🕹"
+
+msgid "create-game-button"
+msgstr "🕹 لوبه جوړه کړه 🕹"
+
+msgid "you-are-banned-title"
+msgstr "تاسو زموږ بوټ څخه بند یاست!"
+
+msgid "you-are-banned-text"
+msgstr "تاسو نشئ کولی زموږ بوټ کې ولوبئ."
+
+msgid "waiting-for-player"
+msgstr "⏳ د لوبغاړي انتظار... ⏳"
+
+msgid "i-play"
+msgstr "زه به ولوبم 🙋"
+
+msgid "cannot-play-with-yourself"
+msgstr "تاسو نشئ کولی له خپل ځان سره ولوبئ 😅"
+
+msgid "not-your-game"
+msgstr "❌ تاسو پدې لوبه کې نه یاست ❌"
+
+msgid "not-your-turn"
+msgstr "❌ ستاسو دور نه دی ❌"
+
+msgid "column-full"
+msgstr "❌ دا ستون ډک دی ❌"
+
+msgid "player-game-stats"
+msgstr "📊 د لوبغاړي احصائیه 📊\n\n🕹 ټولې لوبې [{all_games}] 🕹\n🥇 برلاسې [{wins}] 🥇\n🥈 ماتې [{losses}] 🥈\n🟰 مساوي [{draws}] 🟰"
+
+msgid "game-in-progress-text"
+msgstr "🕹 دور: {name} [{color}]ㅤ                       ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ\n🕹 خپله حرکت وکړئ 🕹"
+
+msgid "game-ended-text"
+msgstr "🏆 د لوبې ګټونکی: {winner}\n⚔ ستاسو دواړو ترمنځ ټولې لوبې: [{total} {game}]\n1️⃣ {p1_name}: {p1_wins}\n2️⃣ {p2_name}: {p2_wins}\n🟰 مساوي: {draws}"
+
+msgid "game-is-draw-text"
+msgstr "بې ګټونکي 💢"
+
+msgid "game"
+msgstr "لوبه"
+
+msgid "play-with-cool-people-button"
+msgstr "😎 له ښکلې خلکو سره ولوبئ 😎"
+
+msgid "play-with-cool-people-text"
+msgstr "😬🎮 چا لوبه ونه غوښتل 😬\n\nښکلې ملګرو ته واستوئ، دوی به رد نه کړي 😒"
+
+msgid "game-stopped"
+msgstr "🎮 لوبه د بې فعالیته له امله ودرول شوه 🎮"
+
+msgid "already-game-creator"
+msgstr "تاسو دا لوبه جوړه کړې — د بل چا د یوځای کېدو انتظار وکړئ 😅"
+
+msgid "game-already-started"
+msgstr "❌ پدې لوبه کې دوه لوبغاړي دي ❌"
+
+msgid "game-already-ended"
+msgstr "❌ دا لوبه لا دمخه پای ته رسېدلې ❌"
+
+msgid "game-expired"
+msgstr "⏳ دا لوبه نور شتون نلري ⏳"
+
+msgid "rate-limit-exceeded"
+msgstr "⏳ ډېر غوښتنې — مهرباني وکړئ لږ صبر وکړئ ⏳"
+
+msgid "lang-changed"
+msgstr "ژبه په بریالیتوب سره بدله شوه ✅"
+
+msgid "change-your-lang"
+msgstr "✅ ژبه بدله کړئ ✅"
+
+msgid "change-your-lang-text"
+msgstr "✅ د ژبې د بدلولو لپاره کلیک وکړئ ✅"
+
+msgid "join-first"
+msgstr "✅ مهرباني وکړئ لومړی زموږ چینلونو کې ګډ شئ ✅"
+
+msgid "sponsors-updated"
+msgstr "سپانسران تازه شول: {count}"

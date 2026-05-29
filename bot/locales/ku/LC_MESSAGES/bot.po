@@ -1,0 +1,92 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: kio-games-bot\n"
+"Language: ku\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "start"
+msgstr "Bi xêr hatî botê me ✋\nKa em bilîzin 👾"
+
+msgid "create-game-text"
+msgstr "🕹 Amade yî? Wê yariyekê çêbikî 🕹"
+
+msgid "create-game-button"
+msgstr "🕹 Yariyê çêbike 🕹"
+
+msgid "you-are-banned-title"
+msgstr "Tu ji botê me hatî qedexekirin!"
+
+msgid "you-are-banned-text"
+msgstr "Tu nikarî di botê me de bilîzî."
+
+msgid "waiting-for-player"
+msgstr "⏳ Li benda lîstikvanekê... ⏳"
+
+msgid "i-play"
+msgstr "Ez dê bilîzim 🙋"
+
+msgid "cannot-play-with-yourself"
+msgstr "Tu nikarî bi xwe re bilîzî 😅"
+
+msgid "not-your-game"
+msgstr "❌ Tu ne di vê yarîyê de yî ❌"
+
+msgid "not-your-turn"
+msgstr "❌ Ne dorê te ye ❌"
+
+msgid "column-full"
+msgstr "❌ Ev stûn tijî ye ❌"
+
+msgid "player-game-stats"
+msgstr "📊 Statîstîkên lîstikvan 📊\n\n🕹 Hemû yariyên [{all_games}] 🕹\n🥇 Serkeftin [{wins}] 🥇\n🥈 Têkçûn [{losses}] 🥈\n🟰 Wekhevî [{draws}] 🟰"
+
+msgid "game-in-progress-text"
+msgstr "🕹 Dor: {name} [{color}]ㅤ                       ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ\n🕹 Hereketê bike 🕹"
+
+msgid "game-ended-text"
+msgstr "🏆 Serketî yariyê: {winner}\n⚔ Tevahiya yariyên di navbera we de: [{total} {game}]\n1️⃣ {p1_name}: {p1_wins}\n2️⃣ {p2_name}: {p2_wins}\n🟰 Wekhevî: {draws}"
+
+msgid "game-is-draw-text"
+msgstr "Bê serketî 💢"
+
+msgid "game"
+msgstr "Yari"
+
+msgid "play-with-cool-people-button"
+msgstr "😎 Bi kesên xweş bilîze 😎"
+
+msgid "play-with-cool-people-text"
+msgstr "😬🎮 Kesek nexwest bilîze 😬\n\nJi kesên xweş re bişîne, ew naxwazin red bikin 😒"
+
+msgid "game-stopped"
+msgstr "🎮 Yari ji ber neçalakiyê hate rawestandin 🎮"
+
+msgid "already-game-creator"
+msgstr "Te vê yariyê çêkiriye — li benda kesekî din bimîne 😅"
+
+msgid "game-already-started"
+msgstr "❌ Ev yari jixwe du lîstikvan hene ❌"
+
+msgid "game-already-ended"
+msgstr "❌ Ev yari jixwe qediya ❌"
+
+msgid "game-expired"
+msgstr "⏳ Ev yari êdî berdest nîne ⏳"
+
+msgid "rate-limit-exceeded"
+msgstr "⏳ Daxwazên pir zêde — ji kerema xwe hinekî bisekine ⏳"
+
+msgid "lang-changed"
+msgstr "Ziman bi serkeftî hate guhertin ✅"
+
+msgid "change-your-lang"
+msgstr "✅ Zimanê biguherîne ✅"
+
+msgid "change-your-lang-text"
+msgstr "✅ Ji bo guhertina zimanê bitikîne ✅"
+
+msgid "join-first"
+msgstr "✅ Ji kerema xwe pêşî beşdarî kanalên me bibe ✅"
+
+msgid "sponsors-updated"
+msgstr "Sponsor hatin nûkirin: {count}"

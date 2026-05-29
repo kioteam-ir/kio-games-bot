@@ -10,7 +10,7 @@ class I18nConfigClass(BaseConfig):
     domain: str = Field(default="bot", alias="I18N_DOMAIN")
     locales_path: Path = Field(default=Path("bot/locales"), alias="LOCALES_PATH")
     supported_langs: list[str] = Field(
-        default_factory=lambda: ["tr", "en", "fa", "he", "ru", "zh", "ar", "de", "fr"],
+        default_factory=lambda: ["tr", "en", "fa", "he", "ru", "zh", "ar", "de", "fr", "ku", "hi", "ps"],
         alias="SUPPORTED_LANGS",
     )
 

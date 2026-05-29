@@ -8,7 +8,7 @@ from aiogram.filters.callback_data import CallbackData
 
 from bot.domain.schemas.game import GameTypeId
 
-LangCode = Literal["tr", "en", "fa", "he", "ru", "zh", "ar", "de", "fr"]
+LangCode = Literal["tr", "en", "fa", "he", "ru", "zh", "ar", "de", "fr", "ku", "hi", "ps"]
 
 
 class ChangeLangCallback(CallbackData, prefix="chl"):

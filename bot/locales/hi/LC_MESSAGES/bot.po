@@ -1,0 +1,92 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: kio-games-bot\n"
+"Language: hi\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "start"
+msgstr "हमारे बॉट में आपका स्वागत है ✋\nचलो खेलते हैं 👾"
+
+msgid "create-game-text"
+msgstr "🕹 तैयार? तो एक गेम बनाएँ 🕹"
+
+msgid "create-game-button"
+msgstr "🕹 गेम बनाएँ 🕹"
+
+msgid "you-are-banned-title"
+msgstr "आप हमारे बॉट से प्रतिबंधित हैं!"
+
+msgid "you-are-banned-text"
+msgstr "आप हमारे बॉट में खेल नहीं सकते।"
+
+msgid "waiting-for-player"
+msgstr "⏳ खिलाड़ी का इंतज़ार... ⏳"
+
+msgid "i-play"
+msgstr "मैं खेलूँगा 🙋"
+
+msgid "cannot-play-with-yourself"
+msgstr "आप अपने साथ नहीं खेल सकते 😅"
+
+msgid "not-your-game"
+msgstr "❌ आप इस गेम में नहीं हैं ❌"
+
+msgid "not-your-turn"
+msgstr "❌ अभी आपकी बारी नहीं है ❌"
+
+msgid "column-full"
+msgstr "❌ यह कॉलम भरा हुआ है ❌"
+
+msgid "player-game-stats"
+msgstr "📊 खिलाड़ी आँकड़े 📊\n\n🕹 सभी गेम [{all_games}] 🕹\n🥇 जीत [{wins}] 🥇\n🥈 हार [{losses}] 🥈\n🟰 ड्रॉ [{draws}] 🟰"
+
+msgid "game-in-progress-text"
+msgstr "🕹 बारी: {name} [{color}]ㅤ                       ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ\n🕹 अपनी चाल चलें 🕹"
+
+msgid "game-ended-text"
+msgstr "🏆 गेम का विजेता: {winner}\n⚔ आप दोनों के बीच कुल मैच: [{total} {game}]\n1️⃣ {p1_name}: {p1_wins}\n2️⃣ {p2_name}: {p2_wins}\n🟰 ड्रॉ: {draws}"
+
+msgid "game-is-draw-text"
+msgstr "कोई विजेता नहीं 💢"
+
+msgid "game"
+msgstr "गेम"
+
+msgid "play-with-cool-people-button"
+msgstr "😎 कूल लोगों के साथ खेलें 😎"
+
+msgid "play-with-cool-people-text"
+msgstr "😬🎮 किसी ने खेलना नहीं चाहा 😬\n\nकूल दोस्तों को भेजें, वे मना नहीं करेंगे 😒"
+
+msgid "game-stopped"
+msgstr "🎮 निष्क्रियता के कारण गेम रोक दिया गया 🎮"
+
+msgid "already-game-creator"
+msgstr "आपने यह गेम बनाया — किसी और के जुड़ने का इंतज़ार करें 😅"
+
+msgid "game-already-started"
+msgstr "❌ इस गेम में पहले से दो खिलाड़ी हैं ❌"
+
+msgid "game-already-ended"
+msgstr "❌ यह गेम पहले ही समाप्त हो चुका है ❌"
+
+msgid "game-expired"
+msgstr "⏳ यह गेम अब उपलब्ध नहीं है ⏳"
+
+msgid "rate-limit-exceeded"
+msgstr "⏳ बहुत अधिक अनुरोध — कृपया थोड़ा इंतज़ार करें ⏳"
+
+msgid "lang-changed"
+msgstr "भाषा सफलतापूर्वक बदल गई ✅"
+
+msgid "change-your-lang"
+msgstr "✅ भाषा बदलें ✅"
+
+msgid "change-your-lang-text"
+msgstr "✅ भाषा बदलने के लिए क्लिक करें ✅"
+
+msgid "join-first"
+msgstr "✅ कृपया पहले हमारे चैनलों से जुड़ें ✅"
+
+msgid "sponsors-updated"
+msgstr "प्रायोजक अपडेट किए गए: {count}"

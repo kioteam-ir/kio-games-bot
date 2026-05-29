@@ -5,7 +5,7 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-SUPPORTED_LANGS: frozenset[str] = frozenset({"tr", "en", "fa", "he", "ru", "zh", "ar", "de", "fr"})
+SUPPORTED_LANGS: frozenset[str] = frozenset({"tr", "en", "fa", "he", "ru", "zh", "ar", "de", "fr", "ku", "hi", "ps"})
 LEGACY_LANG_MAP: dict[str, str] = {}
 
 

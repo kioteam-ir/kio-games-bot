@@ -23,7 +23,7 @@ class I18nCatalogTests(unittest.TestCase):
     def test_supported_langs(self) -> None:
         self.assertEqual(
             set(self.translator.supported_langs),
-            {"tr", "en", "fa", "he", "ru", "zh", "ar", "de", "fr"},
+            {"tr", "en", "fa", "he", "ru", "zh", "ar", "de", "fr", "ku", "hi", "ps"},
         )
 
     def test_english_start_message(self) -> None:
