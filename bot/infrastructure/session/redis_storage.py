@@ -15,11 +15,12 @@ class RedisGameSessionStorage(GameSessionStorage):
         *,
         key_prefix: str,
         ttl_seconds: int,
+        grace_seconds: float = 0.0,
     ) -> None:
         self._redis = redis
         self._codec = SessionCodec(catalog)
         self._key_prefix = key_prefix
-        self._ttl_seconds = ttl_seconds
+        self._ttl_seconds = int(ttl_seconds + grace_seconds)
 
     def _key(self, game_id: int) -> str:
         return f"{self._key_prefix}{game_id}"

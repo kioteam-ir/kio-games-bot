@@ -42,6 +42,7 @@ class BotApplication:
 
     async def start(self) -> None:
         await self.setup()
+        await self.container.session_manager.rebuild_expiry_index()
         asyncio.create_task(self.container.session_manager.start_cleanup_loop())
         try:
             await self.dispatcher.start_polling(self.bot, polling_timeout=15)

@@ -78,6 +78,7 @@ class AppContainer:
     ) -> AppContainer:
         bot_cfg = bot_config or BotConfigClass()  # type: ignore[call-arg]
         session_cfg = SessionConfigClass()
+        redis_cfg = RedisConfigClass()
         if session_backend is not None:
             session_cfg = session_cfg.model_copy(update={"session_backend": session_backend})
         i18n_cfg = I18nConfigClass()
@@ -93,7 +94,7 @@ class AppContainer:
         storage, redis = build_session_storage(
             session_cfg,
             catalog,
-            redis_config=RedisConfigClass(),
+            redis_config=redis_cfg,
             redis_client=redis_client,
         )
         resolved_redis = redis if redis is not None else redis_client
@@ -107,7 +108,9 @@ class AppContainer:
             timeout=session_cfg.game_session_timeout_seconds,
             cleanup_batch_size=session_cfg.session_cleanup_batch_size,
             cleanup_interval_seconds=session_cfg.session_cleanup_interval_seconds,
+            expiry_grace_seconds=session_cfg.session_expiry_grace_seconds,
             redis_client=resolved_redis,
+            session_key_prefix=redis_cfg.session_key_prefix if resolved_redis is not None else "",
         )
         idempotency_store = build_idempotency_store(resolved_redis)
         rate_limit_service = build_rate_limit_service(resolved_redis, rate_limit_cfg)

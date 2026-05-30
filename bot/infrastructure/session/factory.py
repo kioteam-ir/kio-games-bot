@@ -23,6 +23,7 @@ def build_session_storage(
             catalog,
             key_prefix=cfg.session_key_prefix,
             ttl_seconds=int(session_config.game_session_timeout_seconds),
+            grace_seconds=session_config.session_expiry_grace_seconds,
         )
         return storage, client
     return InMemoryGameSessionStorage(), None

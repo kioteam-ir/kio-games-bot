@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 import asyncio
+import logging
 from abc import ABC, abstractmethod
 from collections import defaultdict
 from collections.abc import Awaitable, Callable
-from contextlib import suppress
-from time import monotonic
+from time import monotonic, time
 from uuid import uuid4
 
 from redis.asyncio import Redis
@@ -15,6 +15,9 @@ from bot.application.services.game_catalog import GameCatalogService
 from bot.domain.entities.game_session import GameSession
 from bot.domain.schemas.player import TelegramPlayer
 from bot.domain.schemas.session_store import StoredGameSession, from_stored_session, to_stored_session
+from bot.infrastructure.session.expiry_index import SessionExpiryIndex
+
+logger = logging.getLogger(__name__)
 
 
 class SessionCodec:
@@ -74,15 +77,20 @@ class GameSessionManager:
         *,
         cleanup_batch_size: int = 50,
         cleanup_interval_seconds: float = 0.0,
+        expiry_grace_seconds: float = 0.0,
         redis_client: Redis | None = None,
+        session_key_prefix: str = "",
         inline_key_prefix: str = "kio:inline:",
     ) -> None:
         self._storage = storage
         self._timeout = timeout
         self._cleanup_batch_size = max(1, cleanup_batch_size)
         self._cleanup_interval_seconds = cleanup_interval_seconds
+        self._expiry_grace_seconds = expiry_grace_seconds
         self._redis = redis_client
+        self._session_key_prefix = session_key_prefix
         self._inline_key_prefix = inline_key_prefix
+        self._expiry_index = SessionExpiryIndex(redis_client) if redis_client is not None else None
         self._inline_index: dict[str, int] = {}
         self._last_accessed: dict[int, float] = {}
         self._listeners: dict[str, list[SessionDeletedHandler]] = defaultdict(list)
@@ -94,7 +102,7 @@ class GameSessionManager:
     async def get(self, game_id: int) -> GameSession | None:
         session = await self._storage.get(game_id)
         if session is not None:
-            self._last_accessed[game_id] = monotonic()
+            await self._touch(game_id)
         return session
 
     async def find_by_inline_message(self, inline_message_id: str) -> int | None:
@@ -110,7 +118,7 @@ class GameSessionManager:
     async def push(self, session: GameSession) -> int:
         game_id = uuid4().int % (10**18)
         await self._storage.set(game_id, session)
-        self._last_accessed[game_id] = monotonic()
+        await self._touch(game_id)
         await self._bind_inline_message(session.inline_message_id, game_id)
         return game_id
 
@@ -124,37 +132,62 @@ class GameSessionManager:
             if player.id == session.players[0].id:
                 return JoinSessionOutcome(error=JoinSessionError.CREATOR)
             if player.id in player_ids and len(session.players) == 2:
-                self._last_accessed[game_id] = monotonic()
+                await self._touch(game_id)
                 return JoinSessionOutcome(session=session, idempotent=True)
             if len(session.players) >= 2:
                 return JoinSessionOutcome(error=JoinSessionError.FULL)
 
             session.players.append(player)
             await self._storage.set(game_id, session)
-            self._last_accessed[game_id] = monotonic()
+            await self._touch(game_id)
             return JoinSessionOutcome(session=session)
 
     async def save(self, game_id: int, session: GameSession) -> None:
         await self._storage.set(game_id, session)
-        self._last_accessed[game_id] = monotonic()
+        await self._touch(game_id)
 
     async def delete(self, game_id: int) -> None:
         session = await self._storage.get(game_id)
-        for handler in self._listeners.get("session_deleted", []):
-            if session is not None:
-                with suppress(Exception):
-                    await handler(game_id, session)
         if session is not None:
             await self._unbind_inline_message(session.inline_message_id)
         await self._storage.delete(game_id)
         self._last_accessed.pop(game_id, None)
+        if self._expiry_index is not None:
+            await self._expiry_index.remove(game_id)
+
+    async def expire(self, game_id: int) -> None:
+        session = await self._storage.get(game_id)
+        if session is None:
+            if self._expiry_index is not None:
+                await self._expiry_index.remove(game_id)
+            self._last_accessed.pop(game_id, None)
+            return
+
+        for handler in self._listeners.get("session_deleted", []):
+            try:
+                await handler(game_id, session)
+            except Exception:
+                logger.exception("session_deleted handler failed game_id=%s", game_id)
+
+        await self._unbind_inline_message(session.inline_message_id)
+        await self._storage.delete(game_id)
+        self._last_accessed.pop(game_id, None)
+        if self._expiry_index is not None:
+            await self._expiry_index.remove(game_id)
+
+    async def _touch(self, game_id: int) -> None:
+        if self._expiry_index is not None:
+            await self._expiry_index.schedule(game_id, expires_at=time() + self._timeout)
+        else:
+            self._last_accessed[game_id] = monotonic()
 
     async def _bind_inline_message(self, inline_message_id: str, game_id: int) -> None:
+        ttl = int(self._timeout + self._expiry_grace_seconds)
         if self._redis is not None:
             await self._redis.set(
                 f"{self._inline_key_prefix}{inline_message_id}",
                 str(game_id),
-                ex=int(self._timeout),
+                ex=ttl,
             )
         else:
             self._inline_index[inline_message_id] = game_id
@@ -165,15 +198,45 @@ class GameSessionManager:
         else:
             self._inline_index.pop(inline_message_id, None)
 
+    async def rebuild_expiry_index(self) -> None:
+        if self._expiry_index is None or self._redis is None or not self._session_key_prefix:
+            return
+
+        cursor = 0
+        while True:
+            cursor, keys = await self._redis.scan(
+                cursor,
+                match=f"{self._session_key_prefix}*",
+                count=100,
+            )
+            for key in keys:
+                key_str = key.decode() if isinstance(key, bytes) else key
+                suffix = key_str.removeprefix(self._session_key_prefix)
+                try:
+                    game_id = int(suffix)
+                except ValueError:
+                    continue
+                ttl = await self._redis.ttl(key)
+                if ttl is None or ttl < 0:
+                    expires_at = time() + self._timeout
+                else:
+                    expires_at = time() + ttl
+                await self._expiry_index.schedule(game_id, expires_at=expires_at)
+            if cursor == 0:
+                break
+
     async def start_cleanup_loop(self) -> None:
-        interval = self._cleanup_interval_seconds or self._timeout / 2
+        interval = self._cleanup_interval_seconds or max(30.0, self._timeout / 2)
         while True:
             await asyncio.sleep(interval)
             expired_ids = await self.collect_expired_session_ids(limit=self._cleanup_batch_size)
             for game_id in expired_ids:
-                await self.delete(game_id)
+                await self.expire(game_id)
 
     async def collect_expired_session_ids(self, *, limit: int) -> list[int]:
+        if self._expiry_index is not None:
+            return await self._expiry_index.pop_due(limit=max(1, limit))
+
         async with self._lock:
             now = monotonic()
             expired = [

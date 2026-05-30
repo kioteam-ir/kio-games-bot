@@ -292,7 +292,9 @@ class GameFlowService:
                 lang=lang,
                 board=board,
             )
-        text = self._translator.t(I18nKeys.PLAY_WITH_COOL_PEOPLE_TEXT, lang)
+        expired = self._translator.t(I18nKeys.GAME_EXPIRED, lang)
+        play = self._translator.t(I18nKeys.PLAY_WITH_COOL_PEOPLE_TEXT, lang)
+        text = f"{expired}\n\n{play}"
         return SessionTimeoutResult(
             inline_message_id=session.inline_message_id,
             text=text,
