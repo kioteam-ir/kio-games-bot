@@ -5,6 +5,7 @@ import random
 from dataclasses import dataclass
 from typing import TypeVar
 
+from bot.domain.games.move_outcome import MoveRejectReason
 from bot.domain.games.types import Event, Listener, Player
 
 T = TypeVar("T", bound="TurnBasedMinesEngine")
@@ -19,6 +20,11 @@ _NUMBER_LABELS = {
     7: "7️⃣",
     8: "8️⃣",
 }
+
+
+def mines_to_win(mine_count: int) -> int:
+    """Mines a player must find to win (strictly more than half)."""
+    return mine_count // 2 + 1
 
 
 @dataclass(slots=True)
@@ -45,7 +51,7 @@ class TurnBasedMinesEngine:
     - First click places mines (safe zone around the click).
     - Hitting a mine keeps the current player's turn.
     - Revealing safe cells switches turn to the opponent.
-    - Winner is the player with the higher score when the board is full.
+    - Winner is the first player to find more than half of the mines.
     """
 
     def __init__(
@@ -68,9 +74,14 @@ class TurnBasedMinesEngine:
         self.current_player = Player.ONE
         self.winner: Player | None = None
         self.scores: dict[Player, int] = {Player.ONE: 0, Player.TWO: 0}
+        self.mine_hits: dict[Player, int] = {Player.ONE: 0, Player.TWO: 0}
 
         self._listeners: dict[Event, list[Listener]] = {}
         self._add_default_listeners()
+
+    @property
+    def mines_to_win(self) -> int:
+        return mines_to_win(self.mines)
 
     def _add_default_listeners(self) -> None:
         self.add_listener(Event.RESET, lambda **k: None)
@@ -95,6 +106,7 @@ class TurnBasedMinesEngine:
         self.current_player = Player.ONE
         self.winner = None
         self.scores = {Player.ONE: 0, Player.TWO: 0}
+        self.mine_hits = {Player.ONE: 0, Player.TWO: 0}
         self._notify(Event.RESET)
 
     def clone(self: T) -> T:
@@ -142,6 +154,16 @@ class TurnBasedMinesEngine:
     def is_draw(self) -> bool:
         return self.ended and self.winner is None
 
+    def classify_ui_move(self, *, row: int, col: int) -> MoveRejectReason | None:
+        if row <= 0 or col <= 0:
+            return MoveRejectReason.INVALID
+        board_row, board_col = row - 1, col - 1
+        if not self.in_bounds(board_row, board_col):
+            return MoveRejectReason.INVALID
+        if self.board[board_row][board_col].revealed:
+            return MoveRejectReason.CELL_ALREADY_REVEALED
+        return None
+
     def make_move(self, move: tuple[int, int]) -> bool:
         if self.ended:
             return False
@@ -161,6 +183,7 @@ class TurnBasedMinesEngine:
             cell.owner = self.current_player
             self.revealed_count += 1
             self.scores[self.current_player] += 1
+            self.mine_hits[self.current_player] += 1
             self._notify(
                 Event.MOVE,
                 row=row,
@@ -169,10 +192,8 @@ class TurnBasedMinesEngine:
                 revealed_count=1,
                 exploded=True,
             )
-            if self.revealed_count == self.rows * self.cols:
-                self.ended = True
-                self.winner = self._determine_winner()
-                self._notify(Event.GAME_OVER, winner=self.winner)
+            if self._check_mine_win(self.current_player):
+                return True
             return True
 
         changed = 0
@@ -213,9 +234,17 @@ class TurnBasedMinesEngine:
         return changed > 0
 
     def apply_ui_move(self, *, row: int, col: int) -> bool:
-        if row <= 0 or col <= 0:
+        if self.classify_ui_move(row=row, col=col) is not None:
             return False
         return self.make_move((row - 1, col - 1))
+
+    def _check_mine_win(self, player: Player) -> bool:
+        if self.mine_hits[player] > self.mines // 2:
+            self.ended = True
+            self.winner = player
+            self._notify(Event.GAME_OVER, winner=self.winner)
+            return True
+        return False
 
     def _determine_winner(self) -> Player | None:
         p1 = self.scores.get(Player.ONE, 0)

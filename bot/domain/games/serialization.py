@@ -48,6 +48,7 @@ class MinesEngineSnapshot(BaseModel):
     winner: int | None
     ended: bool
     scores: tuple[int, int]
+    mine_hits: tuple[int, int]
     board: list[list[MinesCellSnapshot]]
 
 
@@ -66,6 +67,7 @@ def snapshot_engine(engine: GameEngine | TurnBasedMinesEngine) -> EngineSnapshot
             winner=int(engine.winner) if engine.winner is not None else None,
             ended=engine.ended,
             scores=(engine.scores[Player.ONE], engine.scores[Player.TWO]),
+            mine_hits=(engine.mine_hits[Player.ONE], engine.mine_hits[Player.TWO]),
             board=[
                 [
                     MinesCellSnapshot(
@@ -104,6 +106,8 @@ def restore_engine(snapshot: EngineSnapshot, entry: GameCatalogEntry) -> GameEng
         engine.winner = Player(snapshot.winner) if snapshot.winner is not None else None
         engine.ended = snapshot.ended
         engine.scores = {Player.ONE: snapshot.scores[0], Player.TWO: snapshot.scores[1]}
+        mine_hits = getattr(snapshot, "mine_hits", (0, 0))
+        engine.mine_hits = {Player.ONE: mine_hits[0], Player.TWO: mine_hits[1]}
         engine.board = [
             [
                 MineCell(

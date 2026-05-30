@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from bot.domain.games.base import GameEngine
 from bot.domain.games.connect.with_friend import VsFriendEngine
 from bot.domain.games.mines.with_friend import MineCell, TurnBasedMinesEngine
+from bot.domain.games.move_outcome import MoveRejectReason
 from bot.domain.games.ports import GameFamily, GameModule
 from bot.domain.games.types import Cell
 from bot.domain.games.XO.with_friend import VsFriendXO
@@ -29,6 +30,23 @@ class BoardGameModule:
         if not isinstance(engine, VsFriendEngine):
             return False
         return engine.apply_ui_move(row=row, col=col)
+
+    def classify_ui_move(self, engine: GameEngine, *, row: int, col: int) -> MoveRejectReason | None:
+        if self.family is GameFamily.GRID_MARK:
+            if not isinstance(engine, VsFriendXO):
+                return MoveRejectReason.INVALID
+            return engine.classify_ui_move(row=row, col=col)
+        if not isinstance(engine, VsFriendEngine):
+            return MoveRejectReason.INVALID
+        return engine.classify_ui_move(row=row, col=col)
+
+    def try_ui_move(self, engine: GameEngine, *, row: int, col: int) -> MoveRejectReason | None:
+        reason = self.classify_ui_move(engine, row=row, col=col)
+        if reason is not None:
+            return reason
+        if not self.apply_ui_move(engine, row=row, col=col):
+            return MoveRejectReason.INVALID
+        return None
 
     def cell_display(self, engine: GameEngine, cell: object) -> str:
         if not isinstance(cell, Cell):
@@ -55,6 +73,19 @@ class MinesGameModule:
         if not isinstance(engine, TurnBasedMinesEngine):
             return False
         return engine.apply_ui_move(row=row, col=col)
+
+    def classify_ui_move(self, engine: GameEngine, *, row: int, col: int) -> MoveRejectReason | None:
+        if not isinstance(engine, TurnBasedMinesEngine):
+            return MoveRejectReason.INVALID
+        return engine.classify_ui_move(row=row, col=col)
+
+    def try_ui_move(self, engine: GameEngine, *, row: int, col: int) -> MoveRejectReason | None:
+        reason = self.classify_ui_move(engine, row=row, col=col)
+        if reason is not None:
+            return reason
+        if not self.apply_ui_move(engine, row=row, col=col):
+            return MoveRejectReason.INVALID
+        return None
 
     def cell_display(self, engine: GameEngine, cell: object) -> str:
         if not isinstance(cell, MineCell):

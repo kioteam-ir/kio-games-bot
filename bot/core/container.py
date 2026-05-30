@@ -105,6 +105,8 @@ class AppContainer:
         session_manager = GameSessionManager(
             storage=storage,
             timeout=session_cfg.game_session_timeout_seconds,
+            cleanup_batch_size=session_cfg.session_cleanup_batch_size,
+            cleanup_interval_seconds=session_cfg.session_cleanup_interval_seconds,
             redis_client=resolved_redis,
         )
         idempotency_store = build_idempotency_store(resolved_redis)

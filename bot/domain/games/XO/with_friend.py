@@ -1,3 +1,5 @@
+from bot.domain.games.move_outcome import MoveRejectReason
+
 from ..base import GameEngine
 
 
@@ -18,8 +20,18 @@ class VsFriendXO(GameEngine):
             return True
         raise ValueError("XO only supports tuple moves")
 
-    def apply_ui_move(self, *, row: int, col: int) -> bool:
+    def classify_ui_move(self, *, row: int, col: int) -> MoveRejectReason | None:
         if row <= 0 or col <= 0:
+            return MoveRejectReason.INVALID
+        board_row, board_col = row - 1, col - 1
+        if board_row >= self.rows or board_col >= self.cols:
+            return MoveRejectReason.INVALID
+        if not self.board[board_row][board_col].is_empty:
+            return MoveRejectReason.CELL_ALREADY_REVEALED
+        return None
+
+    def apply_ui_move(self, *, row: int, col: int) -> bool:
+        if self.classify_ui_move(row=row, col=col) is not None:
             return False
         return self.make_move((row - 1, col - 1))
 

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import logging
 
 from aiogram import Bot, Dispatcher, Router
 from aiogram.client.default import DefaultBotProperties
@@ -18,6 +19,8 @@ from bot.presentation.middlewares.services import ServicesMiddleware
 from bot.presentation.routers.fallback import catch_all_router, register_error_handler
 from bot.presentation.routers.game import router as game_router
 from bot.presentation.routers.start import router as start_router
+
+logger = logging.getLogger(__name__)
 
 
 class BotApplication:
@@ -105,8 +108,15 @@ class BotApplication:
             )
             markup = keyboards.game_board(view)
 
-        await self.bot.edit_message_text(
-            inline_message_id=result.inline_message_id,
-            text=result.text,
-            reply_markup=markup,
-        )
+        try:
+            await self.bot.edit_message_text(
+                inline_message_id=result.inline_message_id,
+                text=result.text,
+                reply_markup=markup,
+            )
+        except Exception:
+            logger.exception(
+                "Failed to edit inline message on session timeout game_id=%s inline_message_id=%s",
+                result.game_id,
+                result.inline_message_id,
+            )

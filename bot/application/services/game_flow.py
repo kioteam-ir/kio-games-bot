@@ -20,8 +20,11 @@ from bot.application.services.board_state import BoardStateBuilder
 from bot.application.services.game_catalog import GameCatalogService
 from bot.application.services.session_manager import GameSessionManager
 from bot.domain.entities.game_session import GameSession
+from bot.domain.games.mines.with_friend import TurnBasedMinesEngine
+from bot.domain.games.move_outcome import MoveRejectReason
 from bot.domain.games.ports import GameFamily
 from bot.domain.games.registry import create_engine, family_for, get_game_module
+from bot.domain.games.types import Player
 from bot.domain.repositories import GameRepository, UserRepository, telegram_player_from_user
 from bot.domain.schemas.game import GameMatchSummary, GameResultKind, GameTypeId, PlayerGameStats
 from bot.infrastructure.i18n.translator import Translator
@@ -103,6 +106,12 @@ class PlayerStatsService:
 
 
 class GameFlowService:
+    _REJECT_MESSAGE_KEYS: dict[MoveRejectReason, I18nKeys] = {
+        MoveRejectReason.COLUMN_FULL: I18nKeys.COLUMN_FULL,
+        MoveRejectReason.CELL_ALREADY_REVEALED: I18nKeys.CELL_ALREADY_REVEALED,
+        MoveRejectReason.INVALID: I18nKeys.INVALID_MOVE,
+    }
+
     def __init__(
         self,
         sessions: GameSessionManager,
@@ -192,8 +201,9 @@ class GameFlowService:
 
         engine = session.game_engine
         module = get_game_module(session.game_type)
-        if not module.apply_ui_move(engine, row=request.row, col=request.col):
-            return UseCaseError(message_key=I18nKeys.COLUMN_FULL)
+        reject = module.try_ui_move(engine, row=request.row, col=request.col)
+        if reject is not None:
+            return UseCaseError(message_key=self._REJECT_MESSAGE_KEYS[reject])
 
         if family_for(session.game_type) is GameFamily.MINES:
             session.current_player = session.players[engine.current_player.value - 1]
@@ -321,8 +331,31 @@ class GameFlowService:
                 p2_wins=match_summary.head_to_head.p2_wins,
                 draws=match_summary.head_to_head.draws,
             )
+            if isinstance(engine, TurnBasedMinesEngine):
+                score_line = self._translator.t(
+                    I18nKeys.MINE_GAME_SCORE_LINE,
+                    lang,
+                    p1_name=session.players[0].first_name,
+                    p1_mines=engine.mine_hits[Player.ONE],
+                    p2_name=session.players[1].first_name,
+                    p2_mines=engine.mine_hits[Player.TWO],
+                    target=engine.mines_to_win,
+                )
+                text = f"{text}\n{score_line}"
         elif game_over:
             text = self._translator.t(I18nKeys.PLAY_WITH_COOL_PEOPLE_TEXT, lang)
+        elif isinstance(engine, TurnBasedMinesEngine) and len(session.players) == 2:
+            text = self._translator.t(
+                I18nKeys.MINE_GAME_IN_PROGRESS_TEXT,
+                lang,
+                name=session.current_player.first_name,
+                color=engine.current_player.as_color,
+                p1_name=session.players[0].first_name,
+                p1_mines=engine.mine_hits[Player.ONE],
+                p2_name=session.players[1].first_name,
+                p2_mines=engine.mine_hits[Player.TWO],
+                target=engine.mines_to_win,
+            )
         else:
             text = self._translator.t(
                 I18nKeys.GAME_IN_PROGRESS_TEXT,

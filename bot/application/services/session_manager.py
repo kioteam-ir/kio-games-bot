@@ -72,11 +72,15 @@ class GameSessionManager:
         storage: GameSessionStorage,
         timeout: float,
         *,
+        cleanup_batch_size: int = 50,
+        cleanup_interval_seconds: float = 0.0,
         redis_client: Redis | None = None,
         inline_key_prefix: str = "kio:inline:",
     ) -> None:
         self._storage = storage
         self._timeout = timeout
+        self._cleanup_batch_size = max(1, cleanup_batch_size)
+        self._cleanup_interval_seconds = cleanup_interval_seconds
         self._redis = redis_client
         self._inline_key_prefix = inline_key_prefix
         self._inline_index: dict[str, int] = {}
@@ -162,12 +166,19 @@ class GameSessionManager:
             self._inline_index.pop(inline_message_id, None)
 
     async def start_cleanup_loop(self) -> None:
+        interval = self._cleanup_interval_seconds or self._timeout / 2
         while True:
-            await asyncio.sleep(self._timeout / 2)
-            async with self._lock:
-                now = monotonic()
-                expired = [
-                    game_id for game_id, last_time in self._last_accessed.items() if now - last_time > self._timeout
-                ]
-            for game_id in expired:
+            await asyncio.sleep(interval)
+            expired_ids = await self.collect_expired_session_ids(limit=self._cleanup_batch_size)
+            for game_id in expired_ids:
                 await self.delete(game_id)
+
+    async def collect_expired_session_ids(self, *, limit: int) -> list[int]:
+        async with self._lock:
+            now = monotonic()
+            expired = [
+                game_id
+                for game_id, last_time in self._last_accessed.items()
+                if now - last_time > self._timeout
+            ]
+        return expired[: max(1, limit)]

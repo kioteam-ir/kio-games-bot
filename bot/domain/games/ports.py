@@ -4,6 +4,7 @@ from enum import StrEnum
 from typing import Protocol
 
 from bot.domain.games.base import GameEngine
+from bot.domain.games.move_outcome import MoveRejectReason
 from bot.domain.schemas.game import GameCatalogEntry, GameTypeId
 
 
@@ -32,6 +33,17 @@ class GameModule(Protocol):
 
     def apply_ui_move(self, engine: GameEngine, *, row: int, col: int) -> bool:
         """Apply a 1-indexed Telegram grid callback. Return False when illegal."""
+
+    def classify_ui_move(self, engine: GameEngine, *, row: int, col: int) -> MoveRejectReason | None:
+        """Return a reject reason when the move is illegal, otherwise None."""
+
+    def try_ui_move(self, engine: GameEngine, *, row: int, col: int) -> MoveRejectReason | None:
+        reason = self.classify_ui_move(engine, row=row, col=col)
+        if reason is not None:
+            return reason
+        if not self.apply_ui_move(engine, row=row, col=col):
+            return MoveRejectReason.INVALID
+        return None
 
     def cell_display(self, engine: GameEngine, cell: object) -> str:
         """Render one board cell for inline keyboard labels."""

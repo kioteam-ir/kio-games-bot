@@ -93,3 +93,15 @@ msgstr "لیست اسپانسرها به‌روزرسانی شد: {count}"
 
 msgid "choose-number-of-mines"
 msgstr "💣 تعداد مین‌ها را انتخاب کنید 💣"
+
+msgid "cell-already-revealed"
+msgstr "❌ این خانه قبلاً باز شده ❌"
+
+msgid "invalid-move"
+msgstr "❌ حرکت نامعتبر ❌"
+
+msgid "mine-game-in-progress-text"
+msgstr "🕹 نوبت: {name} [{color}]\n💣 {p1_name}: {p1_mines}/{target} | {p2_name}: {p2_mines}/{target}"
+
+msgid "mine-game-score-line"
+msgstr "💣 مین‌های پیدا شده: {p1_name} {p1_mines}/{target} | {p2_name} {p2_mines}/{target}"

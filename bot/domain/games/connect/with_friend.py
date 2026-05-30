@@ -1,3 +1,5 @@
+from bot.domain.games.move_outcome import MoveRejectReason
+
 from ..base import GameEngine
 
 
@@ -26,8 +28,19 @@ class VsFriendEngine(GameEngine):
             return True
         raise ValueError("connect-game only supports int moves(columns)")
 
+    def classify_ui_move(self, *, row: int, col: int) -> MoveRejectReason | None:
+        if col <= 0:
+            return MoveRejectReason.INVALID
+        target_col = col - 1
+        if target_col < 0 or target_col >= self.cols:
+            return MoveRejectReason.INVALID
+        if self.is_column_playable(target_col):
+            return None
+        if self.column_heights[target_col] >= self.rows:
+            return MoveRejectReason.COLUMN_FULL
+        return MoveRejectReason.INVALID
+
     def apply_ui_move(self, *, row: int, col: int) -> bool:
-        # row=0 means column-picker row in Telegram UI
-        if row != 0:
+        if self.classify_ui_move(row=row, col=col) is not None:
             return False
         return self.make_move(col - 1)

@@ -93,3 +93,15 @@ msgstr "سپانسران تازه شول: {count}"
 
 msgid "choose-number-of-mines"
 msgstr "💣 Choose the number of mines 💣"
+
+msgid "cell-already-revealed"
+msgstr "❌ This cell is already revealed ❌"
+
+msgid "invalid-move"
+msgstr "❌ Invalid move ❌"
+
+msgid "mine-game-in-progress-text"
+msgstr "🕹 Turn: {name} [{color}]\n💣 {p1_name}: {p1_mines}/{target} | {p2_name}: {p2_mines}/{target}"
+
+msgid "mine-game-score-line"
+msgstr "💣 Mines found: {p1_name} {p1_mines}/{target} | {p2_name} {p2_mines}/{target}"
