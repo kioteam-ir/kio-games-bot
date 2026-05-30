@@ -38,7 +38,11 @@ class MineCell:
         if not self.revealed:
             return "⬜"
         if self.has_mine:
-            return "💣"
+            if self.revealed : 
+                return "💣"
+            if self.owner = Player.ONE : 
+                return "🔴"
+            return "🔵"
         if self.adjacent > 0:
             return _NUMBER_LABELS.get(self.adjacent, str(self.adjacent))
         return "ㅤ"
