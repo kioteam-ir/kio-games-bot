@@ -4,7 +4,19 @@ import logging
 from contextlib import suppress
 
 from aiogram import Bot, Router
-from aiogram.types import CallbackQuery, ErrorEvent, InlineQuery, Message, Update
+from aiogram.types import (
+    CallbackQuery,
+    ChatJoinRequest,
+    ChatMemberUpdated,
+    ChosenInlineResult,
+    ErrorEvent,
+    InlineQuery,
+    Message,
+    Poll,
+    PollAnswer,
+    PreCheckoutQuery,
+    ShippingQuery,
+)
 
 from bot.core.container import AppContainer
 from bot.infrastructure.callback.parsing import parse_make_game_callback
@@ -42,32 +54,11 @@ def register_error_handler(router: Router) -> None:
         await answer_update_on_error(update)
 
 
-@catch_all_router.update()
-async def fallback_update(
-    update: Update,
+@catch_all_router.callback_query()
+async def catch_all_callback(
+    callback: CallbackQuery,
     translator: Translator | None = None,
     locale: str = "fa",
-) -> None:
-    if update.callback_query is not None:
-        await _fallback_callback(update.callback_query, translator, locale)
-        return
-    if update.inline_query is not None:
-        await _fallback_inline_query(update.inline_query)
-        return
-    if update.chosen_inline_result is not None:
-        return
-    if update.message is not None:
-        await _fallback_message(update.message, translator, locale)
-        return
-    if update.edited_message is not None:
-        return
-    logger.debug("Fallback acknowledged update_id=%s type=%s", update.update_id, update.event_type)
-
-
-async def _fallback_callback(
-    callback: CallbackQuery,
-    translator: Translator | None,
-    locale: str,
 ) -> None:
     data = callback.data or ""
     message = _callback_fallback_message(data, callback, translator, locale)
@@ -79,7 +70,8 @@ async def _fallback_callback(
     )
 
 
-async def _fallback_inline_query(inline_query: InlineQuery) -> None:
+@catch_all_router.inline_query()
+async def catch_all_inline_query(inline_query: InlineQuery) -> None:
     with suppress(Exception):
         await inline_query.answer([], cache_time=1, is_personal=True)
     logger.debug(
@@ -89,10 +81,20 @@ async def _fallback_inline_query(inline_query: InlineQuery) -> None:
     )
 
 
-async def _fallback_message(
+@catch_all_router.chosen_inline_result()
+async def catch_all_chosen_inline_result(chosen: ChosenInlineResult) -> None:
+    logger.debug(
+        "Fallback chosen_inline_result user_id=%s result_id=%r",
+        chosen.from_user.id if chosen.from_user else None,
+        chosen.result_id,
+    )
+
+
+@catch_all_router.message()
+async def catch_all_message(
     message: Message,
-    translator: Translator | None,
-    locale: str,
+    translator: Translator | None = None,
+    locale: str = "fa",
 ) -> None:
     if message.from_user is None:
         return
@@ -104,6 +106,67 @@ async def _fallback_message(
         message.from_user.id,
         message.text,
     )
+
+
+@catch_all_router.edited_message()
+async def catch_all_edited_message(message: Message) -> None:
+    logger.debug(
+        "Fallback edited_message user_id=%s",
+        message.from_user.id if message.from_user else None,
+    )
+
+
+@catch_all_router.channel_post()
+async def catch_all_channel_post(message: Message) -> None:
+    logger.debug("Fallback channel_post chat_id=%s", message.chat.id)
+
+
+@catch_all_router.edited_channel_post()
+async def catch_all_edited_channel_post(message: Message) -> None:
+    logger.debug("Fallback edited_channel_post chat_id=%s", message.chat.id)
+
+
+@catch_all_router.poll()
+async def catch_all_poll(poll: Poll) -> None:
+    logger.debug("Fallback poll id=%s", poll.id)
+
+
+@catch_all_router.poll_answer()
+async def catch_all_poll_answer(poll_answer: PollAnswer) -> None:
+    logger.debug(
+        "Fallback poll_answer user_id=%s poll_id=%s",
+        poll_answer.user.id,
+        poll_answer.poll_id,
+    )
+
+
+@catch_all_router.my_chat_member()
+async def catch_all_my_chat_member(event: ChatMemberUpdated) -> None:
+    logger.debug("Fallback my_chat_member chat_id=%s", event.chat.id)
+
+
+@catch_all_router.chat_member()
+async def catch_all_chat_member(event: ChatMemberUpdated) -> None:
+    logger.debug("Fallback chat_member chat_id=%s", event.chat.id)
+
+
+@catch_all_router.chat_join_request()
+async def catch_all_chat_join_request(request: ChatJoinRequest) -> None:
+    logger.debug("Fallback chat_join_request chat_id=%s", request.chat.id)
+
+
+@catch_all_router.pre_checkout_query()
+async def catch_all_pre_checkout_query(query: PreCheckoutQuery) -> None:
+    with suppress(Exception):
+        await query.answer(ok=False, error_message="Unsupported")
+    logger.debug("Fallback pre_checkout_query user_id=%s", query.from_user.id)
+
+
+@catch_all_router.shipping_query()
+async def catch_all_shipping_query(query: ShippingQuery) -> None:
+    with suppress(Exception):
+        await query.answer(ok=False, error_message="Unsupported")
+    logger.debug("Fallback shipping_query user_id=%s", query.from_user.id)
 
 
 def _callback_fallback_message(
