@@ -2,7 +2,7 @@
 name = "kio-games-bot"
 version = "0.2.0"
 description = "Kio Games Telegram bot — aiogram refactor"
-authors = [{ name = "mamahoos", email = "m.h.kkouhkan@gmail.com" }]
+authors = [{ name = "mamahoos", email = "m4m4hoos@gmail.com" }]
 readme = "README.md"
 requires-python = ">=3.13,<3.14"
 dependencies = [
