@@ -217,10 +217,7 @@ class GameSessionManager:
                 except ValueError:
                     continue
                 ttl = await self._redis.ttl(key)
-                if ttl is None or ttl < 0:
-                    expires_at = time() + self._timeout
-                else:
-                    expires_at = time() + ttl
+                expires_at = time() + self._timeout if ttl is None or ttl < 0 else time() + ttl
                 await self._expiry_index.schedule(game_id, expires_at=expires_at)
             if cursor == 0:
                 break
