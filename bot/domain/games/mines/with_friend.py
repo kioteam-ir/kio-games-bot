@@ -38,14 +38,12 @@ class MineCell:
         if not self.revealed:
             return "⬜"
         if self.has_mine:
-            if self.revealed : 
-                return "💣"
-            if self.owner = Player.ONE : 
+            if self.owner == Player.ONE:
                 return "🔴"
-            return "🔵"
-        if self.adjacent > 0:
-            return _NUMBER_LABELS.get(self.adjacent, str(self.adjacent))
-        return "ㅤ"
+            if self.owner == Player.TWO:
+                return "🔵"
+            return "💣"
+        return _NUMBER_LABELS.get(self.adjacent, str(self.adjacent)) if self.adjacent > 0 else "ㅤ"
 
 
 class TurnBasedMinesEngine:
