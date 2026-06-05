@@ -239,9 +239,5 @@ class GameSessionManager:
 
         async with self._lock:
             now = monotonic()
-            expired = [
-                game_id
-                for game_id, last_time in self._last_accessed.items()
-                if now - last_time > self._timeout
-            ]
+            expired = [game_id for game_id, last_time in self._last_accessed.items() if now - last_time > self._timeout]
         return expired[: max(1, limit)]

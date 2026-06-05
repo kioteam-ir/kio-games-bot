@@ -61,23 +61,17 @@ class KeyboardService:
             [
                 InlineKeyboardButton(
                     text="9",
-                    callback_data=CallbackService.build_make_game(
-                        creator_id, int(GameTypeId.MINE), mine_count=9
-                    ),
+                    callback_data=CallbackService.build_make_game(creator_id, int(GameTypeId.MINE), mine_count=9),
                 ),
                 InlineKeyboardButton(
                     text="15",
-                    callback_data=CallbackService.build_make_game(
-                        creator_id, int(GameTypeId.MINE), mine_count=15
-                    ),
+                    callback_data=CallbackService.build_make_game(creator_id, int(GameTypeId.MINE), mine_count=15),
                 ),
             ],
             [
                 InlineKeyboardButton(
                     text="5",
-                    callback_data=CallbackService.build_make_game(
-                        creator_id, int(GameTypeId.MINE), mine_count=5
-                    ),
+                    callback_data=CallbackService.build_make_game(creator_id, int(GameTypeId.MINE), mine_count=5),
                 ),
             ],
         ]

@@ -149,9 +149,7 @@ class TurnBasedMinesEngine:
             for c in range(self.cols):
                 if self.board[r][c].has_mine:
                     continue
-                self.board[r][c].adjacent = sum(
-                    1 for nr, nc in self.neighbors(r, c) if self.board[nr][nc].has_mine
-                )
+                self.board[r][c].adjacent = sum(1 for nr, nc in self.neighbors(r, c) if self.board[nr][nc].has_mine)
 
     def is_draw(self) -> bool:
         return self.ended and self.winner is None
