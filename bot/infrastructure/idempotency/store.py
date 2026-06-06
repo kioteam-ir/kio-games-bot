@@ -18,12 +18,17 @@ class InMemoryIdempotencyStore(IdempotencyStore):
         self._entries: dict[str, float] = {}
         self._lock = asyncio.Lock()
 
+    @staticmethod
+    def _purge_expired(entries: dict[str, float], now: float) -> None:
+        """Remove expired keys from the provided entries mapping in-place."""
+        expired = [entry_key for entry_key, expires_at in entries.items() if expires_at <= now]
+        for entry_key in expired:
+            entries.pop(entry_key, None)
+
     async def acquire(self, key: str, *, ttl_seconds: int) -> bool:
         now = monotonic()
         async with self._lock:
-            expired = [entry_key for entry_key, expires_at in self._entries.items() if expires_at <= now]
-            for entry_key in expired:
-                self._entries.pop(entry_key, None)
+            self._purge_expired(self._entries, now)
             if key in self._entries:
                 return False
             self._entries[key] = now + ttl_seconds
