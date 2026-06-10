@@ -22,6 +22,10 @@ class DatabaseConfigClass(BaseConfig):
             f"postgresql://{self.postgres_user}:{self.postgres_password}"
             f"@{self.postgres_host}:{self.postgres_port}/{self.postgres_db}"
         )
+        
+    @property
+    def async_database_url(self) -> str:
+        return self.database_url.replace("postgresql://", "postgresql+asyncpg://", 1)
 
 
 DatabaseConfig = DatabaseConfigClass()
