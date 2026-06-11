@@ -43,6 +43,9 @@ COPY api ./api
 COPY entrypoint.sh /bot/entrypoint.sh
 COPY . /bot/
 
+# Remove the virtual environment created by Poetry in the builder stage, as we have already copied the installed packages to the runtime stage.
+RUN rm -rf .venv
+
 RUN chmod +x /bot/entrypoint.sh \
     && sed -i 's/\r$//g' /bot/entrypoint.sh
 
