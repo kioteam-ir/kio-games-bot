@@ -1,0 +1,44 @@
+name: Notify CI Result
+
+on:
+  workflow_run:
+    workflows: ["Pytest", "Ruff"]
+    types:
+      - completed
+
+jobs:
+  success:
+    name: notify success
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Send success notification
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          disable_notification: true
+          message: |
+            ✅ ${{ github.event.workflow_run.name }} passed
+            Repo: ${{ github.repository }}
+            Branch/Tag: ${{ github.event.workflow_run.head_branch }}
+            ${{ github.event.workflow_run.html_url }}
+
+  failure:
+    name: notify failure
+    if: github.event.workflow_run.conclusion == 'failure'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Send failure notification
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            ❌ ${{ github.event.workflow_run.name }} FAILED
+            Repo: ${{ github.repository }}
+            Branch/Tag: ${{ github.event.workflow_run.head_branch }}
+            By: ${{ github.event.workflow_run.actor.login }}
+            ${{ github.event.workflow_run.html_url }}
