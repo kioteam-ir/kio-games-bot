@@ -23,13 +23,14 @@ jobs:
         if: github.event_name == 'push' && github.event.deleted == false
         uses: appleboy/telegram-action@master
         with:
+          format: markdown
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
           disable_web_page_preview: true
           disable_notification: true
           message: |
             🆕 Push to `${{ github.repository }}`
-            By: ${{ github.actor }}
+            By: `${{ github.actor }}`
             Ref: `${{ github.ref_name }}`
             Message: ```${{ github.event.head_commit.message }}```
             ${{ github.event.head_commit.url }}
@@ -38,6 +39,7 @@ jobs:
         if: github.event_name == 'issues'
         uses: appleboy/telegram-action@master
         with:
+          format: markdown
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
           disable_web_page_preview: true
@@ -52,6 +54,7 @@ jobs:
         if: github.event_name == 'pull_request'
         uses: appleboy/telegram-action@master
         with:
+          format: markdown
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
           disable_web_page_preview: true
