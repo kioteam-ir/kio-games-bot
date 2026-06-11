@@ -4,6 +4,12 @@ on:
   push:
     tags:
       - "*"
+  pull_request:
+    branches:
+      - main
+      - master
+      - "release/*"
+      - "feature/*"
 
 concurrency:
   group: pytest-${{ github.workflow }}-${{ github.ref }}
