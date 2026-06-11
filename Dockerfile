@@ -7,7 +7,8 @@ ENV POETRY_VERSION=2.3.1 \
     POETRY_VIRTUALENVS_CREATE=false \
     POETRY_NO_INTERACTION=1 \
     PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1
+    PYTHONUNBUFFERED=1 \
+    POETRY_VIRTUALENVS_IN_PROJECT=false
 
 RUN apk add --no-cache build-base libffi-dev openssl-dev postgresql-dev \
     && pip install --no-cache-dir "poetry==${POETRY_VERSION}"
@@ -27,7 +28,8 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     POETRY_VERSION=2.3.1 \
     POETRY_HOME=/opt/poetry \
     POETRY_VIRTUALENVS_CREATE=false \
-    POETRY_NO_INTERACTION=1
+    POETRY_NO_INTERACTION=1 \
+    POETRY_VIRTUALENVS_IN_PROJECT=false
 
 RUN apk add --no-cache netcat-openbsd libpq \
     && pip install --no-cache-dir "poetry==${POETRY_VERSION}"
