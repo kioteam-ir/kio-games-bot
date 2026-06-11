@@ -75,8 +75,6 @@ services:
   bot:
     build: .
     command: ["sh", "-c", "/bot/entrypoint.sh bot"]
-    volumes:
-      - .:/bot
     env_file:
       - ./config/.env.dev
       - ./.env
