@@ -16,13 +16,14 @@ jobs:
       - name: Send success notification
         uses: appleboy/telegram-action@master
         with:
+          format: markdown
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
           disable_notification: true
           message: |
-            ✅ ${{ github.event.workflow_run.name }} passed
-            Repo: ${{ github.repository }}
-            Branch/Tag: ${{ github.event.workflow_run.head_branch }}
+            ✅ **${{ github.event.workflow_run.name }} passed**
+            Repo: `${{ github.repository }}`
+            Branch/Tag: `${{ github.event.workflow_run.head_branch }}`
             ${{ github.event.workflow_run.html_url }}
 
   failure:
@@ -34,11 +35,12 @@ jobs:
       - name: Send failure notification
         uses: appleboy/telegram-action@master
         with:
+          format: markdown
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
           message: |
-            ❌ ${{ github.event.workflow_run.name }} FAILED
-            Repo: ${{ github.repository }}
-            Branch/Tag: ${{ github.event.workflow_run.head_branch }}
-            By: ${{ github.event.workflow_run.actor.login }}
+            ❌ **${{ github.event.workflow_run.name }} FAILED**
+            Repo: `${{ github.repository }}`
+            Branch/Tag: `${{ github.event.workflow_run.head_branch }}`
+            By: `${{ github.event.workflow_run.actor.login }}`
             ${{ github.event.workflow_run.html_url }}
