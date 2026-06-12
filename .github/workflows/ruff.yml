@@ -2,14 +2,13 @@ name: Ruff
 
 on:
   push:
+    branches:
+      - "**"
     tags:
       - "*"
   pull_request:
     branches:
-      - main
-      - master
-      - "release/*"
-      - "feature/*"
+      - "**"
 
 concurrency:
   group: ruff-${{ github.workflow }}-${{ github.ref }}
@@ -20,25 +19,20 @@ jobs:
     name: ruff lint
     runs-on: self-hosted
     timeout-minutes: 10
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Ruff check
         uses: astral-sh/ruff-action@v3
         with:
           args: check bot/ api/ tests/ tools/
-
   format:
     name: ruff format
     runs-on: self-hosted
     timeout-minutes: 10
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Ruff format check
         uses: astral-sh/ruff-action@v3
         with:
