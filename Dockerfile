@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM python:3.13-alpine AS builder
+FROM python:3.14-alpine AS builder
 
 ENV POETRY_VERSION=2.3.1 \
     POETRY_HOME=/opt/poetry \
@@ -21,7 +21,7 @@ COPY tools ./tools
 RUN poetry install --only main \
     && poetry run pybabel compile -d bot/locales -D bot
 
-FROM python:3.13-alpine AS runtime
+FROM python:3.14-alpine AS runtime
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
