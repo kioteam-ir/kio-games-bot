@@ -133,6 +133,7 @@ async def catch_all_poll(poll: Poll) -> None:
 
 @catch_all_router.poll_answer()
 async def catch_all_poll_answer(poll_answer: PollAnswer) -> None:
+    assert poll_answer.user is not None
     logger.debug(
         "Fallback poll_answer user_id=%s poll_id=%s",
         poll_answer.user.id,
