@@ -2,7 +2,7 @@ name: Notify CI Result
 
 on:
   workflow_run:
-    workflows: ["Pytest", "Ruff"]
+    workflows: ["Pytest", "Ruff", "Deploy"]
     types:
       - completed
 
