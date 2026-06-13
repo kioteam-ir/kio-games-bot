@@ -40,9 +40,9 @@ logger = logging.getLogger(__name__)
 catch_all_router = Router(name="catch_all")
 
 
-def register_error_handler(router: Router) -> None:
+def register_error_handler(router: Router, container: AppContainer) -> None:
     @router.errors()
-    async def on_error(event: ErrorEvent, bot: Bot, container: AppContainer) -> None:
+    async def on_error(event: ErrorEvent, bot: Bot) -> None:
         update = event.update
         logger.exception(
             "Exception in update %s",

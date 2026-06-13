@@ -72,7 +72,7 @@ class BotApplication:
         )
 
     def _register_routers(self) -> None:
-        register_error_handler(self.root_router)
+        register_error_handler(self.root_router, self.container)
         self.root_router.include_router(start_router)
         self.root_router.include_router(game_router)
         self.root_router.include_router(catch_all_router)
