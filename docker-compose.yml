@@ -1,24 +1,9 @@
 services:
-
-  db:
-    image: postgres:17.5-alpine3.22
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/
-    env_file:
-      - .env
-    networks:
-      - backend
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready || exit 1"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-      start_period: 10s
-
   redis:
     image: redis:7.4-alpine
     networks:
       - backend
+      - central_db_net
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
@@ -33,12 +18,11 @@ services:
     env_file:
       - .env
     depends_on:
-      db:
-        condition: service_healthy
       redis:
         condition: service_healthy
     networks:
       - backend
+      - central_db_net
     healthcheck:
       test:
         [
@@ -64,12 +48,6 @@ services:
         condition: service_healthy
     networks:
       - backend
-    healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1/health"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 10s
 
   bot:
     build: .
@@ -77,18 +55,17 @@ services:
     env_file:
       - .env
     depends_on:
-      db:
-        condition: service_healthy
       redis:
         condition: service_healthy
       api:
         condition: service_healthy
     networks:
       - backend
-
-volumes:
-  postgres_data:
+      - central_db_net
 
 networks:
   backend:
     driver: bridge
+  central_db_net:
+    external: true
+    name: central_db_net
