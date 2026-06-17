@@ -34,21 +34,6 @@ services:
       retries: 5
       start_period: 30s
 
-  nginx:
-    image: nginx:1.25-alpine
-    volumes:
-      - ./docker/nginx/templates:/etc/nginx/templates:ro
-      - ./docker/nginx/snippets:/etc/nginx/snippets:ro
-    ports:
-      - "${NGINX_HTTP_PORT:-80}:80"
-    environment:
-      NGINX_SERVER_NAME: ${NGINX_SERVER_NAME:-_}
-    depends_on:
-      api:
-        condition: service_healthy
-    networks:
-      - backend
-
   bot:
     build: .
     command: ["sh", "-c", "/bot/entrypoint.sh bot"]
@@ -69,3 +54,6 @@ networks:
   central_db_net:
     external: true
     name: central_db_net
+  central_nginx_net:
+    external: true
+    name: central_nginx_net
