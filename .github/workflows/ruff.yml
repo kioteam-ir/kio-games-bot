@@ -11,28 +11,31 @@ on:
       - "**"
 
 concurrency:
-  group: ruff-${{ github.workflow }}-${{ github.ref }}
+  group: ruff-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   lint:
     name: ruff lint
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
+
       - name: Ruff check
         uses: astral-sh/ruff-action@v3
         with:
           args: check bot/ api/ tests/ tools/
+
   format:
     name: ruff format
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
+
       - name: Ruff format check
         uses: astral-sh/ruff-action@v3
         with:
