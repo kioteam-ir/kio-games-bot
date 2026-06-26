@@ -2,7 +2,7 @@ name: Notify CI Result
 
 on:
   workflow_run:
-    workflows: ["Pytest", "Ruff"]
+    workflows: ["CI", "Deploy"]
     types:
       - completed
 
@@ -17,8 +17,7 @@ jobs:
     runs-on: self-hosted
     timeout-minutes: 5
     steps:
-      - name: Send success notification
-        uses: appleboy/telegram-action@master
+      - uses: appleboy/telegram-action@master
         with:
           format: markdown
           to: ${{ secrets.TELEGRAM_TO }}
@@ -36,8 +35,7 @@ jobs:
     runs-on: self-hosted
     timeout-minutes: 5
     steps:
-      - name: Send failure notification
-        uses: appleboy/telegram-action@master
+      - uses: appleboy/telegram-action@master
         with:
           format: markdown
           to: ${{ secrets.TELEGRAM_TO }}
