@@ -13,6 +13,10 @@ on:
       - closed
       - reopened
 
+concurrency:
+  group: notify-events-${{ github.run_id }}
+  cancel-in-progress: false
+
 jobs:
   notify:
     name: telegram notify
