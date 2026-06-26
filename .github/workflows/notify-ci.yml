@@ -2,9 +2,13 @@ name: Notify CI Result
 
 on:
   workflow_run:
-    workflows: ["Pytest", "Ruff", "Deploy"]
+    workflows: ["Pytest", "Ruff"]
     types:
       - completed
+
+concurrency:
+  group: notify-ci-${{ github.event.workflow_run.id }}
+  cancel-in-progress: false
 
 jobs:
   success:
@@ -23,7 +27,7 @@ jobs:
           message: |
             ✅ **${{ github.event.workflow_run.name }} passed**
             Repo: `${{ github.repository }}`
-            Branch/Tag: `${{ github.event.workflow_run.head_branch }}`
+            Branch: `${{ github.event.workflow_run.head_branch }}`
             ${{ github.event.workflow_run.html_url }}
 
   failure:
@@ -41,6 +45,6 @@ jobs:
           message: |
             ❌ **${{ github.event.workflow_run.name }} FAILED**
             Repo: `${{ github.repository }}`
-            Branch/Tag: `${{ github.event.workflow_run.head_branch }}`
+            Branch: `${{ github.event.workflow_run.head_branch }}`
             By: `${{ github.event.workflow_run.actor.login }}`
             ${{ github.event.workflow_run.html_url }}
