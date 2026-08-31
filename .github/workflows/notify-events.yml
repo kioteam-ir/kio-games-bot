@@ -20,8 +20,6 @@ concurrency:
 jobs:
   notify:
     uses: kioteam-ir/kio-github-actions/.github/workflows/notify-events.yml@v1
-    with:
-      runner: self-hosted
     secrets:
       TELEGRAM_TO: ${{ secrets.TELEGRAM_TO }}
       TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
