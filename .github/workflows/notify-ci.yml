@@ -11,38 +11,8 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  success:
-    name: notify success
-    if: github.event.workflow_run.conclusion == 'success'
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - uses: appleboy/telegram-action@master
-        with:
-          format: markdown
-          to: ${{ secrets.TELEGRAM_TO }}
-          token: ${{ secrets.TELEGRAM_TOKEN }}
-          disable_notification: true
-          message: |
-            ✅ **${{ github.event.workflow_run.name }} passed**
-            Repo: `${{ github.repository }}`
-            Branch: `${{ github.event.workflow_run.head_branch }}`
-            ${{ github.event.workflow_run.html_url }}
-
-  failure:
-    name: notify failure
-    if: github.event.workflow_run.conclusion == 'failure'
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - uses: appleboy/telegram-action@master
-        with:
-          format: markdown
-          to: ${{ secrets.TELEGRAM_TO }}
-          token: ${{ secrets.TELEGRAM_TOKEN }}
-          message: |
-            ❌ **${{ github.event.workflow_run.name }} FAILED**
-            Repo: `${{ github.repository }}`
-            Branch: `${{ github.event.workflow_run.head_branch }}`
-            By: `${{ github.event.workflow_run.actor.login }}`
-            ${{ github.event.workflow_run.html_url }}
+  notify:
+    uses: kioteam-ir/kio-github-actions/.github/workflows/notify-ci.yml@v1
+    secrets:
+      TELEGRAM_TO: ${{ secrets.TELEGRAM_TO }}
+      TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
