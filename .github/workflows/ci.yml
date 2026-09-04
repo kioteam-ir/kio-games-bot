@@ -15,6 +15,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # Temporary branch ref; switch to @v1 after the central workflow PR merges.
   python:
     uses: kioteam-ir/kio-github-actions/.github/workflows/python-poetry-ci.yml@feat/organization-ci-workflows
     with:
