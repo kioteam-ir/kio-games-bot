@@ -16,6 +16,7 @@ concurrency:
 
 jobs:
   # Temporary branch ref; switch to @v1 after the central workflow PR merges.
+  # The reusable workflow installs Poetry before dependency setup.
   python:
     uses: kioteam-ir/kio-github-actions/.github/workflows/python-poetry-ci.yml@feat/organization-ci-workflows
     with:
