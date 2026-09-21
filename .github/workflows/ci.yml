@@ -15,59 +15,12 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  ruff-lint:
-    name: ruff lint
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/ruff-action@v3
-        with:
-          args: check bot/ api/ tests/ tools/
-
-  ruff-format:
-    name: ruff format
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/ruff-action@v3
-        with:
-          args: format --check bot/ api/ tests/ tools/
-
-  pytest:
-    name: pytest
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    env:
-      TOKEN: ci-test-token
-      SESSION_BACKEND: memory
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.13"
-
-      - uses: snok/install-poetry@v1
-        with:
-          virtualenvs-create: true
-          virtualenvs-in-project: true
-
-      - uses: actions/cache@v4
-        id: cached-deps
-        with:
-          path: .venv
-          key: venv-${{ runner.os }}-py3.13-${{ hashFiles('poetry.lock') }}
-          restore-keys: |
-            venv-${{ runner.os }}-py3.13-
-
-      - name: Install dependencies
-        if: steps.cached-deps.outputs.cache-hit != 'true'
-        run: poetry install --no-interaction --no-ansi --with dev
-
-      - name: Compile locales
-        run: poetry run poe compile
-
-      - name: Run tests
-        run: poetry run pytest tests/ -v --tb=short
+  # Temporary branch ref; switch to @v1 after the central workflow PR merges.
+  # The reusable workflow installs Poetry before dependency setup.
+  python:
+    uses: kioteam-ir/kio-github-actions/.github/workflows/python-poetry-ci.yml@feat/organization-ci-workflows
+    with:
+      python-version: "3.13"
+      lint-command: poetry run ruff check bot/ api/ tests/ tools/
+      pre-test-command: poetry run poe compile
+      test-command: poetry run pytest tests/ -v --tb=short
