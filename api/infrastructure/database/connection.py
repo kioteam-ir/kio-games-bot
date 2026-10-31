@@ -41,6 +41,14 @@ def init_database(config: DatabaseConfigClass | None = None) -> None:
     _session_factory = async_sessionmaker(_engine, expire_on_commit=False)
 
 
+async def init_db_models() -> None:
+    from api.infrastructure.database.models import Base
+
+    engine = get_engine()
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
+
 async def close_database() -> None:
     global _engine, _session_factory
     if _engine is not None:

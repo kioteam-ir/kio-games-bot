@@ -9,7 +9,7 @@ from redis.asyncio import Redis
 
 import bot.i18n_bootstrap  # noqa: F401
 from api.config.database import DatabaseConfigClass
-from api.infrastructure.database.connection import close_database, init_database
+from api.infrastructure.database.connection import close_database, init_database, init_db_models
 from api.presentation.routes.admin import router as admin_router
 from api.presentation.routes.games import router as games_router
 from bot.config.redis import RedisConfigClass
@@ -20,6 +20,7 @@ from bot.core.container import AppContainer
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     init_database(DatabaseConfigClass())
+    await init_db_models()
     session_cfg = SessionConfigClass()
     redis_client: Redis | None = None
     if session_cfg.session_backend == "redis":
