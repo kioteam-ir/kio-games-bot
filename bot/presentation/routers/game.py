@@ -31,7 +31,7 @@ from bot.infrastructure.telegram.keyboards import KeyboardService
 from bot.locales.i18n_keys import I18nKeys
 from bot.presentation.filters.callback_data import MakeGameCallbackFilter
 from bot.presentation.filters.game import GameSessionFilter
-from bot.presentation.filters.sponsor import SponsorOkFilter, SponsorRequiredFilter
+from bot.presentation.filters.sponsor import SponsorRequiredFilter
 from bot.presentation.filters.user import BannedUserFilter, NotBannedFilter, ResolvedUserFilter
 
 router = Router(name="inline")
@@ -137,12 +137,17 @@ async def make_game_handler(
             show_alert=True,
         )
         return
-    if container.sponsor_checker is None or not await container.sponsor_checker.is_member_of_all(
+    if container.sponsor_checker is not None and not await container.sponsor_checker.is_member_of_all(
         callback.from_user.id,
     ):
+        sponsors = await container.sponsor_repo.list_active()
+        alert_text = translator.t(I18nKeys.JOIN_FIRST, lang)
+        if sponsors:
+            channel_list = "\n".join(f"• {s.name}: {s.link}" for s in sponsors)
+            alert_text = f"{alert_text}\n\n{channel_list}"
         await answer_callback(
             callback,
-            translator.t(I18nKeys.JOIN_FIRST, lang),
+            alert_text,
             show_alert=True,
         )
         return
@@ -182,7 +187,6 @@ async def make_game_handler(
     JoinGameCallback.filter(),
     ResolvedUserFilter(),
     NotBannedFilter(),
-    SponsorOkFilter(),
     GameSessionFilter(),
 )
 async def join_game_handler(
@@ -192,10 +196,32 @@ async def join_game_handler(
     keyboards: KeyboardService,
     translator: Translator,
     user_context: ResolvedUserContext,
+    container: AppContainer,
     game_id: int,
 ) -> None:
     if callback.from_user is None or callback.inline_message_id is None or callback.bot is None:
         await answer_callback(callback)
+        return
+    if user_context.user.is_banned:
+        await answer_callback(
+            callback,
+            translator.t(I18nKeys.YOU_ARE_BANNED_TEXT, user_context.lang),
+            show_alert=True,
+        )
+        return
+    if container.sponsor_checker is not None and not await container.sponsor_checker.is_member_of_all(
+        callback.from_user.id,
+    ):
+        sponsors = await container.sponsor_repo.list_active()
+        alert_text = translator.t(I18nKeys.JOIN_FIRST, user_context.lang)
+        if sponsors:
+            channel_list = "\n".join(f"• {s.name}: {s.link}" for s in sponsors)
+            alert_text = f"{alert_text}\n\n{channel_list}"
+        await answer_callback(
+            callback,
+            alert_text,
+            show_alert=True,
+        )
         return
     request = JoinGameRequest(
         player=telegram_player_from_user(callback.from_user),
