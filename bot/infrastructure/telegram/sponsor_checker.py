@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import logging
 
 from aiogram import Bot
 from aiogram.enums import ChatMemberStatus
@@ -9,6 +10,8 @@ from bot.config.ratelimit import RateLimitConfigClass
 from bot.domain.repositories import SponsorMembershipChecker, SponsorRepository
 from bot.infrastructure.cache.redis_cache import CacheBackend
 from bot.infrastructure.ratelimit.service import RateLimitService
+
+logger = logging.getLogger(__name__)
 
 
 class TelegramSponsorMembershipChecker(SponsorMembershipChecker):
@@ -75,7 +78,13 @@ class TelegramSponsorMembershipChecker(SponsorMembershipChecker):
         try:
             member = await self._bot.get_chat_member(sponsor_id, user_id)
             return self._is_active_member(member.status)
-        except Exception:
+        except Exception as exc:
+            logger.warning(
+                "Membership check failed for user %s in sponsor channel %s: %s",
+                user_id,
+                sponsor_id,
+                exc,
+            )
             return False
 
     @staticmethod
