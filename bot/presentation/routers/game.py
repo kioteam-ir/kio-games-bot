@@ -273,6 +273,7 @@ async def cell_move_handler(
     translator: Translator,
     user_context: ResolvedUserContext,
     game_id: int,
+    container: AppContainer,
     game_session: object | None = None,
 ) -> None:
     from bot.domain.entities.game_session import GameSession
@@ -280,6 +281,22 @@ async def cell_move_handler(
     if callback.from_user is None or callback.inline_message_id is None or callback.bot is None:
         await answer_callback(callback)
         return
+
+    if container.sponsor_checker is not None and not await container.sponsor_checker.is_member_of_all(
+        callback.from_user.id,
+    ):
+        sponsors = await container.sponsor_repo.list_active()
+        alert_text = translator.t(I18nKeys.JOIN_FIRST, user_context.lang)
+        if sponsors:
+            channel_list = "\n".join(f"• {s.name}: {s.link}" for s in sponsors)
+            alert_text = f"{alert_text}\n\n{channel_list}"
+        await answer_callback(
+            callback,
+            alert_text,
+            show_alert=True,
+        )
+        return
+
     prefetched = game_session if isinstance(game_session, GameSession) else None
     request = MoveGameRequest(
         player_id=callback.from_user.id,

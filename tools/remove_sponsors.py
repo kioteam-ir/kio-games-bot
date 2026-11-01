@@ -53,6 +53,8 @@ async def _try_invalidate_redis_cache() -> bool:
         redis_cfg = RedisConfigClass()
         client = Redis.from_url(redis_cfg.redis_url)
         await client.delete("kio:sponsors:active")
+        async for key in client.scan_iter(match="kio:sponsor:member:*"):
+            await client.delete(key)
         await client.aclose()
         return True
     except Exception:

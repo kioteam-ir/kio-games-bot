@@ -18,6 +18,7 @@ from bot.presentation.middlewares.ratelimit import RateLimitMiddleware
 from bot.presentation.middlewares.services import ServicesMiddleware
 from bot.presentation.routers.fallback import catch_all_router, register_error_handler
 from bot.presentation.routers.game import router as game_router
+from bot.presentation.routers.sponsor import router as sponsor_router
 from bot.presentation.routers.start import router as start_router
 
 logger = logging.getLogger(__name__)
@@ -45,7 +46,13 @@ class BotApplication:
         await self.container.session_manager.rebuild_expiry_index()
         asyncio.create_task(self.container.session_manager.start_cleanup_loop())
         try:
-            await self.dispatcher.start_polling(self.bot, polling_timeout=15)
+            used_updates = self.dispatcher.resolve_used_update_types()
+            allowed_updates = list(set(used_updates) | {"chat_member", "my_chat_member"})
+            await self.dispatcher.start_polling(
+                self.bot,
+                polling_timeout=15,
+                allowed_updates=allowed_updates,
+            )
         finally:
             await self.container.close()
 
@@ -73,6 +80,7 @@ class BotApplication:
 
     def _register_routers(self) -> None:
         register_error_handler(self.root_router, self.container)
+        self.root_router.include_router(sponsor_router)
         self.root_router.include_router(start_router)
         self.root_router.include_router(game_router)
         self.root_router.include_router(catch_all_router)

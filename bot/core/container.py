@@ -148,6 +148,7 @@ class AppContainer:
             cache=self.cache_backend,
             rate_limit_service=self.rate_limit_service,
             rate_limit_config=self.rate_limit_config,
+            membership_ttl_seconds=self.bot_config.sponsor_membership_ttl,
         )
 
     async def refresh_sponsors(self) -> int:

@@ -22,6 +22,7 @@ class BotConfigClass(BaseConfig):
     bot_token: str = Field(..., alias="TOKEN")
     admin_ids_env: str = Field(default="", alias="ADMIN_IDS")
     bot_username: str = Field(default="kiogamesbot", alias="BOT_USERNAME")
+    sponsor_membership_ttl: int = Field(default=30, alias="SPONSOR_MEMBERSHIP_TTL")
 
     @computed_field  # type: ignore[prop-decorator]
     @property

@@ -23,7 +23,7 @@ class TelegramSponsorMembershipChecker(SponsorMembershipChecker):
         cache: CacheBackend | None = None,
         rate_limit_service: RateLimitService | None = None,
         rate_limit_config: RateLimitConfigClass | None = None,
-        membership_ttl_seconds: int = 300,
+        membership_ttl_seconds: int = 30,
         membership_fail_ttl_seconds: int = 0,
         cache_prefix: str = "kio:sponsor:member:",
     ) -> None:
@@ -47,8 +47,8 @@ class TelegramSponsorMembershipChecker(SponsorMembershipChecker):
             if cached is True:
                 return True
 
-        if not await self._is_rate_allowed(user_id):
-            return await self._fallback_to_cache(user_id)
+            if not await self._is_rate_allowed(user_id):
+                return await self._fallback_to_cache(user_id)
 
         sponsors = await self._get_active_sponsors()
         if self._no_sponsors(sponsors):

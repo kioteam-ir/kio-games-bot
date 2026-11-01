@@ -38,15 +38,15 @@ class RateLimitConfigClass(BaseConfig):
     )
     callback_create: RateLimitRule = Field(
         default_factory=lambda: RateLimitRule(
-            algorithm=RateLimitAlgorithm.FIXED_WINDOW,
-            max_requests=5,
-            window_seconds=300,
+            algorithm=RateLimitAlgorithm.SLIDING_WINDOW,
+            max_requests=15,
+            window_seconds=60,
         )
     )
     callback_join: RateLimitRule = Field(
         default_factory=lambda: RateLimitRule(
-            algorithm=RateLimitAlgorithm.FIXED_WINDOW,
-            max_requests=10,
+            algorithm=RateLimitAlgorithm.SLIDING_WINDOW,
+            max_requests=20,
             window_seconds=60,
         )
     )
@@ -76,7 +76,7 @@ class RateLimitConfigClass(BaseConfig):
     sponsor_check: RateLimitRule = Field(
         default_factory=lambda: RateLimitRule(
             algorithm=RateLimitAlgorithm.SLIDING_WINDOW,
-            max_requests=10,
+            max_requests=30,
             window_seconds=10,
         )
     )
