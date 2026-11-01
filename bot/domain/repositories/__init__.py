@@ -43,7 +43,7 @@ class SponsorRepository(ABC):
 
 class SponsorMembershipChecker(ABC):
     @abstractmethod
-    async def is_member_of_all(self, user_id: int) -> bool: ...
+    async def is_member_of_all(self, user_id: int, *, force_refresh: bool = False) -> bool: ...
 
 
 def telegram_player_from_user(user: object) -> TelegramPlayer:

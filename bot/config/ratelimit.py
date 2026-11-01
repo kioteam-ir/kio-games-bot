@@ -75,9 +75,9 @@ class RateLimitConfigClass(BaseConfig):
     )
     sponsor_check: RateLimitRule = Field(
         default_factory=lambda: RateLimitRule(
-            algorithm=RateLimitAlgorithm.FIXED_WINDOW,
-            max_requests=2,
-            window_seconds=30,
+            algorithm=RateLimitAlgorithm.SLIDING_WINDOW,
+            max_requests=10,
+            window_seconds=10,
         )
     )
 

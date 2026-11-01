@@ -218,7 +218,7 @@ async def join_game_handler(
         sponsors = await container.sponsor_repo.list_active()
         alert_text = (
             f"{translator.t(I18nKeys.JOIN_FIRST, user_context.lang)}\n\n"
-            "👇 روی دکمه شیشه‌ای کانال در پیام بزنید و پس از عضویت مجدداً «بازی میکنم» را بزنید."
+            "پس از عضویت در کانال های اسپانسر دوباره روی این دکمه کلیک کنید تا وارد بازی شوید."
         )
         if sponsors and callback.inline_message_id and callback.bot:
             with suppress(Exception):

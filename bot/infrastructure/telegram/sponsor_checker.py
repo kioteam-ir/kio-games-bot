@@ -24,7 +24,7 @@ class TelegramSponsorMembershipChecker(SponsorMembershipChecker):
         rate_limit_service: RateLimitService | None = None,
         rate_limit_config: RateLimitConfigClass | None = None,
         membership_ttl_seconds: int = 300,
-        membership_fail_ttl_seconds: int = 60,
+        membership_fail_ttl_seconds: int = 0,
         cache_prefix: str = "kio:sponsor:member:",
     ) -> None:
         self._bot = bot
@@ -41,10 +41,11 @@ class TelegramSponsorMembershipChecker(SponsorMembershipChecker):
     # Public API
     # =========================================================
 
-    async def is_member_of_all(self, user_id: int) -> bool:
-        cached = await self._get_cached_result(user_id)
-        if cached is not None:
-            return cached
+    async def is_member_of_all(self, user_id: int, *, force_refresh: bool = False) -> bool:
+        if not force_refresh:
+            cached = await self._get_cached_result(user_id)
+            if cached is True:
+                return True
 
         if not await self._is_rate_allowed(user_id):
             return await self._fallback_to_cache(user_id)
@@ -114,22 +115,23 @@ class TelegramSponsorMembershipChecker(SponsorMembershipChecker):
             return None
 
         cached = await self._cache.get(self._cache_key(user_id))
-        if cached is None:
-            return None
+        if cached == "1":
+            return True
 
-        return cached == "1"
+        return None
 
     async def _store_result(self, user_id: int, result: bool) -> None:
         if not self._cache:
             return
 
-        ttl = self._membership_ttl_seconds if result else self._membership_fail_ttl_seconds
-
-        await self._cache.set(
-            self._cache_key(user_id),
-            "1" if result else "0",
-            ttl_seconds=ttl,
-        )
+        if result:
+            await self._cache.set(
+                self._cache_key(user_id),
+                "1",
+                ttl_seconds=self._membership_ttl_seconds,
+            )
+        else:
+            await self._cache.delete(self._cache_key(user_id))
 
     async def _fallback_to_cache(self, user_id: int) -> bool:
         """
