@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from contextlib import suppress
+
 from aiogram import Router
 from aiogram.types import CallbackQuery, ChosenInlineResult, InlineQuery, Message
 
@@ -175,10 +177,11 @@ async def make_game_handler(
             show_alert=result.alert,
         )
         return
+    sponsors = await container.sponsor_repo.list_active()
     await callback.bot.edit_message_text(
         inline_message_id=callback.inline_message_id,
         text=result.text,
-        reply_markup=keyboards.waiting_keyboard(user_context.lang, result.game_id),
+        reply_markup=keyboards.waiting_keyboard(user_context.lang, result.game_id, sponsors),
     )
     await callback.answer()
 
@@ -213,10 +216,23 @@ async def join_game_handler(
         callback.from_user.id,
     ):
         sponsors = await container.sponsor_repo.list_active()
-        alert_text = translator.t(I18nKeys.JOIN_FIRST, user_context.lang)
-        if sponsors:
-            channel_list = "\n".join(f"• {s.name}: {s.link}" for s in sponsors)
-            alert_text = f"{alert_text}\n\n{channel_list}"
+        alert_text = (
+            f"{translator.t(I18nKeys.JOIN_FIRST, user_context.lang)}\n\n"
+            "👇 روی دکمه شیشه‌ای کانال در پیام بزنید و پس از عضویت مجدداً «بازی میکنم» را بزنید."
+        )
+        if sponsors and callback.inline_message_id and callback.bot:
+            with suppress(Exception):
+                await callback.bot.edit_message_reply_markup(
+                    inline_message_id=callback.inline_message_id,
+                    reply_markup=keyboards.waiting_keyboard(user_context.lang, game_id, sponsors),
+                )
+        if sponsors and callback.bot:
+            with suppress(Exception):
+                await callback.bot.send_message(
+                    callback.from_user.id,
+                    translator.t(I18nKeys.JOIN_FIRST, user_context.lang),
+                    reply_markup=keyboards.sponsor_keyboard(sponsors),
+                )
         await answer_callback(
             callback,
             alert_text,

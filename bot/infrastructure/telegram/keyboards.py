@@ -43,17 +43,25 @@ class KeyboardService:
             rows.insert(0, extra_row)
         return InlineKeyboardMarkup(inline_keyboard=rows)
 
-    def waiting_keyboard(self, lang: str, game_id: int) -> InlineKeyboardMarkup:
-        return InlineKeyboardMarkup(
-            inline_keyboard=[
-                [
-                    InlineKeyboardButton(
-                        text=self._translator.t(I18nKeys.IPLAY, lang),
-                        callback_data=CallbackService.build_join_game(game_id),
-                    )
-                ]
+    def waiting_keyboard(
+        self,
+        lang: str,
+        game_id: int,
+        sponsors: list[SponsorRecord] | None = None,
+    ) -> InlineKeyboardMarkup:
+        rows: list[list[InlineKeyboardButton]] = []
+        if sponsors:
+            for s in sponsors:
+                rows.append([InlineKeyboardButton(text=f"🎫 {s.name.strip()} 🎫", url=str(s.link))])
+        rows.append(
+            [
+                InlineKeyboardButton(
+                    text=self._translator.t(I18nKeys.IPLAY, lang),
+                    callback_data=CallbackService.build_join_game(game_id),
+                )
             ]
         )
+        return InlineKeyboardMarkup(inline_keyboard=rows)
 
     def mine_count_picker(self, lang: str, creator_id: int) -> InlineKeyboardMarkup:
         del lang
