@@ -64,6 +64,21 @@ async def main_async(sponsors: list[SponsorInput], *, dry_run: bool) -> None:
 
     print(f"\nAdded {added}, skipped {skipped}, dry_run={dry_run}")
 
+    if not dry_run and added > 0:
+        try:
+            from redis.asyncio import Redis
+            from bot.config.redis import RedisConfigClass
+
+            redis_cfg = RedisConfigClass()
+            client = Redis.from_url(redis_cfg.redis_url)
+            await client.delete("kio:sponsors:active")
+            async for key in client.scan_iter(match="kio:sponsor:member:*"):
+                await client.delete(key)
+            await client.aclose()
+            print("Redis sponsor cache invalidated successfully.")
+        except Exception:
+            print("Notice: Redis not reached. Run /update_sps in Telegram bot to refresh cache.")
+
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Add sponsor channels to app_sponser")

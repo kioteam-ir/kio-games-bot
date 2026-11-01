@@ -135,3 +135,38 @@ async def test_sponsor_membership_checker_immediate_invalidation() -> None:
     assert await checker.is_member_of_all(42) is False
     assert bot.get_chat_member.call_count == 2
 
+
+
+@pytest.mark.asyncio
+async def test_adding_sponsor_invalidates_previous_member_cache() -> None:
+    bot = AsyncMock()
+    cache = InMemoryCacheBackend()
+    sponsor_repo = AsyncMock()
+    sponsor_repo.list_active.return_value = [
+        SponsorRecord(id=-1001, name="Sp1", link="https://t.me/sp1", joined_memebers=0, is_active=True),
+    ]
+
+    checker = TelegramSponsorMembershipChecker(
+        bot,
+        sponsor_repo,
+        cache=cache,
+        membership_ttl_seconds=30,
+    )
+
+    bot.get_chat_member.return_value = MagicMock(status=ChatMemberStatus.MEMBER)
+    assert await checker.is_member_of_all(42) is True
+    assert bot.get_chat_member.call_count == 1
+
+    # Sponsor 2 is added
+    sponsor_repo.list_active.return_value = [
+        SponsorRecord(id=-1001, name="Sp1", link="https://t.me/sp1", joined_memebers=0, is_active=True),
+        SponsorRecord(id=-1002, name="Sp2", link="https://t.me/sp2", joined_memebers=0, is_active=True),
+    ]
+
+    async def mock_get_chat_member(chat_id: int, user_id: int):
+        if chat_id == -1001:
+            return MagicMock(status=ChatMemberStatus.MEMBER)
+        return MagicMock(status=ChatMemberStatus.LEFT)
+
+    bot.get_chat_member.side_effect = mock_get_chat_member
+    assert await checker.is_member_of_all(42) is False

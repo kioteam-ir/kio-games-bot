@@ -63,7 +63,7 @@ class CachedSponsorRepository(SponsorRepository):
         inner: SponsorRepository,
         cache: CacheBackend,
         *,
-        ttl_seconds: int = 300,
+        ttl_seconds: int = 3,
         cache_key: str = "kio:sponsors:active",
     ) -> None:
         self._inner = inner
