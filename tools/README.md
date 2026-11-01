@@ -30,10 +30,35 @@ poetry run poe migrate-sequences
 
 ## اسپانسرها
 
+### افزودن اسپانسر
 ```bash
 poetry run poe add-sponsors --json '[{"id":-100123,"name":"Channel","link":"https://t.me/example"}]'
 poetry run poe add-sponsors --file sponsors.json
 ```
+
+### حذف یا غیرفعال‌سازی اسپانسر
+```bash
+# مشاهده لیست اسپانسرها
+poetry run poe remove-sponsors --list
+
+# حذف دائم با شناسه
+poetry run poe remove-sponsors --id -100123
+
+# غیرفعال‌سازی (soft delete) بدون حذف سطر
+poetry run poe remove-sponsors --id -100123 --soft
+
+# حذف چندتایی با JSON یا فایل
+poetry run poe remove-sponsors --json '[-100123, -100456]'
+poetry run poe remove-sponsors --file ids.json
+
+# پیش‌نمایش بدون اعمال
+poetry run poe remove-sponsors --id -100123 --dry-run
+```
+
+### مدیریت اسپانسر در تلگرام
+- `/del_sps <channel_id>`: حذف اسپانسر و رفرش خودکار کش توسط ادمین
+- `/del_sps`: نمایش لیست اسپانسرهای فعال و راهنما
+- `/update_sps`: پاک‌سازی کش و به‌روزرسانی لیست اسپانسرها
 
 ## اجرا روی سرور (Docker)
 

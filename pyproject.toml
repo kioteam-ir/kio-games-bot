@@ -34,6 +34,7 @@ migrate-sponsors = "tools.migrate_sponsors:main"
 migrate-lang-codes = "tools.migrate_lang_codes:main"
 migrate-sequences = "tools.migrate_sequences:main"
 add-sponsors = "tools.add_sponsors:main"
+remove-sponsors = "tools.remove_sponsors:main"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
@@ -64,6 +65,7 @@ migrate-lang-codes = "python tools/migrate_lang_codes.py"
 migrate-sequences = "python tools/migrate_sequences.py"
 migrate-all = "python tools/migrate_all.py"
 add-sponsors = "python tools/add_sponsors.py"
+remove-sponsors = "python tools/remove_sponsors.py"
 
 [tool.ruff]
 target-version = "py313"
