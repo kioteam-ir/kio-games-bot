@@ -34,3 +34,8 @@ class CellMoveCallback(CallbackData, prefix="cl"):
     row: int
     col: int
     game_id: int
+
+
+class AdminActionCallback(CallbackData, prefix="adm"):
+    action: str
+    target_id: int = 0
