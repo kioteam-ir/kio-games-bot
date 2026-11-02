@@ -86,7 +86,7 @@ msgid "change-your-lang-text"
 msgstr "✅ Ji bo guhertina zimanê bitikîne ✅"
 
 msgid "join-first"
-msgstr "✅ Ji kerema xwe pêşî beşdarî kanalên me bibe ✅"
+msgstr "Piştî tevlîbûna kanalên sponsoran, careke din li ser vê bişkokê bitikîne da ku têkevî lîstikê."
 
 msgid "sponsors-updated"
 msgstr "Sponsor hatin nûkirin: {count}"

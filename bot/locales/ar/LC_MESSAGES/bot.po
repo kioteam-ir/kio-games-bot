@@ -83,7 +83,7 @@ msgid "change-your-lang-text"
 msgstr "✅ اضغط لتغيير اللغة ✅"
 
 msgid "join-first"
-msgstr "✅ يرجى الانضمام إلى قنواتنا أولاً ✅"
+msgstr "بعد الانضمام إلى قنوات الرعاة، اضغط على هذا الزر مرة أخرى للدخول إلى اللعبة."
 
 msgid "sponsors-updated"
 msgstr "تم تحديث الرعاة: {count}"

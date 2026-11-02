@@ -83,7 +83,7 @@ msgid "change-your-lang-text"
 msgstr "✅ 点击更改语言 ✅"
 
 msgid "join-first"
-msgstr "✅ 请先加入我们的频道 ✅"
+msgstr "加入赞助商频道后，再次点击此按钮即可进入游戏。"
 
 msgid "sponsors-updated"
 msgstr "赞助商已更新：{count}"
