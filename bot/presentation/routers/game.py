@@ -144,9 +144,6 @@ async def make_game_handler(
     ):
         sponsors = await container.sponsor_repo.list_active()
         alert_text = translator.t(I18nKeys.JOIN_FIRST, lang)
-        if sponsors:
-            channel_list = "\n".join(f"• {s.name}: {s.link}" for s in sponsors)
-            alert_text = f"{alert_text}\n\n{channel_list}"
         await answer_callback(
             callback,
             alert_text,
@@ -216,10 +213,7 @@ async def join_game_handler(
         callback.from_user.id,
     ):
         sponsors = await container.sponsor_repo.list_active()
-        alert_text = (
-            f"{translator.t(I18nKeys.JOIN_FIRST, user_context.lang)}\n\n"
-            "پس از عضویت در کانال های اسپانسر دوباره روی این دکمه کلیک کنید تا وارد بازی شوید."
-        )
+        alert_text = translator.t(I18nKeys.JOIN_FIRST, user_context.lang)
         if sponsors and callback.inline_message_id and callback.bot:
             with suppress(Exception):
                 await callback.bot.edit_message_reply_markup(
@@ -285,11 +279,7 @@ async def cell_move_handler(
     if container.sponsor_checker is not None and not await container.sponsor_checker.is_member_of_all(
         callback.from_user.id,
     ):
-        sponsors = await container.sponsor_repo.list_active()
         alert_text = translator.t(I18nKeys.JOIN_FIRST, user_context.lang)
-        if sponsors:
-            channel_list = "\n".join(f"• {s.name}: {s.link}" for s in sponsors)
-            alert_text = f"{alert_text}\n\n{channel_list}"
         await answer_callback(
             callback,
             alert_text,

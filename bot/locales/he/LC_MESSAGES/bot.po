@@ -83,7 +83,7 @@ msgid "change-your-lang-text"
 msgstr "✅ לחץ כדי לשנות שפה ✅"
 
 msgid "join-first"
-msgstr "✅ הצטרף קודם לערוצים שלנו ✅"
+msgstr "לאחר ההצטרפות לערוצי הספונסרים, לחץ שוב על כפתור זה כדי להיכנס למשחק."
 
 msgid "sponsors-updated"
 msgstr "רשימת הספונסרים עודכנה: {count}"

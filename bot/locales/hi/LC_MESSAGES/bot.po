@@ -86,7 +86,7 @@ msgid "change-your-lang-text"
 msgstr "✅ भाषा बदलने के लिए क्लिक करें ✅"
 
 msgid "join-first"
-msgstr "✅ कृपया पहले हमारे चैनलों से जुड़ें ✅"
+msgstr "प्रायोजक चैनलों से जुड़ने के बाद, गेम में प्रवेश करने के लिए इस बटन पर फिर से क्लिक करें।"
 
 msgid "sponsors-updated"
 msgstr "प्रायोजक अपडेट किए गए: {count}"
