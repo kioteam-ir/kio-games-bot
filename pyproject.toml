@@ -1,6 +1,6 @@
 [project]
 name = "kio-games-bot"
-version = "0.2.0"
+version = "0.5.0"
 description = "Kio Games Telegram bot — aiogram refactor"
 authors = [{ name = "mamahoos", email = "m4m4hoos@gmail.com" }]
 readme = "README.md"
