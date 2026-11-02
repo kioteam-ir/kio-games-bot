@@ -178,6 +178,9 @@ class GameSessionManager:
     async def _touch(self, game_id: int) -> None:
         if self._expiry_index is not None:
             await self._expiry_index.schedule(game_id, expires_at=time() + self._timeout)
+            if self._redis is not None and self._session_key_prefix:
+                ttl = int(self._timeout + self._expiry_grace_seconds)
+                await self._redis.expire(f"{self._session_key_prefix}{game_id}", ttl)
         else:
             self._last_accessed[game_id] = monotonic()
 
