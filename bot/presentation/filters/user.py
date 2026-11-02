@@ -66,7 +66,7 @@ class BannedUserFilter(BaseFilter):
 class AdminFilter(BaseFilter):
     async def __call__(
         self,
-        event: Message,
+        event: Message | CallbackQuery,
         container: object,
         **kwargs: Any,
     ) -> bool | dict[str, Any]:

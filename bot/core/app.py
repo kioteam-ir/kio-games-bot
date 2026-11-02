@@ -16,6 +16,7 @@ from bot.presentation.middlewares.i18n import KioI18nMiddleware, UserLocaleMiddl
 from bot.presentation.middlewares.idempotency import CallbackIdempotencyMiddleware
 from bot.presentation.middlewares.ratelimit import RateLimitMiddleware
 from bot.presentation.middlewares.services import ServicesMiddleware
+from bot.presentation.routers.admin import router as admin_router
 from bot.presentation.routers.fallback import catch_all_router, register_error_handler
 from bot.presentation.routers.game import router as game_router
 from bot.presentation.routers.sponsor import router as sponsor_router
@@ -81,6 +82,7 @@ class BotApplication:
     def _register_routers(self) -> None:
         register_error_handler(self.root_router, self.container)
         self.root_router.include_router(sponsor_router)
+        self.root_router.include_router(admin_router)
         self.root_router.include_router(start_router)
         self.root_router.include_router(game_router)
         self.root_router.include_router(catch_all_router)

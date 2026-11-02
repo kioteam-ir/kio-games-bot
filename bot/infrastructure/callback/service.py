@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from bot.infrastructure.callback.payloads import (
+    AdminActionCallback,
     CellMoveCallback,
     ChangeLangCallback,
     JoinGameCallback,
@@ -10,7 +11,14 @@ from bot.infrastructure.callback.payloads import (
     PlayerInfoCallback,
 )
 
-CallbackPayload = ChangeLangCallback | PlayerInfoCallback | MakeGameCallback | JoinGameCallback | CellMoveCallback
+CallbackPayload = (
+    ChangeLangCallback
+    | PlayerInfoCallback
+    | MakeGameCallback
+    | JoinGameCallback
+    | CellMoveCallback
+    | AdminActionCallback
+)
 
 
 class CallbackService:
@@ -24,12 +32,17 @@ class CallbackService:
             MakeGameCallback,
             JoinGameCallback,
             CellMoveCallback,
+            AdminActionCallback,
         ):
             try:
                 return payload_cls.unpack(raw)
             except ValueError:
                 continue
         return None
+
+    @staticmethod
+    def build_admin_action(action: str, target_id: int = 0) -> str:
+        return AdminActionCallback(action=action, target_id=target_id).pack()
 
     @staticmethod
     def build_change_lang(lang: str) -> str:

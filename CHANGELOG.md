@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- **Full-Featured Admin Panel:** Introduced `/admin` and `/panel` command with interactive inline dashboard for bot administrators.
+- **Broadcast Messaging to All Users:** Added multi-content broadcast capability (text, media, forward) with real-time rate limiting, auto-retry on flood, and delivery report.
+- **User Insights & Full Data Export:** Added real-time user statistics, recent signups overview, and downloadable complete users list (`users_export.txt`).
+- **Interactive Sponsor Management:** Direct in-panel active sponsor listing with one-click deletion, dynamic FSM-based sponsor onboarding (`add_sps`), and instant Redis cache refresh.
+
 ## [0.5.0] - 2026-11-02
 
 ### Added
@@ -45,3 +53,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial Clean Architecture bot refactor with aiogram 3.
 - Multilingual support across 9 initial languages with language switcher.
 - Idempotency, rate limiting, and caching layers.
+
