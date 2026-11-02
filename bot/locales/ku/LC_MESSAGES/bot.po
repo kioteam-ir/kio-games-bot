@@ -5,7 +5,17 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 
 msgid "start"
-msgstr "Bi xêr hatî botê me ✋\nKa em bilîzin 👾"
+msgstr ""
+"🎮 Bi xêr hatî Kio Games!\n"
+"Li vir tu dikarî bi hevalên xwe re lîstikên cuda yên du-kesî bilîzî û pêşbaziyê bikî. 😎\n"
+"Ji bo destpêkirinê:\n"
+"Li ser bişkoka jêrîn bitikîne.\n"
+"Hevalê xwe an koma xwe hilbijêre.\n"
+"⚠️ Nîşe: Lîstik di çata taybet a botê de naxebitin; divê tu di çata bi hevalê xwe re an di komekê de bilîzî.\n"
+"Ka, tu amade yî? Werin em herin! 🚀"
+
+msgid "start-game-button"
+msgstr "🎮 Dest bi lîstikê bike"
 
 msgid "create-game-text"
 msgstr "🕹 Amade yî? Wê yariyekê çêbikî 🕹"

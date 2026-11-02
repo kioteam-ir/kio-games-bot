@@ -5,7 +5,17 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 
 msgid "start"
-msgstr "Botumuza hoş geldiniz ✋\nHadi oynayalım 👾"
+msgstr ""
+"🎮 Kio Games'e hoş geldin!\n"
+"Burada arkadaşlarınla çeşitli iki kişilik oyunlar oynayabilir ve rekabet edebilirsin. 😎\n"
+"Başlamak için:\n"
+"Aşağıdaki butona tıkla.\n"
+"Arkadaşını veya grubunu seç.\n"
+"⚠️ Dikkat: Oyunlar botun özel sohbetinde oynanamaz; arkadaşınla olan sohbette veya bir grupta oynamalısın.\n"
+"Peki, hazır mısın? Hadi başlayalım! 🚀"
+
+msgid "start-game-button"
+msgstr "🎮 Oyunu Başlat"
 
 msgid "create-game-text"
 msgstr "🕹 Hazır mısın? Oyun oluştur 🕹"

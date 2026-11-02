@@ -5,7 +5,17 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 
 msgid "start"
-msgstr "Willkommen in unserem Bot ✋\nLass uns spielen 👾"
+msgstr ""
+"🎮 Willkommen bei Kio Games!\n"
+"Hier kannst du verschiedene Zwei-Spieler-Spiele mit deinen Freunden spielen und gegeneinander antreten. 😎\n"
+"Um zu starten:\n"
+"Klicke auf den Button unten.\n"
+"Wähle deinen Freund oder deine Gruppe aus.\n"
+"⚠️ Hinweis: Spiele können nicht im privaten Chat mit dem Bot gespielt werden; du musst über einen Chat mit deinem Freund oder in einer Gruppe spielen.\n"
+"Bist du bereit? Los geht's! 🚀"
+
+msgid "start-game-button"
+msgstr "🎮 Spiel starten"
 
 msgid "create-game-text"
 msgstr "🕹 Bereit? Dann erstelle ein Spiel 🕹"

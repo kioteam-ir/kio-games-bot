@@ -5,7 +5,17 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 
 msgid "start"
-msgstr "欢迎使用我们的机器人 ✋\n来玩游戏吧 👾"
+msgstr ""
+"🎮 欢迎来到 Kio Games！\n"
+"在这里你可以和朋友一起玩各种双人游戏并互相切磋。 😎\n"
+"开始步骤：\n"
+"点击下方按钮。\n"
+"选择你的好友或群组。\n"
+"⚠️ 注意：游戏无法在机器人的私聊中运行；你必须在与好友的聊天或群组中发起游戏。\n"
+"准备好了吗？开始吧！ 🚀"
+
+msgid "start-game-button"
+msgstr "🎮 开始游戏"
 
 msgid "create-game-text"
 msgstr "🕹 准备好了吗？创建游戏 🕹"
