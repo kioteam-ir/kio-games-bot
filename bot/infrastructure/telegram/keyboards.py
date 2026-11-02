@@ -1,7 +1,7 @@
 # ruff: noqa: E501
 from __future__ import annotations
 
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, SwitchInlineQueryChosenChat
 
 from bot.application.dto.board import BoardState
 from bot.application.dto.game import GameBoardView
@@ -42,6 +42,25 @@ class KeyboardService:
         if extra_row:
             rows.insert(0, extra_row)
         return InlineKeyboardMarkup(inline_keyboard=rows)
+
+    def start_game_button(self, lang: str = "fa") -> InlineKeyboardButton:
+        return InlineKeyboardButton(
+            text=self._translator.t(I18nKeys.START_GAME_BUTTON, lang),
+            switch_inline_query_chosen_chat=SwitchInlineQueryChosenChat(
+                query="",
+                allow_user_chats=True,
+                allow_group_chats=True,
+                allow_channel_chats=False,
+                allow_bot_chats=False,
+            ),
+        )
+
+    def start_keyboard(self, lang: str = "fa") -> InlineKeyboardMarkup:
+        return InlineKeyboardMarkup(
+            inline_keyboard=[
+                [self.start_game_button(lang)],
+            ]
+        )
 
     def waiting_keyboard(
         self,

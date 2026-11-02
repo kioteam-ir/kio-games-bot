@@ -34,8 +34,15 @@ async def start_sponsor_gate_handler(
 
 
 @router.message(CommandStart(), ResolvedUserFilter(), NotBannedFilter(), SponsorOkFilter())
-async def start_handler(message: Message, user_context: ResolvedUserContext) -> None:
-    await message.answer(_(I18nKeys.START))
+async def start_handler(
+    message: Message,
+    user_context: ResolvedUserContext,
+    keyboards: KeyboardService,
+) -> None:
+    await message.answer(
+        _(I18nKeys.START),
+        reply_markup=keyboards.start_keyboard(user_context.lang),
+    )
 
 
 @router.message(
