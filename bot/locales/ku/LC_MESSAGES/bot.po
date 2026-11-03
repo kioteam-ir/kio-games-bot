@@ -17,6 +17,9 @@ msgstr ""
 msgid "start-game-button"
 msgstr "🎮 Dest bi lîstikê bike"
 
+msgid "play-again-button"
+msgstr "🎮 Dîsa bilîze"
+
 msgid "create-game-text"
 msgstr "🕹 Amade yî? Wê yariyekê çêbikî 🕹"
 

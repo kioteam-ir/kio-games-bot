@@ -4,6 +4,7 @@ from enum import StrEnum
 class I18nKeys(StrEnum):
     START = "start"
     START_GAME_BUTTON = "start-game-button"
+    PLAY_AGAIN_BUTTON = "play-again-button"
     CREATE_GAME_TEXT = "create-game-text"
     CREATE_GAME_BUTTON = "create-game-button"
     YOU_ARE_BANNED_TITLE = "you-are-banned-title"

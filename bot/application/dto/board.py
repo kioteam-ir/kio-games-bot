@@ -37,3 +37,4 @@ class BoardState(BaseModel):
     rows: tuple[tuple[BoardCell, ...], ...]
     column_picker: tuple[ColumnPickerOption, ...] | None = None
     players: tuple[PlayerSlot, ...] = ()
+    lang: str = "fa"
