@@ -67,4 +67,5 @@ class BoardStateBuilder:
             rows=tuple(row_models),
             column_picker=column_picker,
             players=players,
+            lang=session.lang,
         )

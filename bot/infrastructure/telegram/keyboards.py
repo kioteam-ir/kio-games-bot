@@ -293,14 +293,26 @@ class KeyboardService:
                 ]
             )
 
-        rows.append(
-            [
-                InlineKeyboardButton(
-                    text="🕹 Kio Games bot | ربات بازی کایو 🕹",
-                    url=bot_url,
-                )
-            ]
-        )
+        if board.game_over:
+            board_lang = getattr(board, "lang", "fa") or "fa"
+            play_again_text = self._translator.t(I18nKeys.PLAY_AGAIN_BUTTON, board_lang)
+            rows.append(
+                [
+                    InlineKeyboardButton(
+                        text=play_again_text,
+                        switch_inline_query_current_chat="",
+                    )
+                ]
+            )
+        else:
+            rows.append(
+                [
+                    InlineKeyboardButton(
+                        text="🕹 Kio Games bot | ربات بازی کایو 🕹",
+                        url=bot_url,
+                    )
+                ]
+            )
         return InlineKeyboardMarkup(inline_keyboard=rows)
 
     def language_switcher(self) -> InlineKeyboardMarkup:

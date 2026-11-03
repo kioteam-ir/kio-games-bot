@@ -17,6 +17,9 @@ msgstr ""
 msgid "start-game-button"
 msgstr "🎮 شروع بازی"
 
+msgid "play-again-button"
+msgstr "🎮 بازی دوباره"
+
 msgid "create-game-text"
 msgstr "🕹 اوکیه؟ پس بزن ساخت بازی 🕹"
 
