@@ -197,18 +197,17 @@ class KeyboardService:
         game_id: int,
         sponsors: list[SponsorRecord] | None = None,
     ) -> InlineKeyboardMarkup:
-        rows: list[list[InlineKeyboardButton]] = []
-        if sponsors:
-            for s in sponsors:
-                rows.append([InlineKeyboardButton(text=f"🎫 {s.name.strip()} 🎫", url=str(s.link))])
-        rows.append(
+        rows: list[list[InlineKeyboardButton]] = [
             [
                 InlineKeyboardButton(
                     text=self._translator.t(I18nKeys.IPLAY, lang),
                     callback_data=CallbackService.build_join_game(game_id),
                 )
             ]
-        )
+        ]
+        if sponsors:
+            for s in sponsors:
+                rows.append([InlineKeyboardButton(text=f"🎫 {s.name.strip()} 🎫", url=str(s.link))])
         return InlineKeyboardMarkup(inline_keyboard=rows)
 
     def mine_count_picker(self, lang: str, creator_id: int) -> InlineKeyboardMarkup:
