@@ -55,10 +55,61 @@ class KeyboardService:
             ),
         )
 
+    def support_button(self, lang: str = "fa") -> InlineKeyboardButton:
+        from bot.infrastructure.callback.payloads import MenuActionCallback
+
+        return InlineKeyboardButton(
+            text=self._translator.t(I18nKeys.SUPPORT_BUTTON, lang),
+            callback_data=MenuActionCallback(action="support").pack(),
+        )
+
+    def game_guide_button(self, lang: str = "fa") -> InlineKeyboardButton:
+        from bot.infrastructure.callback.payloads import MenuActionCallback
+
+        return InlineKeyboardButton(
+            text=self._translator.t(I18nKeys.GAME_GUIDE_BUTTON, lang),
+            callback_data=MenuActionCallback(action="help").pack(),
+        )
+
     def start_keyboard(self, lang: str = "fa") -> InlineKeyboardMarkup:
         return InlineKeyboardMarkup(
             inline_keyboard=[
                 [self.start_game_button(lang)],
+                [
+                    self.game_guide_button(lang),
+                    self.support_button(lang),
+                ],
+            ]
+        )
+
+    def start_game_keyboard(self, lang: str = "fa") -> InlineKeyboardMarkup:
+        return InlineKeyboardMarkup(
+            inline_keyboard=[
+                [self.start_game_button(lang)],
+            ]
+        )
+
+    def support_keyboard(self, lang: str = "fa") -> InlineKeyboardMarkup:
+        return InlineKeyboardMarkup(
+            inline_keyboard=[
+                [
+                    InlineKeyboardButton(
+                        text=self._translator.t(I18nKeys.SUPPORT_DIRECT_BUTTON, lang),
+                        url="https://t.me/yas3in_official",
+                    )
+                ]
+            ]
+        )
+
+    def game_guide_keyboard(self, lang: str = "fa") -> InlineKeyboardMarkup:
+        return InlineKeyboardMarkup(
+            inline_keyboard=[
+                [
+                    InlineKeyboardButton(
+                        text=self._translator.t(I18nKeys.XO_TUTORIAL_BUTTON, lang),
+                        url="https://t.me/kiogame/5",
+                    )
+                ]
             ]
         )
 

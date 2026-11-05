@@ -20,6 +20,29 @@ msgstr "🎮 התחל משחק"
 msgid "play-again-button"
 msgstr "🎮 שחק שוב"
 
+msgid "support-button"
+msgstr "💬 תמיכה"
+
+msgid "game-guide-button"
+msgstr "📖 מדריכי משחק"
+
+msgid "support-text"
+msgstr ""
+"💬 <b>תמיכת Kio Games</b>\n\n"
+"לתמיכה, דיווח על תקלות או הצעות, צרו קשר:\n"
+"👉 @yas3in_official"
+
+msgid "support-direct-button"
+msgstr "💬 פנה לתמיכה"
+
+msgid "game-guide-text"
+msgstr ""
+"📖 <b>מדריך לאיזה משחק תרצה?</b>\n\n"
+"בחר משחק למטה כדי לצפות במדריך:"
+
+msgid "xo-tutorial-button"
+msgstr "🎮 מדריך XO"
+
 msgid "create-game-text"
 msgstr "🕹 מוכנים? צרו משחק 🕹"
 

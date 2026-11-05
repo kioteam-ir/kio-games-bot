@@ -20,6 +20,29 @@ msgstr "🎮 开始游戏"
 msgid "play-again-button"
 msgstr "🎮 再玩一局"
 
+msgid "support-button"
+msgstr "💬 客服支持"
+
+msgid "game-guide-button"
+msgstr "📖 游戏指南"
+
+msgid "support-text"
+msgstr ""
+"💬 <b>Kio Games 客服支持</b>\n\n"
+"如有问题、Bug反馈或建议，请联系：\n"
+"👉 @yas3in_official"
+
+msgid "support-direct-button"
+msgstr "💬 发消息给客服"
+
+msgid "game-guide-text"
+msgstr ""
+"📖 <b>你想了解哪个游戏的玩法？</b>\n\n"
+"请在下方选择游戏以查看教程："
+
+msgid "xo-tutorial-button"
+msgstr "🎮 XO 教学"
+
 msgid "create-game-text"
 msgstr "🕹 准备好了吗？创建游戏 🕹"
 

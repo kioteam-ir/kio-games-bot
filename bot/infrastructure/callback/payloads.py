@@ -39,3 +39,7 @@ class CellMoveCallback(CallbackData, prefix="cl"):
 class AdminActionCallback(CallbackData, prefix="adm"):
     action: str
     target_id: int = 0
+
+
+class MenuActionCallback(CallbackData, prefix="menu"):
+    action: str

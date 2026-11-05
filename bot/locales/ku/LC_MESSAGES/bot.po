@@ -20,6 +20,29 @@ msgstr "🎮 Dest bi lîstikê bike"
 msgid "play-again-button"
 msgstr "🎮 Dîsa bilîze"
 
+msgid "support-button"
+msgstr "💬 Piştgirî"
+
+msgid "game-guide-button"
+msgstr "📖 Rêberên lîstikê"
+
+msgid "support-text"
+msgstr ""
+"💬 <b>Piştgiriya Kio Games</b>\n\n"
+"Ji bo piştgirî, raporên xeletiyan an pêşniyaran bi me re têkilî daynin:\n"
+"👉 @yas3in_official"
+
+msgid "support-direct-button"
+msgstr "💬 Peyam bide piştgiriyê"
+
+msgid "game-guide-text"
+msgstr ""
+"📖 <b>Hûn hîndekariya kîjan lîstikê dixwazin?</b>\n\n"
+"Ji bo dîtina rêberiyê li jêr lîstikek hilbijêrin:"
+
+msgid "xo-tutorial-button"
+msgstr "🎮 Hîndekariya XO"
+
 msgid "create-game-text"
 msgstr "🕹 Amade yî? Wê yariyekê çêbikî 🕹"
 

@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Start Menu Support & Game Guide Inline Buttons:** Added "💬 ارتباط با پشتیبانی" and "📖 راهنمای بازی‌ها" inline buttons to `/start`, along with corresponding commands (`/support` and `/help`).
+- **Support Contact Message & Direct Action:** Clicking support shows `@yas3in_official` for user inquiries and provides a direct 1-click messaging button.
+- **Game Guide & XO Tutorial:** Clicking the game guide button prompts the user with tutorial options, including an inline link to the XO tutorial (`https://t.me/kiogame/5`).
+- **Multilingual Support for Menu Actions:** Added localized translations for support and tutorial buttons and prompts across all 12 supported locales.
 - **Broadcast with Inline Start-Game Button & Preset Challenge:** Added option in admin broadcast flow to attach the localized "🎮 شروع بازی" inline button (`SwitchInlineQueryChosenChat`) under any broadcast message, plus a one-click preset challenge template.
 - **Play Again Inline Button Upon Game Over:** Replaced the static bot URL button with an interactive "🎮 بازی دوباره" (Play Again) button when the game ends, using Telegram's `switch_inline_query_current_chat` to immediately prefill the bot's username in the current chat and prompt inline game selection across all 12 supported locales.
 - **Full-Featured Admin Panel:** Introduced `/admin` and `/panel` command with interactive inline dashboard for bot administrators.

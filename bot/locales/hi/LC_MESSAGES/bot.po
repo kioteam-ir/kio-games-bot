@@ -20,6 +20,29 @@ msgstr "🎮 गेम शुरू करें"
 msgid "play-again-button"
 msgstr "🎮 फिर से खेलें"
 
+msgid "support-button"
+msgstr "💬 सहायता"
+
+msgid "game-guide-button"
+msgstr "📖 खेल गाइड"
+
+msgid "support-text"
+msgstr ""
+"💬 <b>Kio Games सहायता</b>\n\n"
+"सहायता, बग रिपोर्ट या सुझावों के लिए संपर्क करें:\n"
+"👉 @yas3in_official"
+
+msgid "support-direct-button"
+msgstr "💬 सहायता से संपर्क करें"
+
+msgid "game-guide-text"
+msgstr ""
+"📖 <b>आप किस खेल का ट्यूटोरियल चाहते हैं?</b>\n\n"
+"ट्यूटोरियल देखने के लिए नीचे एक खेल चुनें:"
+
+msgid "xo-tutorial-button"
+msgstr "🎮 XO ट्यूटोरियल"
+
 msgid "create-game-text"
 msgstr "🕹 तैयार? तो एक गेम बनाएँ 🕹"
 
