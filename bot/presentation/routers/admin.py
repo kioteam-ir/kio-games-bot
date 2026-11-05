@@ -409,7 +409,7 @@ async def admin_preset_broadcast_handler(
 
     preview_msg = await callback.message.answer(
         PRESET_CHALLENGE_TEXT,
-        reply_markup=keyboards.start_keyboard("fa"),
+        reply_markup=keyboards.start_game_keyboard("fa"),
     )
     await state.update_data(
         broadcast_msg_id=preview_msg.message_id,
@@ -504,7 +504,7 @@ async def admin_execute_broadcast_handler(
     start_time = time.monotonic()
 
     for idx, (uid, user_lang) in enumerate(users, 1):
-        markup = keyboards.start_keyboard(user_lang) if with_start_btn else None
+        markup = keyboards.start_game_keyboard(user_lang) if with_start_btn else None
         try:
             await bot.copy_message(
                 chat_id=uid,

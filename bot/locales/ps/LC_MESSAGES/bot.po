@@ -20,6 +20,29 @@ msgstr "🎮 لوبه پیل کړئ"
 msgid "play-again-button"
 msgstr "🎮 بیا لوبه وکړئ"
 
+msgid "support-button"
+msgstr "💬 ملاتړ"
+
+msgid "game-guide-button"
+msgstr "📖 د لوبو لارښود"
+
+msgid "support-text"
+msgstr ""
+"💬 <b>د Kio Games ملاتړ</b>\n\n"
+"د ملاتړ، ستونزو راپور ورکولو یا وړاندیزونو لپاره اړیکه ونیسئ:\n"
+"👉 @yas3in_official"
+
+msgid "support-direct-button"
+msgstr "💬 ملاتړ ته پیغام واستوئ"
+
+msgid "game-guide-text"
+msgstr ""
+"📖 <b>تاسو د کومې لوبې زده کړه غواړئ؟</b>\n\n"
+"د زده کړې لیدلو لپاره لاندې یوه لوبه غوره کړئ:"
+
+msgid "xo-tutorial-button"
+msgstr "🎮 د XO لارښود"
+
 msgid "create-game-text"
 msgstr "🕹 چمتو یې؟ یوه لوبه جوړه کړه 🕹"
 

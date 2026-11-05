@@ -20,6 +20,29 @@ msgstr "🎮 شروع بازی"
 msgid "play-again-button"
 msgstr "🎮 بازی دوباره"
 
+msgid "support-button"
+msgstr "💬 ارتباط با پشتیبانی"
+
+msgid "game-guide-button"
+msgstr "📖 راهنمای بازی‌ها"
+
+msgid "support-text"
+msgstr ""
+"💬 <b>ارتباط با پشتیبانی کایو گیم</b>\n\n"
+"جهت ارتباط با پشتیبانی، گزارش مشکلات یا ارسال نظرات و پیشنهادات با آیدی زیر در ارتباط باشید:\n"
+"👉 @yas3in_official"
+
+msgid "support-direct-button"
+msgstr "💬 پیام به پشتیبانی"
+
+msgid "game-guide-text"
+msgstr ""
+"📖 <b>آموزش کدوم بازی رو میخوای؟</b>\n\n"
+"برای مشاهده آموزش و یادگیری، روی دکمه بازی موردنظرت بزن:"
+
+msgid "xo-tutorial-button"
+msgstr "🎮 آموزش xo"
+
 msgid "create-game-text"
 msgstr "🕹 اوکیه؟ پس بزن ساخت بازی 🕹"
 

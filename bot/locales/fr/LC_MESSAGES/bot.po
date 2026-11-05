@@ -20,6 +20,29 @@ msgstr "🎮 Démarrer le jeu"
 msgid "play-again-button"
 msgstr "🎮 Rejouer"
 
+msgid "support-button"
+msgstr "💬 Support"
+
+msgid "game-guide-button"
+msgstr "📖 Guides de jeu"
+
+msgid "support-text"
+msgstr ""
+"💬 <b>Support Kio Games</b>\n\n"
+"Pour toute assistance, rapport de bug ou suggestion, veuillez contacter :\n"
+"👉 @yas3in_official"
+
+msgid "support-direct-button"
+msgstr "💬 Contacter le support"
+
+msgid "game-guide-text"
+msgstr ""
+"📖 <b>Quel tutoriel de jeu souhaitez-vous ?</b>\n\n"
+"Sélectionnez un jeu ci-dessous pour voir le tutoriel :"
+
+msgid "xo-tutorial-button"
+msgstr "🎮 Tutoriel xo"
+
 msgid "create-game-text"
 msgstr "🕹 Prêt ? Crée une partie 🕹"
 

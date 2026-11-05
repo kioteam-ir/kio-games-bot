@@ -1,12 +1,13 @@
 from __future__ import annotations
 
-from aiogram import Router
+from aiogram import F, Router
 from aiogram.filters import Command, CommandObject, CommandStart
-from aiogram.types import Message
+from aiogram.types import CallbackQuery, Message
 from aiogram.utils.i18n import gettext as _
 
 from bot.application.dto.game import ResolvedUserContext
 from bot.core.container import AppContainer
+from bot.infrastructure.callback.payloads import MenuActionCallback
 from bot.infrastructure.telegram.keyboards import KeyboardService
 from bot.locales.i18n_keys import I18nKeys
 from bot.presentation.filters.sponsor import SponsorOkFilter, SponsorRequiredFilter
@@ -42,6 +43,66 @@ async def start_handler(
     await message.answer(
         _(I18nKeys.START),
         reply_markup=keyboards.start_keyboard(user_context.lang),
+    )
+
+
+@router.callback_query(
+    MenuActionCallback.filter(F.action == "support"),
+    ResolvedUserFilter(),
+    NotBannedFilter(),
+)
+async def support_callback_handler(
+    callback: CallbackQuery,
+    user_context: ResolvedUserContext,
+    keyboards: KeyboardService,
+) -> None:
+    await callback.answer()
+    if callback.message and isinstance(callback.message, Message):
+        await callback.message.answer(
+            keyboards._translator.t(I18nKeys.SUPPORT_TEXT, user_context.lang),
+            reply_markup=keyboards.support_keyboard(user_context.lang),
+        )
+
+
+@router.message(Command("support"), ResolvedUserFilter(), NotBannedFilter())
+async def support_command_handler(
+    message: Message,
+    user_context: ResolvedUserContext,
+    keyboards: KeyboardService,
+) -> None:
+    await message.answer(
+        keyboards._translator.t(I18nKeys.SUPPORT_TEXT, user_context.lang),
+        reply_markup=keyboards.support_keyboard(user_context.lang),
+    )
+
+
+@router.callback_query(
+    MenuActionCallback.filter(F.action == "help"),
+    ResolvedUserFilter(),
+    NotBannedFilter(),
+)
+async def game_guide_callback_handler(
+    callback: CallbackQuery,
+    user_context: ResolvedUserContext,
+    keyboards: KeyboardService,
+) -> None:
+    await callback.answer()
+    if callback.message and isinstance(callback.message, Message):
+        await callback.message.answer(
+            keyboards._translator.t(I18nKeys.GAME_GUIDE_TEXT, user_context.lang),
+            reply_markup=keyboards.game_guide_keyboard(user_context.lang),
+        )
+
+
+@router.message(Command("help"), ResolvedUserFilter(), NotBannedFilter())
+async def game_guide_command_handler(
+    message: Message,
+    user_context: ResolvedUserContext,
+    keyboards: KeyboardService,
+) -> None:
+    await message.answer(
+        keyboards._translator.t(I18nKeys.GAME_GUIDE_TEXT, user_context.lang),
+        reply_markup=keyboards.game_guide_keyboard(user_context.lang),
     )
 
 

@@ -20,6 +20,29 @@ msgstr "🎮 ابدأ اللعبة"
 msgid "play-again-button"
 msgstr "🎮 العب مرة أخرى"
 
+msgid "support-button"
+msgstr "💬 الدعم الفني"
+
+msgid "game-guide-button"
+msgstr "📖 دليل الألعاب"
+
+msgid "support-text"
+msgstr ""
+"💬 <b>دعم كايو جيم</b>\n\n"
+"للدعم الفني أو الإبلاغ عن المشاكل أو الاقتراحات، يرجى التواصل مع:\n"
+"👉 @yas3in_official"
+
+msgid "support-direct-button"
+msgstr "💬 مراسلة الدعم"
+
+msgid "game-guide-text"
+msgstr ""
+"📖 <b>أي لعبة تريد شرحها؟</b>\n\n"
+"اختر اللعبة أدناه لمشاهدة الشرح:"
+
+msgid "xo-tutorial-button"
+msgstr "🎮 شرح xo"
+
 msgid "create-game-text"
 msgstr "🕹 جاهز؟ أنشئ لعبة 🕹"
 

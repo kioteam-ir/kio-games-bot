@@ -20,6 +20,29 @@ msgstr "🎮 Oyunu Başlat"
 msgid "play-again-button"
 msgstr "🎮 Tekrar Oyna"
 
+msgid "support-button"
+msgstr "💬 Destek"
+
+msgid "game-guide-button"
+msgstr "📖 Oyun Kılavuzları"
+
+msgid "support-text"
+msgstr ""
+"💬 <b>Kio Games Destek</b>\n\n"
+"Destek, hata bildirimleri veya önerileriniz için lütfen iletişime geçin:\n"
+"👉 @yas3in_official"
+
+msgid "support-direct-button"
+msgstr "💬 Desteğe Mesaj Gönder"
+
+msgid "game-guide-text"
+msgstr ""
+"📖 <b>Hangi oyunun kılavuzunu istiyorsunuz?</b>\n\n"
+"Kılavuzu izlemek için aşağıdaki oyunu seçin:"
+
+msgid "xo-tutorial-button"
+msgstr "🎮 XO Rehberi"
+
 msgid "create-game-text"
 msgstr "🕹 Hazır mısın? Oyun oluştur 🕹"
 

@@ -8,6 +8,7 @@ from bot.infrastructure.callback.payloads import (
     ChangeLangCallback,
     JoinGameCallback,
     MakeGameCallback,
+    MenuActionCallback,
     PlayerInfoCallback,
 )
 
@@ -18,6 +19,7 @@ CallbackPayload = (
     | JoinGameCallback
     | CellMoveCallback
     | AdminActionCallback
+    | MenuActionCallback
 )
 
 
@@ -33,6 +35,7 @@ class CallbackService:
             JoinGameCallback,
             CellMoveCallback,
             AdminActionCallback,
+            MenuActionCallback,
         ):
             try:
                 return payload_cls.unpack(raw)
