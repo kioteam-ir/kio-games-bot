@@ -157,6 +157,26 @@ class KeyboardService:
         )
         return InlineKeyboardMarkup(inline_keyboard=rows)
 
+    def admin_broadcast_prompt_keyboard(self) -> InlineKeyboardMarkup:
+        from bot.infrastructure.callback.payloads import AdminActionCallback
+
+        return InlineKeyboardMarkup(
+            inline_keyboard=[
+                [
+                    InlineKeyboardButton(
+                        text="🔥 استفاده از متن آماده «چالش دوستان»",
+                        callback_data=AdminActionCallback(action="preset_bc").pack(),
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="❌ لغو و بازگشت",
+                        callback_data=AdminActionCallback(action="menu").pack(),
+                    )
+                ],
+            ]
+        )
+
     def admin_confirm_broadcast_keyboard(self) -> InlineKeyboardMarkup:
         from bot.infrastructure.callback.payloads import AdminActionCallback
 
@@ -164,7 +184,13 @@ class KeyboardService:
             inline_keyboard=[
                 [
                     InlineKeyboardButton(
-                        text="✅ تایید و ارسال برای همه کاربران",
+                        text="🎮 ارسال همراه با دکمه شیشه‌ای «شروع بازی»",
+                        callback_data=AdminActionCallback(action="confirm_bc_btn").pack(),
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="✅ ارسال معمولی (بدون دکمه اضافه)",
                         callback_data=AdminActionCallback(action="confirm_bc").pack(),
                     )
                 ],
