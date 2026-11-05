@@ -8,11 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Broadcast with Inline Start-Game Button & Preset Challenge:** Added option in admin broadcast flow to attach the localized "🎮 شروع بازی" inline button (`SwitchInlineQueryChosenChat`) under any broadcast message, plus a one-click preset challenge template.
 - **Play Again Inline Button Upon Game Over:** Replaced the static bot URL button with an interactive "🎮 بازی دوباره" (Play Again) button when the game ends, using Telegram's `switch_inline_query_current_chat` to immediately prefill the bot's username in the current chat and prompt inline game selection across all 12 supported locales.
 - **Full-Featured Admin Panel:** Introduced `/admin` and `/panel` command with interactive inline dashboard for bot administrators.
 - **Broadcast Messaging to All Users:** Added multi-content broadcast capability (text, media, forward) with real-time rate limiting, auto-retry on flood, and delivery report.
 - **User Insights & Full Data Export:** Added real-time user statistics, recent signups overview, and downloadable complete users list (`users_export.txt`).
 - **Interactive Sponsor Management:** Direct in-panel active sponsor listing with one-click deletion, dynamic FSM-based sponsor onboarding (`add_sps`), and instant Redis cache refresh.
+
+### Changed
+- **Top-Row Join Game Button Ordering:** Placed the "بازی میکنم 🙋" (`IPLAY`) button in the first row of `waiting_keyboard` above sponsor links to match the "🕹 ساخت بازی 🕹" button layout.
 
 ## [0.5.0] - 2026-11-02
 

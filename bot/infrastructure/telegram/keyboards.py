@@ -157,6 +157,26 @@ class KeyboardService:
         )
         return InlineKeyboardMarkup(inline_keyboard=rows)
 
+    def admin_broadcast_prompt_keyboard(self) -> InlineKeyboardMarkup:
+        from bot.infrastructure.callback.payloads import AdminActionCallback
+
+        return InlineKeyboardMarkup(
+            inline_keyboard=[
+                [
+                    InlineKeyboardButton(
+                        text="🔥 استفاده از متن آماده «چالش دوستان»",
+                        callback_data=AdminActionCallback(action="preset_bc").pack(),
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="❌ لغو و بازگشت",
+                        callback_data=AdminActionCallback(action="menu").pack(),
+                    )
+                ],
+            ]
+        )
+
     def admin_confirm_broadcast_keyboard(self) -> InlineKeyboardMarkup:
         from bot.infrastructure.callback.payloads import AdminActionCallback
 
@@ -164,7 +184,13 @@ class KeyboardService:
             inline_keyboard=[
                 [
                     InlineKeyboardButton(
-                        text="✅ تایید و ارسال برای همه کاربران",
+                        text="🎮 ارسال همراه با دکمه شیشه‌ای «شروع بازی»",
+                        callback_data=AdminActionCallback(action="confirm_bc_btn").pack(),
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="✅ ارسال معمولی (بدون دکمه اضافه)",
                         callback_data=AdminActionCallback(action="confirm_bc").pack(),
                     )
                 ],
@@ -197,18 +223,17 @@ class KeyboardService:
         game_id: int,
         sponsors: list[SponsorRecord] | None = None,
     ) -> InlineKeyboardMarkup:
-        rows: list[list[InlineKeyboardButton]] = []
-        if sponsors:
-            for s in sponsors:
-                rows.append([InlineKeyboardButton(text=f"🎫 {s.name.strip()} 🎫", url=str(s.link))])
-        rows.append(
+        rows: list[list[InlineKeyboardButton]] = [
             [
                 InlineKeyboardButton(
                     text=self._translator.t(I18nKeys.IPLAY, lang),
                     callback_data=CallbackService.build_join_game(game_id),
                 )
             ]
-        )
+        ]
+        if sponsors:
+            for s in sponsors:
+                rows.append([InlineKeyboardButton(text=f"🎫 {s.name.strip()} 🎫", url=str(s.link))])
         return InlineKeyboardMarkup(inline_keyboard=rows)
 
     def mine_count_picker(self, lang: str, creator_id: int) -> InlineKeyboardMarkup:

@@ -368,6 +368,16 @@ async def admin_receive_sponsor_handler(
 # ---------------------------------------------------------
 
 
+PRESET_CHALLENGE_TEXT = (
+    "🎮 <b>حوصله‌ات سر رفته؟ وقتشه دوستات رو به چالش بکشی!</b>\n\n"
+    "یه بازی دونفره، یه رقیب سرسخت و کلی لحظه هیجان‌انگیز! 🔥\n\n"
+    "فرقی نمیکنه کی باشه؛ رفیق صمیمیت، همکارت یا حتی کسی که فکر میکنه همیشه برنده‌ست! 😏\n\n"
+    "👥 دوستت رو انتخاب کن، یه بازی راه بنداز و ببین واقعاً کی حرفه‌ای‌تره!\n\n"
+    "🏆 <b>شاید وقتشه رکورد رفیقات رو بزنی!</b>\n\n"
+    "👇 همین الان برای دوستت بازی رو بفرست و یه بازی شروع کن!"
+)
+
+
 @router.callback_query(AdminActionCallback.filter(F.action == "broadcast"))
 async def admin_start_broadcast_handler(
     callback: CallbackQuery,
@@ -377,11 +387,44 @@ async def admin_start_broadcast_handler(
     await state.set_state(AdminStates.waiting_for_broadcast)
     text = (
         "📢 <b>ارسال پیام به تمام کاربران (پیام همگانی)</b>\n\n"
-        "لطفاً پیامی که مایلید برای تمام کاربران ارسال شود را در همین چت بفرستید.\n\n"
+        "لطفاً پیامی که مایلید برای تمام کاربران ارسال شود را در همین چت بفرستید، "
+        "یا روی دکمه زیر بزنید تا از متن آماده «چالش دوستان» استفاده شود.\n\n"
         "<i>انواع محتوا شامل متن، عکس، ویدیو، گیف، فایل صوتی، استیکر و پیام‌های فورواردی پذیرفته می‌شود.</i>"
     )
     if callback.message and isinstance(callback.message, Message):
-        await callback.message.edit_text(text, reply_markup=keyboards.admin_cancel_keyboard(back_to="menu"))
+        await callback.message.edit_text(text, reply_markup=keyboards.admin_broadcast_prompt_keyboard())
+    await callback.answer()
+
+
+@router.callback_query(AdminActionCallback.filter(F.action == "preset_bc"))
+async def admin_preset_broadcast_handler(
+    callback: CallbackQuery,
+    keyboards: KeyboardService,
+    state: FSMContext,
+) -> None:
+    if callback.message is None or not isinstance(callback.message, Message):
+        await callback.answer()
+        return
+
+    preview_msg = await callback.message.answer(
+        PRESET_CHALLENGE_TEXT,
+        reply_markup=keyboards.start_keyboard("fa"),
+    )
+    await state.update_data(
+        broadcast_msg_id=preview_msg.message_id,
+        broadcast_chat_id=preview_msg.chat.id,
+    )
+    await state.set_state(AdminStates.confirm_broadcast)
+
+    async with session_scope() as session:
+        user_count = await session.scalar(select(func.count(AppUser.id))) or 0
+
+    await preview_msg.reply(
+        f"⚠️ <b>تایید ارسال پیام همگانی (متن آماده چالش)</b>\n\n"
+        f"پیام بالا برای تمام <b>{user_count:,}</b> کاربر ربات ارسال خواهد شد.\n"
+        "برای اینکه دکمه شیشه‌ای <b>«🎮 شروع بازی»</b> زیر پیام قرار گیرد، گزینه اول را انتخاب کنید:",
+        reply_markup=keyboards.admin_confirm_broadcast_keyboard(),
+    )
     await callback.answer()
 
 
@@ -403,7 +446,7 @@ async def admin_receive_broadcast_message_handler(
     await message.reply(
         f"⚠️ <b>تایید ارسال پیام همگانی</b>\n\n"
         f"این پیام برای تمام <b>{user_count:,}</b> کاربر ربات ارسال خواهد شد.\n\n"
-        "آیا برای شروع ارسال مطمئن هستید؟",
+        "می‌توانید پیام را همراه با دکمه شیشه‌ای <b>«🎮 شروع بازی»</b> (انتخاب دوست/گروه و تایپ خودکار یوزرنیم بات) یا به صورت معمولی ارسال کنید:",
         reply_markup=keyboards.admin_confirm_broadcast_keyboard(),
     )
 
@@ -423,9 +466,10 @@ async def admin_cancel_broadcast_handler(
     await callback.answer("عملیات لغو شد.")
 
 
-@router.callback_query(AdminActionCallback.filter(F.action == "confirm_bc"))
+@router.callback_query(AdminActionCallback.filter(F.action.in_({"confirm_bc", "confirm_bc_btn"})))
 async def admin_execute_broadcast_handler(
     callback: CallbackQuery,
+    callback_data: AdminActionCallback,
     bot: Bot,
     keyboards: KeyboardService,
     state: FSMContext,
@@ -439,6 +483,8 @@ async def admin_execute_broadcast_handler(
         await callback.answer("پیام معتبری برای ارسال یافت نشد.", show_alert=True)
         return
 
+    with_start_btn = callback_data.action == "confirm_bc_btn"
+
     await callback.answer("🚀 ارسال همگانی آغاز شد...")
     status_msg = None
     if callback.message and isinstance(callback.message, Message):
@@ -446,24 +492,35 @@ async def admin_execute_broadcast_handler(
 
     async with session_scope() as session:
         res = await session.execute(
-            select(AppUser.id).where(AppUser.is_banned.is_(False)).order_by(AppUser.id.asc())
+            select(AppUser.id, AppUser.lang_code).where(AppUser.is_banned.is_(False)).order_by(AppUser.id.asc())
         )
-        user_ids = [row[0] for row in res.all()]
+        users = [(row[0], row[1] or "fa") for row in res.all()]
 
-    total = len(user_ids)
+    total = len(users)
     success = 0
     blocked = 0
     failed = 0
     start_time = time.monotonic()
 
-    for idx, uid in enumerate(user_ids, 1):
+    for idx, (uid, user_lang) in enumerate(users, 1):
+        markup = keyboards.start_keyboard(user_lang) if with_start_btn else None
         try:
-            await bot.copy_message(chat_id=uid, from_chat_id=chat_id, message_id=msg_id)
+            await bot.copy_message(
+                chat_id=uid,
+                from_chat_id=chat_id,
+                message_id=msg_id,
+                reply_markup=markup,
+            )
             success += 1
         except TelegramRetryAfter as retry:
             await asyncio.sleep(retry.retry_after)
             try:
-                await bot.copy_message(chat_id=uid, from_chat_id=chat_id, message_id=msg_id)
+                await bot.copy_message(
+                    chat_id=uid,
+                    from_chat_id=chat_id,
+                    message_id=msg_id,
+                    reply_markup=markup,
+                )
                 success += 1
             except Exception:
                 failed += 1
