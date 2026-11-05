@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import logging
 import time
+from contextlib import suppress
 from datetime import datetime
 
 from aiogram import Bot, F, Router
@@ -536,7 +537,7 @@ async def admin_execute_broadcast_handler(
         # Update progress every 50 users
         if status_msg and idx % 50 == 0:
             elapsed = time.monotonic() - start_time
-            with asyncio.suppress(Exception):
+            with suppress(Exception):
                 await status_msg.edit_text(
                     f"⏳ <b>در حال ارسال پیام همگانی...</b>\n\n"
                     f"• پیشرفت: <b>{idx}/{total}</b> ({(idx/total)*100:.1f}%)\n"
@@ -558,7 +559,7 @@ async def admin_execute_broadcast_handler(
     )
 
     if status_msg:
-        with asyncio.suppress(Exception):
+        with suppress(Exception):
             await status_msg.edit_text(report, reply_markup=keyboards.admin_panel_keyboard())
     elif callback.message and isinstance(callback.message, Message):
         await callback.message.answer(report, reply_markup=keyboards.admin_panel_keyboard())
